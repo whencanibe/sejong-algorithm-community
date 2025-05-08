@@ -119,8 +119,8 @@ corepack prepare pnpm@latest --activate
 
 ```bash
 # 1. 저장소 클론
-git clone git@github.com:your-org/algo-community.git
-cd algo-community
+git clone https://github.com/lseo98/sejong-algorithm-community.git
+cd sejong-algorithm-community
 
 # 2. Node 버전 적용(mac/Linux)
 #    Windows 단일 설치 방식은 이 단계 생략
