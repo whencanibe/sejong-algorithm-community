@@ -1,0 +1,3 @@
+packages:
+  - "client"   # React 앱
+  - "server"   # Express API
