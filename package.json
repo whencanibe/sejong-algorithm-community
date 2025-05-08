@@ -17,6 +17,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently -k -n client,server -c blue,green \"pnpm --filter client dev\" \"pnpm --filter server dev\"",
+    "dev:client": "pnpm --filter client dev",
+    "dev:server": "pnpm --filter server dev",
     "lint": "eslint \"**/*.{js,jsx}\" --max-warnings=0",
     "format": "prettier -w \"**/*.{js,jsx,json,md}\""
   }
