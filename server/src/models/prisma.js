@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import pkg from '@prisma/client';
+const {PrismaClient} = pkg;
 
 const prisma =
   global.prisma || // 이미 만들어 뒀으면 재사용
