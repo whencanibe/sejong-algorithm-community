@@ -1,35 +1,54 @@
 import axios from 'axios'
+import { findUserById } from '../repositories/userRepository.js';
 
 export async function getSolvedProblemIds(baekjoonName) {
     let pageNum = 1;
     const url = `https://solved.ac/api/v3/search/problem`;
-
     const solvedProblemIds = [];
 
-    while (true) {
+    try {
+        while (true) {
+            const response = await axios.get(url, {
+                params: { query: `solved_by:${baekjoonName}`, page: pageNum },
+            })
+
+            const items = response.data.items;
+            if (!items || items.length === 0) break;
+
+            for (const item of items) {
+                solvedProblemIds.push(item.problemId);
+            }
+
+            pageNum += 1;
+        }
+
+        return {
+            user: baekjoonName,
+            count: solvedProblemIds.length,
+            problemId: solvedProblemIds,
+        };
+    } catch (err) {//axios 에러 발생 시 실행될 catch
+        console.error('API 요청 실패:', err.message);
+        throw new Error('문제 목록 불러오기 실패');
+    }
+}
+
+export async function getRank(baekjoonName) {
+    const url = 'https://solved.ac/api/v3/user/show' //?handle=백준이름
+
+    try {
         const response = await axios.get(url, {
-            params: { query: `solved_by:${baekjoonName}`, page: pageNum }
-        });
-        if (!response){
-            throw new Error("해결문제목록불러오기실패");
-        }
+            params: { handle: baekjoonName }
+        })
+        let rank = response.data.rank;
 
-        const items = response.data.items;
-
-        if(!items || items.length === 0) break; // 더 이상 문제 페이지 없을 때
-        
-        for(const item of items){
-            solvedProblemIds.push(item.problemId)
+        return {
+            user: baekjoonName,
+            rank: rank,
         }
-        
-        pageNum += 1;
+    } catch (err) {
+        console.error('API 요청 실패:', err.message);
+        throw new Error('사용자 랭킹 불러오기 실패');
     }
 
-    //console.log(solvedProblemIds); //테스트
-
-    return {
-        user : baekjoonName,
-        count : solvedProblemIds.length,
-        problemId: solvedProblemIds,
-    }
 }
