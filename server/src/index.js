@@ -5,6 +5,7 @@ import postRouter from './routes/postRouter.js';
 
 import userRouter from './routes/userRouter.js';
 import solvedacRouter from './routes/solvedacRouter.js';
+import userInfoRouter from './routes/userInfoRouter.js';
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/user', userRouter);
 app.use('/solvedac', solvedacRouter);
 app.use('/posts', postRouter);
+app.user('/info', userInfoRouter);
 
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

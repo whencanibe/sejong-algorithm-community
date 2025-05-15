@@ -13,10 +13,12 @@ model User {
   password String
   name String
   baekjoonName String
-  major String
+  major String @default("unknown")
+  rank Int?
   tier String?
   solvedNum Int?
   solvedProblems SolvedProblem[]
+  enrollYear Int @default(2025)
   createdAt DateTime @default(now())
 
   snapshots SolveSnapshot[]

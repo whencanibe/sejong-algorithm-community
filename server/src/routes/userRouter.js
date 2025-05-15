@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { signupCtrl } from '../controllers/\buserApiController.js';
+import { signupCtrl } from '../controllers/userApiController.js';
 const router = Router();
 
 router.get('/', (req, res) => {

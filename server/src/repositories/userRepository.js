@@ -18,3 +18,41 @@ export async function findUserByEmail(email) {
         where: { email }
     })
 }
+
+export async function getRankByUserId(id) {
+  const me = await prisma.user.findUnique({
+    where: { id },
+    select: { ranking: true }
+  });
+
+  if (!me) throw new Error("해당 유저 없음");
+
+  const count = await prisma.user.count({
+    where: {
+      rank: { lt: me.rank }  // 나보다 순위 높은 사람 수
+    }
+  });
+
+  return count + 1; 
+}
+
+export async function getRankInMajorByUserId(id) {
+  const me = await prisma.user.findUnique({
+    where: { id },
+    select: { ranking: true }
+  });
+
+  if (!me) throw new Error("해당 유저 없음");
+
+  const count = await prisma.user.count({
+    where: {
+      rank: { lt: me.rank },
+      major: me.major
+    }
+  });
+
+  return count + 1; 
+}
+
+
+
