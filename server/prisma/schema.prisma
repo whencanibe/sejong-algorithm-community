@@ -13,8 +13,37 @@ model User {
   password String
   name String
   baekjoonName String
+  major String
+  tier String?
+  solvedNum Int?
   solvedProblems SolvedProblem[]
   createdAt DateTime @default(now())
+
+  snapshots SolveSnapshot[]
+  weeklyRanks WeeklyRank[]
+}
+
+model SolveSnapshot {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  solvedCount Int
+  snapedAt    DateTime
+
+  user        User    @relation(fields: [userId], references:[id])
+
+  @@index([snapedAt])
+}
+
+model WeeklyRank {
+  id         Int      @id @default(autoincrement())
+  weekStart  DateTime 
+  major      String
+  userId     Int
+  solvedThisWeek Int  
+
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([weekStart, major])
 }
 
 model SolvedProblem {
@@ -24,6 +53,7 @@ model SolvedProblem {
 
   user       User     @relation(fields: [userId], references: [id])
 }
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String

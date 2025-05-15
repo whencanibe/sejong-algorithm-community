@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { findUserById } from '../repositories/userRepository.js';
 
 export async function getSolvedProblemIds(baekjoonName) {
     let pageNum = 1;
@@ -33,7 +32,7 @@ export async function getSolvedProblemIds(baekjoonName) {
     }
 }
 
-export async function getRank(baekjoonName) {
+export async function getRankandTier(baekjoonName) {
     const url = 'https://solved.ac/api/v3/user/show' //?handle=백준이름
 
     try {
@@ -41,10 +40,11 @@ export async function getRank(baekjoonName) {
             params: { handle: baekjoonName }
         })
         let rank = response.data.rank;
-
+        let tier = response.data.tier;
         return {
             user: baekjoonName,
             rank: rank,
+            tier: tier,
         }
     } catch (err) {
         console.error('API 요청 실패:', err.message);
