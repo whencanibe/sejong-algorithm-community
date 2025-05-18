@@ -8,19 +8,19 @@ datasource db {
 }
 
 model User {
-  id    Int   @id @default(autoincrement())
-  email String @unique
-  password String
-  name String
+  id        Int   @id @default(autoincrement())
+  email     String @unique
+  password  String
+  name      String
   baekjoonName String
-  major String @default("unknown")
-  rank Int?
-  tier String?
+  major     String @default("unknown")
+  rank      Int?
+  tier      String?
   solvedNum Int?
-  solvedProblems SolvedProblem[]
   enrollYear Int @default(2025)
   createdAt DateTime @default(now())
 
+  solvedProblems SolvedProblem[]
   snapshots SolveSnapshot[]
   weeklyRanks WeeklyRank[]
 }
@@ -52,6 +52,7 @@ model SolvedProblem {
   id         Int      @id @default(autoincrement())
   userId     Int
   problemId  Int
+  solvedAt   DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])
 }

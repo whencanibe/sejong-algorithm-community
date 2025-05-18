@@ -4,7 +4,7 @@ import { getRankandTier } from "./solvedacService.js";
 let allTier = ['브론즈', '실버', '골드', '플래티넘', '다이아몬드', '루비'];
 let allSubtier = ['V', "IV", 'III', 'II', 'I'];
 
-async function stringifyTier(tierNum) {
+function stringifyTier(tierNum) {
     let tier = 0;
     let subtier = 0;
 
@@ -58,7 +58,7 @@ export async function getUserInfo(id) {
     };
   } catch (err) {
     console.error("getUserInfo 에러:", err.message);
-    throw err; // 컨트롤러로 넘겨주기
+    throw err; // 컨트롤러로 그대로 넘겨주기
   }
 }
 

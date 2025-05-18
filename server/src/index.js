@@ -17,7 +17,7 @@ app.use(express.json());
 app.use('/user', userRouter);
 app.use('/solvedac', solvedacRouter);
 app.use('/posts', postRouter);
-app.user('/info', userInfoRouter);
+app.use('/info', userInfoRouter);
 
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
