@@ -12,13 +12,17 @@ model User {
   email String @unique
   password String
   name String
-  nickname String
-  studentId String
-  grade Int
-  department String
   baekjoonName String
+  studentId String
+  department String
+  rank Int?
+  tier String?
+  solvedNum Int?
+
   solvedProblems SolvedProblem[]
   createdAt DateTime @default(now())
+  //snapshots SolveSnapshot[]
+  //weeklyRanks WeeklyRank[]
 }
 
 model SolvedProblem {

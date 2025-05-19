@@ -13,7 +13,6 @@ const PORT = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 
-app.use('/user', userRouter);
 app.use('/solvedac', solvedacRouter);
 app.use('/posts', postRouter);
 
@@ -27,6 +26,7 @@ app.use(session({
     maxAge: 1000 * 60 * 60 // 1시간
   }
 }));
+app.use('/user', userRouter);
 
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

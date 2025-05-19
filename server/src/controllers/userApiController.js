@@ -1,4 +1,5 @@
 import { signupService } from "../services/userService.js";
+import { loginService } from '../services/userService.js';
 
 export const signup = async (req, res) => {
   try {
@@ -11,7 +12,6 @@ export const signup = async (req, res) => {
       user: {
         id: newUser.id,
         email: newUser.email,
-        nickname: newUser.nickname,
       }
     });
   } catch (err) {
@@ -22,3 +22,27 @@ export const signup = async (req, res) => {
     });
   }
 };
+
+
+export const login = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const user = await loginService(email, password);
+  
+      req.session.user = {
+        id: user.id,
+        email: user.email,
+      };
+  
+      res.status(200).json({
+        message: '로그인 성공',
+        user: req.session.user,
+      });
+    } catch (err) {
+      console.error("로그인 오류:", err);
+      res.status(401).json({
+        message: '로그인 실패',
+        error: err.message,
+      });
+    }
+  };
