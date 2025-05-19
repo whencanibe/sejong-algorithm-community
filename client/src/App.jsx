@@ -6,6 +6,8 @@ import WritePost from "./pages/WritePost";
 import PostDetail from "./pages/PostDetail";
 import Ranking from "./pages/Ranking";
 import MyPage from "./pages/MyPage";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 //라우터 연결
 function App() {
@@ -18,6 +20,8 @@ function App() {
       <Route path="/community/postdetail/:id" element={<PostDetail />} />
       <Route path="/ranking" element={<Ranking />} />
       <Route path="/mypage" element={<MyPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
     </Routes>
   );
 }

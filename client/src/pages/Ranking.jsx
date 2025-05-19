@@ -6,48 +6,98 @@ import DepartmentRanking from './DepartmentRanking';
 function Ranking() {
   const [activeTab, setActiveTab] = useState('university'); // 세종대학교 탭이 디폴트
   const navigate = useNavigate();
+
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        marginLeft: '40px', 
+        fontFamily: 'Arial, sans-serif',
+        minHeight: '100vh',
+        overflowX: 'hidden',   
+        overflowY: 'hidden',     
+        maxWidth: '100vw',    
+        backgroundColor: '#fff',
       }}
     >
-       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+      {/* 상단바 */}
+      <header
+        style={{
+          width: '100%',
+          backgroundColor: '#2b2d42',
+          color: 'white',
+          padding: '18px 40px',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          marginBottom: '40px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxSizing: 'border-box',
+        }}
+      >
+        랭킹 페이지
         <button
-          onClick={() => navigate('/mypage')}
-            style={{
+          onClick={() => navigate('/')}
+          style={{
             padding: '8px 16px',
-            backgroundColor: '#4f46e5',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
             fontSize: '14px',
+            backgroundColor: 'white',
+            color: '#2b2d42',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
           }}
         >
-          마이페이지
+          홈으로
         </button>
-      </div>
+      </header>
 
-      <div style={{ display: 'flex', gap: '10px' }}>
-        <button onClick={() => setActiveTab('university')}>
-          세종대학교
-        </button>
-        <button onClick={() => setActiveTab('department')}>
-          학과
-        </button>
-      </div>
+      {/* 본문 */}
+      <main
+        style={{
+          width: '100%',
+          padding: '0 40px 40px',
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* 탭 버튼 */}
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+          <button
+            onClick={() => setActiveTab('university')}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: activeTab === 'university' ? '#6f728c' : '#e0e0e0',
+              color: activeTab === 'university' ? 'white' : 'black',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+            세종대학교
+          </button>
+          <button
+            onClick={() => setActiveTab('department')}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: activeTab === 'department' ? '#6f728c' : '#e0e0e0',
+              color: activeTab === 'department' ? 'white' : 'black',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+            학과
+          </button>
+        </div>
 
-      <div style={{ marginTop: '20px', width: '100%' }}>
-        {activeTab === 'university' ? (
-          <UniversityRanking />
-        ) : (
-          <DepartmentRanking />
-        )}
-      </div>
+        {/* 탭 내용 */}
+        <div style={{ width: '100%' }}>
+          {activeTab === 'university' ? (
+            <UniversityRanking />
+          ) : (
+            <DepartmentRanking />
+          )}
+        </div>
+      </main>
     </div>
   );
 }
