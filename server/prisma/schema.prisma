@@ -55,6 +55,8 @@ model SolvedProblem {
   solvedAt   DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, problemId]) // 중복 방지하기 위해
 }
 
 model Post {

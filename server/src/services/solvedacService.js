@@ -24,7 +24,7 @@ export async function getSolvedProblemIds(baekjoonName) {
         return {
             user: baekjoonName,
             count: solvedProblemIds.length,
-            problemId: solvedProblemIds,
+            problemIds: solvedProblemIds,
         };
     } catch (err) {//axios 에러 발생 시 실행될 catch
         console.error('API 요청 실패:', err.message);
@@ -41,10 +41,12 @@ export async function getRankandTier(baekjoonName) {
         })
         let rank = response.data.rank;
         let tier = response.data.tier;
+        let solvedCount = response.data.solvedCount;
         return {
             user: baekjoonName,
             rank: rank,
             tier: tier,
+            solvedCount: solvedCount,
         }
     } catch (err) {
         console.error('API 요청 실패:', err.message);
