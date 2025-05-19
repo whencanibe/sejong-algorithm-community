@@ -46,3 +46,26 @@ export const login = async (req, res) => {
       });
     }
   };
+
+  export const logout = (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("로그아웃 실패:", err);
+        return res.status(500).json({ message: "로그아웃 실패" });
+      }
+  
+      res.clearCookie('connect.sid'); 
+      res.status(200).json({ message: "로그아웃 성공" });
+    });
+  };
+
+  export const getMyInfo = (req, res) => {
+    if (!req.session.user) {
+      return res.status(401).json({ message: "로그인이 필요합니다." });
+    }
+  
+    res.status(200).json({
+      message: "로그인된 사용자 정보",
+      user: req.session.user,
+    });
+  };
