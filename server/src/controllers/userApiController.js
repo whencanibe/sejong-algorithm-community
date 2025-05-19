@@ -1,13 +1,24 @@
-import { signup } from "../services/userService.js";
+import { signupService } from "../services/userService.js";
 
-export async function signupCtrl(req, res, next) {
-    try {
-        const user = await signup(req.body) // {email, password, name, baekjoonName}
-        res.status(201).json(user);
-    } catch (error) {
-        if (error.message === '중복이메일') {
-            return res.status(409).json({ error: '존재하는 이메일' });
-        }
-        next(error);
-    }
-}
+export const signup = async (req, res) => {
+  try {
+    const userData = req.body;
+
+    const newUser = await signupService(userData); 
+
+    res.status(201).json({
+      message: "회원가입 성공",
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        nickname: newUser.nickname,
+      }
+    });
+  } catch (err) {
+    console.error("회원가입 오류:", err);
+    res.status(500).json({
+      message: "회원가입 실패",
+      error: err.message,
+    });
+  }
+};

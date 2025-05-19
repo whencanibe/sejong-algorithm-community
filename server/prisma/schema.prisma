@@ -12,6 +12,10 @@ model User {
   email String @unique
   password String
   name String
+  nickname String
+  studentId String
+  grade Int
+  department String
   baekjoonName String
   solvedProblems SolvedProblem[]
   createdAt DateTime @default(now())

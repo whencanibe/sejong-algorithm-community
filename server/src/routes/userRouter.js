@@ -1,11 +1,7 @@
-import { Router } from 'express';
-import { signupCtrl } from '../controllers/\buserApiController.js';
-const router = Router();
+import express from 'express';
+import { signup } from '../controllers/userApiController.js';
+const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.send('User route');
-});
-
-router.post('/api/signup', signupCtrl);
+router.post('/signup', signup);
 
 export default router;
