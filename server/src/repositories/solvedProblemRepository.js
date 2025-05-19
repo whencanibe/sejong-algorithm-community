@@ -12,3 +12,10 @@ export async function findSolvedProblemByProblemId(problemId) {
         where: { problemId }
     });
 }
+
+export async function getSolvedDates(userId) {
+  return await prisma.solvedProblem.findMany({
+    where: { userId },
+    select: { solvedAt: true },
+  });
+}

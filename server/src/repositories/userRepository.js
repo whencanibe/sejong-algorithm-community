@@ -36,7 +36,7 @@ export async function getRankByUserId(id) {
   return count + 1; 
 }
 
-export async function getRankInMajorByUserId(id) {
+export async function getRankInDepartmentByUserId(id) {
   const me = await prisma.user.findUnique({
     where: { id },
     select: { ranking: true }
@@ -47,7 +47,7 @@ export async function getRankInMajorByUserId(id) {
   const count = await prisma.user.count({
     where: {
       rank: { lt: me.rank },
-      major: me.major
+      department: me.department
     }
   });
 

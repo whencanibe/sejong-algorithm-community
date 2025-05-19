@@ -1,9 +1,13 @@
 import * as userRepo from "../repositories/userRepository.js";
+import * as weeklyRankRepo from "../repositories/weeklyRankRepository.js";
+import * as solvedProblemRepo from "../repositories/solvedProblemRepository.js";
 import { getRankandTier } from "./solvedacService.js";
+import { startOfWeek, differenceInCalendarDays } from 'date-fns';
 
 let allTier = ['브론즈', '실버', '골드', '플래티넘', '다이아몬드', '루비'];
 let allSubtier = ['V', "IV", 'III', 'II', 'I'];
 
+//db에 정수로 저장된 티어를 텍스트로 바꿔주는 함수
 function stringifyTier(tierNum) {
     let tier = 0;
     let subtier = 0;
@@ -25,6 +29,23 @@ function stringifyTier(tierNum) {
     return `${allTier[tier]} ${allSubtier[subtier]}`;
 }
 
+//연속 풀이 일수 계산하는 함수
+function calcStreak(timestamps) {
+  // 날짜 문자열 YYYY-MM-DD 집합
+  const days = new Set(
+    timestamps.map(t =>
+      t.toISOString().slice(0, 10)   // 예) 2025-05-15
+    )
+  );
+  let streak = 0;
+  for (let d = new Date(); ; d.setDate(d.getDate() - 1)) {
+    const key = d.toISOString().slice(0, 10);
+    if (days.has(key)) streak++;
+    else break;
+  }
+  return streak;
+}
+
 export async function getUserInfo(id) {
   try {
     const user = await userRepo.findUserById(id);
@@ -39,22 +60,42 @@ export async function getUserInfo(id) {
       throw new Error("Solved.ac API 호출 실패");
     }
 
-    const enrollYear = user.enrollYear % 100;
+    const enrollYear = user.studentId.slice(0,2); // 학번 년도 예) 24
     const tier = stringifyTier(rankInfo.tier);
 
-    const [rank, rankInMajor] = await Promise.all([
+    const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 }); // 이번 주 일요일 주의 시작으로 설정
+
+    //병렬 처리 - 하나라도 실패하면 에러
+    const [
+      rank, 
+      rankInDepartment,
+      weeklySolved,
+      weeklyRankInSchool,
+      weeklyRankInDepartment,
+      solvedDates
+    ] = await Promise.all([
       userRepo.getRankByUserId(user.id),
-      userRepo.getRankInMajorByUserId(user.id),
+      userRepo.getRankInDepartmentByUserId(user.id),
+      weeklyRankRepo.getMyWeeklySolved(user.id, weekStart),
+      weeklyRankRepo.getRank(user.id, weekStart, 'ALL'),
+      weeklyRankRepo.getRank(user.id, weekStart, user.department),
+      solvedProblemRepo.getSolvedDates(user.id)
     ]);
+
+    const streak = calcStreak(solvedDates);
 
     return {
       baekjoonName: user.baekjoonName,
       name: user.name,
-      major: user.major,
+      department: user.department,
       enrollYear,
       tier,
       rank,
-      rankInMajor,
+      rankInDepartment,
+      weeklySolved,
+      weeklyRankInSchool,
+      weeklyRankInDepartment,
+      streak,
     };
   } catch (err) {
     console.error("getUserInfo 에러:", err.message);

@@ -13,11 +13,11 @@ model User {
   password  String
   name      String
   baekjoonName String
-  major     String @default("unknown")
+  department     String @default("unknown")
+  studentId String
   rank      Int?
   tier      String?
   solvedNum Int?
-  enrollYear Int @default(2025)
   createdAt DateTime @default(now())
 
   solvedProblems SolvedProblem[]
@@ -39,13 +39,13 @@ model SolveSnapshot {
 model WeeklyRank {
   id         Int      @id @default(autoincrement())
   weekStart  DateTime 
-  major      String
+  department      String
   userId     Int
   solvedThisWeek Int  
 
   user       User     @relation(fields: [userId], references: [id])
 
-  @@index([weekStart, major])
+  @@index([weekStart, department])
 }
 
 model SolvedProblem {
