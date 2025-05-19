@@ -7,6 +7,7 @@ import PostDetail from "./pages/PostDetail";
 import Ranking from "./pages/Ranking";
 import MyPage from "./pages/MyPage";
 
+//라우터 연결
 function App() {
   return (
     <Routes>

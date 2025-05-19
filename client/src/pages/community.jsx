@@ -6,9 +6,9 @@ function Community() {
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState([
-    { id: 1, title: '세번째 글글.', author: '학생1', date: '2024-05-10' },
-    { id: 2, title: '두 번째 글글.', author: '학생2', date: '2024-05-09' },
-    { id: 3, title: '첫번째 글글.', author: '학생3', date: '2024-05-08' },
+    { id: 1, title: '세번째 글', author: '학생1', date: '2024-05-10' },
+    { id: 2, title: '두 번째 글', author: '학생2', date: '2024-05-09' },
+    { id: 3, title: '첫번째 글', author: '학생3', date: '2024-05-08' },
   ]);
 
   return (
@@ -21,7 +21,7 @@ function Community() {
         backgroundColor: '#fff',
       }}
     >
-      {/* ✅ 상단바 */}
+      {/* 상단바 */}
       <header
         style={{
           width: '100%',
@@ -54,7 +54,7 @@ function Community() {
         </button>
       </header>
 
-      {/* ✅ 본문 */}
+      {/* 본문 */}
       <main
         style={{
           width: '100%',

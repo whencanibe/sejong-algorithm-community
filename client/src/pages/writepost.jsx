@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-// ⬇️ CodeMirror 관련 import
+// CodeMirror 관련 import
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { githubLight } from '@uiw/codemirror-theme-github';
@@ -35,7 +35,7 @@ function WritePost() {
         backgroundColor: '#f8f9fa',
       }}
     >
-      {/* ✅ 상단바 */}
+      {/* 상단바 */}
       <header
         style={{
           backgroundColor: '#2b2d42',
@@ -48,7 +48,7 @@ function WritePost() {
         <h3 style={{ margin: 0 }}>글 작성</h3>
       </header>
 
-      {/* ✅ 글쓰기 영역 */}
+      {/* 글쓰기 영역 */}
       <div
         style={{
           padding: '20px 40px',

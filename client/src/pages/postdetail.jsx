@@ -40,7 +40,7 @@ function PostDetail() {
       }}
     >
     
-    {/* ✅ 상단바 */}
+    {/* 상단바 */}
     <header
         style={{
           width: '100%',
@@ -135,7 +135,7 @@ function PostDetail() {
               alignItems: "center",
             }}
           >
-            {/* 프로필 이미지 대신 원형 박스 */}
+            {/* 프로필 박스 */}
             <div
               style={{
                 width: "35px",

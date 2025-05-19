@@ -1,55 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// ✅ 더미 데이터로 출력되는 백준 컴포넌트
-function BaekjoonProfile() {
-  const userInfo = {
-    handle: "rlatlql123",
-    tier: 15,
-    ratingRank: 3284,
-  };
+import BaekjoonProfile from "../components/BaekjoonProfile";
+import MyProfile from "../components/MyProfile";
+import QuestCapsule from "../components/QuestCapsule";
+import FreeBoardPreview from "../components/FreeBoard";
+import CardAlbum from "../components/CardAlbum";
 
-  return (
-    <div
-      style={{
-        border: "2px solid #3f3fff",
-        padding: "20px",
-        borderRadius: "10px",
-        width: "500px",
-        display: "flex",
-        gap: "20px",
-        alignItems: "center",
-      }}
-    >
-      <img
-        src={`https://static.solved.ac/tier/tier${userInfo.tier}.svg`}
-        alt="백준티어"
-        style={{ width: "80px", height: "80px" }}
-      />
-      <div>
-        <h2 style={{ fontSize: "20px", fontWeight: "bold" }}>
-          닉네임: <span style={{ color: "#3f3fff" }}>{userInfo.handle}</span>
-        </h2>
-        <p>상위 약 {userInfo.ratingRank}위</p>
-        <div
-          style={{
-            border: "1px solid #3f3fff",
-            padding: "8px",
-            fontSize: "14px",
-            color: "#3f3fff",
-          }}
-        >
-          그래프 제작
-        </div>
-      </div>
-    </div>
-  );
-}
+// 더미 게시글 게시글 DB 연결
+const dummyPosts = [
+  { id: 1, title: "세번째 글" },
+  { id: 2, title: "두 번째 글" },
+  { id: 3, title: "첫번째 글" },
+
+];
+
+// 더미 문제 (오늘의 퀘스트), 백준 문제 DB 연결결
+const dummyTop100 = [
+  { problemId: 1000, title: "다리놓기" },
+  { problemId: 1001, title: "피보나치" },
+];
 
 export default function Home() {
   const navigate = useNavigate();
-  const [selectedFootprint, setSelectedFootprint] = useState(null);
+  const todayProblem = dummyTop100[0];
 
+  // 발자국 출석 상태 백엔드 
+  const [footprints, setFootprints] = useState(() => {
+    const saved = localStorage.getItem("footprints");
+    return saved ? JSON.parse(saved) : Array(6).fill(false);
+  });
+
+  // 카드 보관함 상태 백엔드 연결 
+  const [cards, setCards] = useState(() => {
+    const saved = localStorage.getItem("cards");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // 카드 중복 지급 방지 연결
+  const [rewardGiven, setRewardGiven] = useState(() => {
+    return localStorage.getItem("rewardGiven") === "true";
+  });
+
+  // 상단 네비게이션 버튼 스타일
   const navBtnStyle = {
     backgroundColor: "transparent",
     border: "none",
@@ -60,9 +53,35 @@ export default function Home() {
     padding: "4px 8px",
   };
 
+  // 발자국 클릭 시(= 문제를 풀면 자동으로 바뀌게) 출석 처리 
+  const handleFootprintClick = (index) => {
+    const updated = [...footprints];
+    updated[index] = true;
+    setFootprints(updated);
+    localStorage.setItem("footprints", JSON.stringify(updated));
+  };
+
+  // 출석 6개 완료 시 카드 지급 (미리 카드 DB 연결 필요요)
+  useEffect(() => {
+    const allChecked = footprints.every(Boolean);
+    if (allChecked && !rewardGiven) {
+      const today = new Date().toISOString().split("T")[0];
+      const newCard = {
+        title: "꾸준 카드",
+        date: today,
+        image: "/꾸준.png", 
+      };
+      const updatedCards = [newCard, ...cards];
+      setCards(updatedCards);
+      setRewardGiven(true);
+      localStorage.setItem("cards", JSON.stringify(updatedCards));
+      localStorage.setItem("rewardGiven", "true");
+    }
+  }, [footprints, rewardGiven]);
+
   return (
     <div>
-      {/* 상단바 */}
+      {/* 🔹 상단바 */}
       <header
         style={{
           width: "100%",
@@ -81,7 +100,7 @@ export default function Home() {
           zIndex: 1000,
         }}
       >
-        <div style={{ flexShrink: 0 }}>SEJONG-Algorithm</div>
+        <div>SEJONG-Algorithm</div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
           <button onClick={() => navigate("/ranking")} style={navBtnStyle}>랭킹</button>
@@ -105,47 +124,71 @@ export default function Home() {
         </div>
       </header>
 
-     {/* 좌측 상단 컨테이너 */}
-<div style={{ position: "absolute", top: "100px", left: "40px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "20px" }}>
-  {/* 발자국 */}
-  <div style={{ display: "flex", gap: "10px" }}>
-        {[0, 1, 2, 3, 4, 5].map((i) => (
-          <img
-            key={i}
-            src="/발자국.png"
-            alt={`footprint-${i}`}
-            onClick={() => setSelectedFootprint(i)}
-            style={{
-              width: "60px",
-              top:"100px",
-              left:"40px",
-              height: "60px",
-              cursor: "pointer",
-              transition: "0.2s",
-              transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
-              filter:
-                selectedFootprint === i
+      {/* 발자국 출석 */}
+      <div style={{ display: "flex", gap: "20px", marginTop: "120px"}}>
+          {footprints.map((filled, i) => (
+            <img
+              key={i}
+              src="/발자국.png"
+              alt={`footprint-${i}`}
+              onClick={() => handleFootprintClick(i)}
+              style={{
+                width: "70px",
+                height: "70px",
+                cursor: "pointer",
+                transition: "0.3s",
+                transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
+                filter: filled
                   ? "brightness(1.2) drop-shadow(0 0 8px #4dabf7)"
                   : "grayscale(70%) opacity(0.8)",
-            }}
-          />
-        ))}
-      </div>
+              }}
+            />
+          ))}
+        </div>
 
-  {/* 백준 프로필 */}
-  <BaekjoonProfile />
+
+        {/* 초기화 버튼 */}
+  <button
+    onClick={() => {
+      localStorage.removeItem("footprints");
+      localStorage.removeItem("cards");
+      localStorage.removeItem("rewardGiven");
+      window.location.reload();
+    }}
+    style={{
+      marginLeft: "30px", 
+      padding: "8px 12px",
+      backgroundColor: "#ff6b6b",
+      color: "white",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+    }}
+  >
+    초기화하기
+  </button>
+
+
+      {/* 전체 콘텐츠 영역 */}
+      <div style={{ padding: "40px", marginTop: "30px" }}>
+        {/* 백준 프로필 + 마이프로필 */}
+<div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "40px" }}>
+  <BaekjoonProfile handle="rlatlql123" tier={15} ratingRank={3284} />
+  <MyProfile
+    nickname="혜서"
+    info="세종대 알고리즘 커뮤니티 운영자"
+    avatarSeed="혜서"
+  />
 </div>
-      {/* 메인 콘텐츠 */}
-      <div className="grid grid-cols-3 gap-6 mt-16 px-10">
-        <div className="bg-indigo-50 p-4 rounded-lg shadow">
-          <p className="font-bold">캡슐형 퀘스트 (예: 다리놓기)</p>
+
+        {/* 퀘스트 + 자유게시판 + 카드첩 */}
+        <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
+          <QuestCapsule problem={todayProblem} />
+          <FreeBoardPreview posts={dummyPosts} />
+          <CardAlbum cards={cards} />
         </div>
-        <div className="bg-indigo-50 p-4 rounded-lg shadow">
-          <p className="font-bold">자유게시판</p>
-        </div>
-        <div className="bg-indigo-50 p-4 rounded-lg shadow">
-          <p className="font-bold">카드 생성 버튼</p>
-        </div>
+
+        
       </div>
     </div>
   );
