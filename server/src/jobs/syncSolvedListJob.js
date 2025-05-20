@@ -8,7 +8,7 @@ export function startSyncSolvedList() {
     cron.schedule('0 15 * * *', syncAllUsers, { timezone: 'UTC' }); // 한국 시간 0시에 user 정보 동기화
 }
 
-async function syncAllUsers() {
+export async function syncAllUsers() {
     const users = userRepo.findAllUsers();
 
     for (const user of users) {
@@ -41,7 +41,7 @@ export async function syncSingleUser(userId) {
         });
 
         const solvedList = await solvedacService.getSolvedProblemIds(user.baekjoonName);
-        solvedProblemRepo.saveSolvedProblemsBulk(user.id, solvedList.problemIds);
+        solvedProblemRepo.saveSolvedProblem(user.id, solvedList.problemIds);
     } catch (error) {
         console.error('Solved.ac sync fail', user.baekjoonName, error.message);
     }

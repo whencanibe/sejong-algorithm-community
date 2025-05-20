@@ -1,5 +1,17 @@
 import prisma from '../models/prisma.js';
 
+/**
+ * 
+ * @param {Array} data - [{weekStart, department, userId, solvedThisWeek}] 
+ * @returns 
+ */
+export async function createWeeklyRanksBulk(data) {
+  return await prisma.weeklyRank.creatMany({
+    data: data,
+    skipDuplicates: true,
+  });
+}
+
 export async function getMyWeeklySolved(userId, weekStart) {
   return await prisma.weeklyRank.findUnique({
     where: { weekStart_userId: { weekStart, userId } },
