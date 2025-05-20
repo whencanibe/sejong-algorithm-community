@@ -15,14 +15,14 @@ export async function syncAllUsers() {
         try {
             const profile = await solvedacService.getRankandTier(user.baekjoonName);
 
-            userRepo.updateUser(user.id, {
+            await userRepo.updateUser(user.id, {
                 solvedNum: profile.solvedCount,
                 tier: profile.tier,
                 rank: profile.rank
             });
 
             const solvedList = await solvedacService.getSolvedProblemIds(user.baekjoonName);
-            solvedProblemRepo.saveSolvedProblemsBulk(user.id, solvedList.problemIds);
+            await solvedProblemRepo.saveSolvedProblemsBulk(user.id, solvedList.problemIds);
         } catch (error) {
             console.error('Solved.ac sync fail', user.baekjoonName, error.message);
         }
@@ -34,14 +34,14 @@ export async function syncSingleUser(userId) {
     try {
         const profile = await solvedacService.getRankandTier(user.baekjoonName);
 
-        userRepo.updateUser(user.id, {
+        await userRepo.updateUser(user.id, {
             solvedNum: profile.solvedCount,
             tier: profile.tier,
             rank: profile.rank
         });
 
         const solvedList = await solvedacService.getSolvedProblemIds(user.baekjoonName);
-        solvedProblemRepo.saveSolvedProblem(user.id, solvedList.problemIds);
+        await olvedProblemRepo.saveSolvedProblem(user.id, solvedList.problemIds);
     } catch (error) {
         console.error('Solved.ac sync fail', user.baekjoonName, error.message);
     }

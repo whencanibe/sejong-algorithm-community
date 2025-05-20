@@ -10,6 +10,13 @@ export async function createSnapshot({ userId, solvedCount }) {
     });
 }
 
+export async function findLastSnapshotSince({userId, weekStart}) {
+    return await prisma.solveSnapshot.findFirst({
+        where: {userId, snapedAt: {gte: weekStart}},
+        orderBy: {snapedAt: 'asc'}
+    });
+}
+
 export async function findSecondLastSnapshot(userId) {
     return await prisma.solveSnapshot.findFirst({
         where: { userId },

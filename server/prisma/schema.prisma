@@ -46,7 +46,7 @@ model WeeklyRank {
   user       User     @relation(fields: [userId], references: [id])
 
   @@index([weekStart, department])
-  @@unique([weekStart, userId])
+  @@unique([weekStart, userId, department])
 }
 
 model SolvedProblem {

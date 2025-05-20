@@ -6,7 +6,7 @@ import * as snapshotRepo from '../repositories/snapShotRepository.js';
 import * as weeklyRankRepo from '../repositories/weeklyRankRepository.js';
 
 export function startWeeklySnapshot() {
-    cron.schedule('5 15 * * 6', weeklySnapShotsBulk, { timezone: 'UTC' }); // 한국 시간 일요일 0시 5분
+    cron.schedule('5 15 * * 6', weeklySnapshotsBulk, { timezone: 'UTC' }); // 한국 시간 일요일 0시 5분
 }
 
 async function weeklySnapshotsBulk() {

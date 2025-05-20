@@ -6,6 +6,8 @@ import postRouter from './routes/postRouter.js';
 import userRouter from './routes/userRouter.js';
 import solvedacRouter from './routes/solvedacRouter.js';
 import userInfoRouter from './routes/userInfoRouter.js';
+import { startSyncSolvedList } from './jobs/syncSolvedListJob.js';
+import { startWeeklySnapshot } from './jobs/weeklySnapshotJob.js';
 
 dotenv.config();
 const app = express();
@@ -22,3 +24,6 @@ app.use('/info', userInfoRouter);
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
+
+startSyncSolvedList();
+startWeeklySnapshot();

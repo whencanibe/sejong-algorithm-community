@@ -1,4 +1,5 @@
 import prisma from '../models/prisma.js';
+import { startOfWeek } from 'date-fns';
 
 /**
  * 
@@ -57,5 +58,32 @@ export async function getDepartmentRanking(weekStart, department) {
   return await prisma.weeklyRank.findMany({
     where: { weekStart, department },
     orderBy: { solvedThisWeek: 'desc' },
+  });
+}
+
+export async function upsertWeeklyRank({ user, delta }) {
+  const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 }); // 일요일
+  await prisma.weeklyRank.upsert({
+    where: {
+      weekStart_userId_department: {
+        weekStart, userId: user.id, department: user.department
+      }
+    },
+    update: { solvedThisWeek: delta },
+    create: {
+      weekStart,
+      department: user.department,
+      userId: user.id,
+      solvedThisWeek: delta
+    }
+  });
+
+  // 학교 전체용 'ALL'
+  await prisma.weeklyRank.upsert({
+    where: {
+      weekStart_userId_department: { weekStart, userId: user.id, department: 'ALL' }
+    },
+    update: { solvedThisWeek: delta },
+    create: { weekStart, department: 'ALL', userId: user.id, solvedThisWeek: delta }
   });
 }
