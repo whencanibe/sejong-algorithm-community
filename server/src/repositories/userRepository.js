@@ -1,11 +1,10 @@
-import prisma from "../models/prisma.js";
+import prisma from '../models/prisma.js';
 
-export async function createUser({ email, hashedPassword, name, baekjoonName }) {
-    return prisma.user.create({
-        data: { email, password: hashedPassword, name, baekjoonName }, // db에 저장할 값
-        select: { id: true, email: true, name: true } // 응답에 반환될 값 선택
-    })
-}
+export const createUser = async (userData) => {
+  return await prisma.user.create({
+    data: userData,
+  });
+};
 
 export async function findUserById(id) {
     return await prisma.user.findUnique({
@@ -13,8 +12,8 @@ export async function findUserById(id) {
     })
 }
 
-export async function findUserByEmail(email) {
+export const findUserByEmail = async (email) => {
     return await prisma.user.findUnique({
-        where: { email }
-    })
-}
+      where: { email },
+    });
+  };
