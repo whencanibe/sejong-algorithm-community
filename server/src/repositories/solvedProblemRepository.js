@@ -30,6 +30,11 @@ export async function findSolvedProblemByProblemId(problemId) {
     });
 }
 
+/**
+ * 
+ * @param {Number} userId 
+ * @returns {Promise<Array|null>} - 문제 푼 날짜 배열 반환
+ */
 export async function getSolvedDates(userId) {
   return await prisma.solvedProblem.findMany({
     where: { userId },

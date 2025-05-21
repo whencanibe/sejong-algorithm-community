@@ -31,12 +31,14 @@ export function stringifyTier(tierNum) {
 
 //연속 풀이 일수 계산하는 함수
 function calcStreak(timestamps) {
-  // 날짜 문자열 YYYY-MM-DD 집합
+  // 날짜 문자열 YYYY-MM-DD 만 뽑아서 집합에 넣음
   const days = new Set(
     timestamps.map(t =>
       t.toISOString().slice(0, 10)   // 예) 2025-05-15
     )
   );
+
+  // 오늘 날짜부터 뒤로 한 날씩 이동하면서 체크
   let streak = 0;
   for (let d = new Date(); ; d.setDate(d.getDate() - 1)) {
     const key = d.toISOString().slice(0, 10);
@@ -82,7 +84,7 @@ export async function getUserInfo(id) {
       solvedProblemRepo.getSolvedDates(user.id)
     ]);
 
-    const streak = calcStreak(solvedDates);
+    const streak = calcStreak(solvedDates.map(d => d.solvedAt));
 
     return {
       baekjoonName: user.baekjoonName,
@@ -92,7 +94,7 @@ export async function getUserInfo(id) {
       tier,
       rank,
       rankInDepartment,
-      weeklySolved,
+      weeklySolved: weeklySolved.solvedThisWeek,
       weeklyRankInSchool,
       weeklyRankInDepartment,
       streak,

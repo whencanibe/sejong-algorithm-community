@@ -13,9 +13,9 @@ export async function createWeeklyRanksBulk(data) {
   });
 }
 
-export async function getMyWeeklySolved(userId, weekStart) {
+export async function getMyWeeklySolved(userId, weekStart, department = 'ALL') {
   return await prisma.weeklyRank.findUnique({
-    where: { weekStart_userId: { weekStart, userId } },
+    where: { weekStart_userId_department: { weekStart, userId, department } },
     select: { solvedThisWeek: true },
   });
 }
@@ -30,7 +30,7 @@ export async function getMyWeeklySolved(userId, weekStart) {
 export async function getRank(userId, weekStart, department = 'ALL') {
   // 해당 사용자 주간 풀이 수 가져오기
   const me = await prisma.weeklyRank.findUnique({
-    where: { weekStart_userId: { weekStart, userId } },
+    where: { weekStart_userId_department: { weekStart, userId, department } },
     select: { solvedThisWeek: true },
   });
   if (!me) return null;                 // 이번 주 데이터가 없을 때

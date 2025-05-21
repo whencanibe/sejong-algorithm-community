@@ -1,3 +1,4 @@
+import { AppError } from "../errors/AppError.js";
 import prisma from "../models/prisma.js";
 
 export async function createUser({ email, hashedPassword, name, baekjoonName , department, studentId}) {
@@ -8,6 +9,7 @@ export async function createUser({ email, hashedPassword, name, baekjoonName , d
 }
 
 export async function findUserById(id) {
+    if(id == null) throw new AppError('userId가 없습니다', 400);
     return await prisma.user.findUnique({
         where: { id }
     })
@@ -65,7 +67,7 @@ export async function findAllUsers(filter = {}) {
 export async function getRankByUserId(id) {
   const me = await prisma.user.findUnique({
     where: { id },
-    select: { ranking: true }
+    select: { rank: true }
   });
 
   if (!me) throw new Error("해당 유저 없음");
@@ -82,7 +84,7 @@ export async function getRankByUserId(id) {
 export async function getRankInDepartmentByUserId(id) {
   const me = await prisma.user.findUnique({
     where: { id },
-    select: { ranking: true }
+    select: { rank : true }
   });
 
   if (!me) throw new Error("해당 유저 없음");

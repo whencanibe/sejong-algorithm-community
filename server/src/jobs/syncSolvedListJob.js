@@ -6,6 +6,7 @@ import * as solvedProblemRepo from '../repositories/solvedProblemRepository.js';
 import { stringifyTier } from '../services/userInfoService.js';
 import { AppError } from '../errors/AppError.js';
 import { ExternalError } from '../errors/ExternalError.js';
+import { ensureSnapshotForUser } from '../services/snapshotService.js';
 
 export function startSyncSolvedList() {
     cron.schedule('0 15 * * *', syncAllUsers, { timezone: 'UTC' }); // 한국 시간 0시에 user 정보 동기화
@@ -39,7 +40,7 @@ export async function syncSingleUser(userId) {
     try {
         const profile = await solvedacService.getRankandTier(user.baekjoonName);
         // User 테이블 갱신
-        await userRepo.updateUser(user.id, {
+        const updatedUser = await userRepo.updateUser(user.id, {
             solvedNum: profile.solvedCount,
             tier: stringifyTier(profile.tier),
             rank: profile.rank
@@ -47,6 +48,9 @@ export async function syncSingleUser(userId) {
 
         const solvedList = await solvedacService.getSolvedProblemIds(user.baekjoonName);
         await solvedProblemRepo.saveSolvedProblemsBulk(user.id, solvedList.problemIds);
+
+        //const updatedUser = await userRepo.findUserById(userId);
+        await ensureSnapshotForUser(updatedUser);
     } catch (error) {
         if (error.isAxiosError) {
             // axios 에러면 응답코드 체크
