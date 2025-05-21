@@ -88,12 +88,12 @@ function DepartmentRanking() {
                 }
                 return null;
               }} />
-              <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} />
+              <Line type="monotone" dataKey="y" stroke="#6f728c" dot={false} />
               <ReferenceDot
                 x={myX}
                 y={myY}
                 r={5}
-                fill="black"
+                fill="#ff6b6b"
                 stroke="none"
                 label={{
                   value: `나의 위치 (상위 ${percentile}%)`,
@@ -136,7 +136,7 @@ function DepartmentRanking() {
                 {sortedData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={entry.name === myName ? "#ff6b6b" : "#8884d8"}
+                    fill={entry.name === myName ? "#ff6b6b" : "#6f728c"}
                   />
                 ))}
               </Bar>
