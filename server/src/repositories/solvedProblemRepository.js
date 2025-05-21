@@ -1,7 +1,7 @@
 import prisma from "../models/prisma.js";
 
 export async function saveSolvedProblem({userId, problemId}) {
-    return prisma.solvedproblem.create({
+    return await prisma.solvedproblem.create({
         data: {userId, problemId},
         select: {userId: true, problemId: true}
     });
@@ -14,10 +14,10 @@ export async function saveSolvedProblem({userId, problemId}) {
  * @returns {Promise<Object|null>} 
  */
 export async function saveSolvedProblemsBulk(userId, solvedList) {
-  return prisma.solvedProblem.createMany({
-    data: solvedList.map(p => ({
+  return await prisma.solvedProblem.createMany({
+    data: solvedList.map(id => ({
       userId,
-      problemId: p.problemId,
+      problemId: id,
       solvedAt : new Date(),
     })),
     skipDuplicates: true,             // @@unique 덕분에 안전

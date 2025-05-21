@@ -8,7 +8,7 @@ let allTier = ['브론즈', '실버', '골드', '플래티넘', '다이아몬드
 let allSubtier = ['V', "IV", 'III', 'II', 'I'];
 
 //db에 정수로 저장된 티어를 텍스트로 바꿔주는 함수
-function stringifyTier(tierNum) {
+export function stringifyTier(tierNum) {
     let tier = 0;
     let subtier = 0;
 

@@ -1,9 +1,9 @@
 import prisma from "../models/prisma.js";
 
-export async function createUser({ email, hashedPassword, name, baekjoonName }) {
+export async function createUser({ email, hashedPassword, name, baekjoonName , department, studentId}) {
     return prisma.user.create({
-        data: { email, password: hashedPassword, name, baekjoonName }, // db에 저장할 값
-        select: { id: true, email: true, name: true } // 응답에 반환될 값 선택
+        data: { email, password: hashedPassword, name, baekjoonName, department, studentId }, // db에 저장할 값
+        select: { id: true, email: true, name: true , department: true, studentId: true} // 응답에 반환될 값 선택
     })
 }
 
