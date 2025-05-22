@@ -4,7 +4,7 @@ function MyPage() {
   const [profileImg, setProfileImg] = useState(`https://api.dicebear.com/7.x/bottts/svg?seed=${Date.now()}`);
   const [nickname, setNickname] = useState('수정');
   const [isEditingNickname, setIsEditingNickname] = useState(false);
-  const [nicknameError, setNicknameError] = useState(false); 
+  const [nicknameError, setNicknameError] = useState(false);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -15,7 +15,7 @@ function MyPage() {
 
   const handleNicknameSave = () => {
     if (!nickname.trim()) {
-      setNicknameError(true); 
+      setNicknameError(true);
       return;
     }
     setIsEditingNickname(false);
@@ -36,36 +36,73 @@ function MyPage() {
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        padding: '40px',
-        backgroundColor: '#e5e7eb',
+        fontFamily: 'Arial, sans-serif',
         minHeight: '100vh',
-        width: '100vw',
+        overflowX: 'hidden',
       }}
     >
-      <div
+      {/* 상단바 */}
+      <header
         style={{
-          backgroundColor: '#fff',
-          borderRadius: '12px',
-          padding: '40px',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
-          maxWidth: '1000px',
           width: '100%',
+          backgroundColor: '#2b2d42',
+          color: 'white',
+          padding: '18px 40px',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          marginBottom: '40px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxSizing: 'border-box',
         }}
       >
-        <h1 style={{ marginBottom: '30px' }}>마이페이지</h1>
+        마이페이지
+        <button
+          onClick={() => (window.location.href = '/')}
+          style={{
+            padding: '8px 16px',
+            fontSize: '14px',
+            backgroundColor: 'white',
+            color: '#2b2d42',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          홈으로
+        </button>
+      </header>
 
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '40px', marginBottom: '30px' }}>
-          {/* 프로필 이미지 */}
-          <div style={{ position: 'relative', width: '160px', marginLeft: '50px' }}>
+      <div
+        style={{
+          maxWidth: '1000px',
+          margin: '0 auto',
+          padding: '0 5vw 40px',
+          boxSizing: 'border-box',
+        }}
+      >
+        <h1 style={{ marginBottom: '30px', textAlign: 'center' }}>👤 내 프로필</h1>
+
+        {/* 프로필 이미지 + 정보: 좌우 배치 */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            gap: '40px',
+            marginBottom: '30px',
+          }}
+        >
+          {/* 왼쪽: 프로필 이미지 */}
+          <div style={{ position: 'relative', width: '200px', minWidth: '200px' }}>
             <img
               src={profileImg}
               alt="프로필 이미지"
               style={{
-                width: '160px',
-                height: '160px',
+                width: '200px',
+                height: '200px',
                 borderRadius: '50%',
                 objectFit: 'cover',
                 border: '1px solid #ccc',
@@ -100,8 +137,8 @@ function MyPage() {
             />
           </div>
 
-          {/* 아이디 + 닉네임 */}
-          <div style={{ width: '500px' }}>
+          {/* 오른쪽: 아이디 + 닉네임 */}
+          <div style={{ flexGrow: 1, minWidth: '250px' }}>
             {/* 아이디 */}
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold' }}>아이디</label>
@@ -167,27 +204,34 @@ function MyPage() {
                         gap: '4px',
                       }}
                     >
-                    ✏️ Edit
+                      ✏️ Edit
                     </button>
                   </div>
                 )}
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* 기타 정보 */}
-        <div style={{ marginLeft: '50px' }}>
-          <p><strong>학과:</strong> 소프트웨어학과</p>
-          <p><strong>학번:</strong> 22학번</p>
-          <p><strong>학년:</strong> 3</p>
-          <p><strong>백준 티어:</strong> 실버 3</p>
-          <p><strong>세종대 내 백준 티어 랭킹:</strong> 3</p>
-          <p><strong>학과 내 백준 티어 랭킹:</strong> 3</p>
-          <p><strong>이번주에 푼 백준 문제:</strong> 12</p>
-          <p><strong>세종대 내 이번주 백준 풀이 랭킹:</strong> 3</p>
-          <p><strong>학과 내 이번주 백준 풀이 랭킹:</strong> 3</p>
-          <p><strong>연속 풀이 일수:</strong> 4</p>
+            {/* 기타 정보 */}
+            <div
+              style={{
+                textAlign: 'left',
+                marginTop: '30px',
+                lineHeight: '1.8',
+                paddingLeft: '5px',
+              }}
+            >
+              <p><strong>학과:</strong> 소프트웨어학과</p>
+              <p><strong>학번:</strong> 22학번</p>
+              <p><strong>학년:</strong> 3</p>
+              <p><strong>백준 티어:</strong> 실버 3</p>
+              <p><strong>세종대 내 백준 티어 랭킹:</strong> 3</p>
+              <p><strong>학과 내 백준 티어 랭킹:</strong> 3</p>
+              <p><strong>이번주에 푼 백준 문제:</strong> 12</p>
+              <p><strong>세종대 내 이번주 백준 풀이 랭킹:</strong> 3</p>
+              <p><strong>학과 내 이번주 백준 풀이 랭킹:</strong> 3</p>
+              <p><strong>연속 풀이 일수:</strong> 4</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

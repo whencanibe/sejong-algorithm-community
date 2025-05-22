@@ -2,13 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import postRouter from './routes/postRouter.js';
-
 import userRouter from './routes/userRouter.js';
 import solvedacRouter from './routes/solvedacRouter.js';
 import userInfoRouter from './routes/userInfoRouter.js';
 import { startSyncSolvedList } from './jobs/syncSolvedListJob.js';
 import { startWeeklySnapshot } from './jobs/weeklySnapshotJob.js';
 import errorHandler from './middlewares/errorHandler.js';
+import session from 'express-session';
 
 dotenv.config();
 const app = express();
@@ -20,10 +20,22 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.use('/user', userRouter);
 app.use('/solvedac', solvedacRouter);
 app.use('/posts', postRouter);
 app.use('/info', userInfoRouter);
+app.use('/user', userRouter);
+
+app.use(session({
+  secret: process.env.SESSION_SECRET, 
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, 
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 // 1시간
+  }
+}));
+
 
 app.use(errorHandler);
 app.listen(PORT, () => {
