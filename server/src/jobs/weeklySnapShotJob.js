@@ -11,13 +11,13 @@ export function startWeeklySnapshot() {
 
 async function weeklySnapshotsBulk() {
     const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 }); // 일요일 00:00
-    const users = userRepo.findAllUsers();
+    const users = await userRepo.findAllUsers();
 
     //일요일 정각기준 유저 푼 문제 저장해놓기
     for (const user of users) {
-        snapshotRepo.createSnapshot({ userId: user.id, solvedCount: user.solvedNum });
+        await snapshotRepo.createSnapshot({ userId: user.id, solvedCount: user.solvedNum });
 
-        const last = snapshotRepo.findSecondLastSnapshot(user.id);
+        const last = await snapshotRepo.findSecondLastSnapshot(user.id);
 
         const delta = user.solvedNum - (last?.solvedCount ?? 0);
 
@@ -25,7 +25,7 @@ async function weeklySnapshotsBulk() {
             { weekStart, department: user.department, userId: user.id, solvedThisWeek: delta },
             { weekStart, department: 'ALL', userId: user.id, solvedThisWeek: delta }, // 학과, 전체 별 랭킹 구할 때 성능을 위해 'ALL'로 한번 더 저장
         ]
-        weeklyRankRepo.createWeeklyRanksBulk(data);
+        await weeklyRankRepo.createWeeklyRanksBulk(data);
     }
 
 

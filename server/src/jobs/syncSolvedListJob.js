@@ -13,20 +13,22 @@ export function startSyncSolvedList() {
 }
 
 export async function syncAllUsers() {
-    const users = userRepo.findAllUsers();
+    const users = await userRepo.findAllUsers();
 
     for (const user of users) {
         try {
             const profile = await solvedacService.getRankandTier(user.baekjoonName);
-            const tier = stringifyTier(profile.tier);
-            await userRepo.updateUser(user.id, {
+            
+            const updatedUser = await userRepo.updateUser(user.id, {
                 solvedNum: profile.solvedCount,
-                tier: tier,
+                tier: stringifyTier(profile.tier),
                 rank: profile.rank
             });
 
             const solvedList = await solvedacService.getSolvedProblemIds(user.baekjoonName);
             await solvedProblemRepo.saveSolvedProblemsBulk(user.id, solvedList.problemIds);
+
+            await ensureSnapshotForUser(updatedUser);
         } catch (error) {
             console.error('Solved.ac sync fail', user.baekjoonName, error.message);
         }
