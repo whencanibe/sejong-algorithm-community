@@ -1,12 +1,12 @@
 import { AppError } from "../errors/AppError.js";
 import prisma from "../models/prisma.js";
 
-export const createUser = async (userData) => {
-  return await prisma.user.create({
-    data: userData,
-    select: { id: true, email: true, name: true , department: true, studentId: true}
-  });
-};
+export async function createUser({ email, hashedPassword, name, baekjoonName , department, studentId}) {
+    return prisma.user.create({
+        data: { email, password: hashedPassword, name, baekjoonName, department, studentId }, // db에 저장할 값
+        select: { id: true, email: true, name: true , department: true, studentId: true} // 응답에 반환될 값 선택
+    })
+}
 
 export async function findUserById(id) {
     if(id == null) throw new AppError('userId가 없습니다', 400);

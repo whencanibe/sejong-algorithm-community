@@ -49,8 +49,7 @@ export async function syncSingleUser(userId) {
         const solvedList = await solvedacService.getSolvedProblemIds(user.baekjoonName);
         await solvedProblemRepo.saveSolvedProblemsBulk(user.id, solvedList.problemIds);
 
-        //const updatedUser = await userRepo.findUserById(userId);
-        await ensureSnapshotForUser(updatedUser);
+        await ensureSnapshotForUser(updatedUser);  //이번주 기준 푼 문제 계산 위해 현재 문제 개수 db에 저장
     } catch (error) {
         if (error.isAxiosError) {
             // axios 에러면 응답코드 체크
