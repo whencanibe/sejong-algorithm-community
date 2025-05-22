@@ -3,9 +3,7 @@ import { loginService } from '../services/userService.js';
 
 export const signup = async (req, res) => {
   try {
-    const userData = req.body;
-
-    const newUser = await signupService(userData); 
+    const newUser = await signupService(req.body); 
 
     res.status(201).json({
       message: "회원가입 성공",
