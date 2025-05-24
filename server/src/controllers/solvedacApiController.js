@@ -1,4 +1,4 @@
-import { getSolvedProblemIds, getRank } from "../services/solvedacService.js";
+import { getSolvedProblemIds, getRankandTier } from "../services/solvedacService.js";
 
 export async function getSolvedProblemIdsCtrl(req, res, next) {
     try {
@@ -14,7 +14,7 @@ export async function getSolvedProblemIdsCtrl(req, res, next) {
 
 export async function getRankCtrl(req, res, next) {
     try {
-        const rank = await getRank(req.params.handle);
+        const rank = await getRankandTier(req.params.handle);
         res.status(201).json(rank);
     } catch (error) {
         if (error.message === '사용자 랭킹 불러오기 실패') {
