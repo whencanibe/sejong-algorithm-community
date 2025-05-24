@@ -1,11 +1,30 @@
 import bcrypt from 'bcryptjs'
-import { createUser, findUserByEmail } from '../repositories/userRepository.js';
+import { createUser } from '../repositories/userRepository.js';
+import { findUserByEmail } from '../repositories/userRepository.js';
 
-export async function signup({ email, password, name, baekjoonName }) {
-    const exists = await findUserByEmail(email);
-    if (exists) throw new Error('중복이메일');
+export const signupService = async (userData) => {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+  
+    const newUserData = {
+      ...userData,
+      password: hashedPassword,
+    };
+  
+    const createdUser = await createUser(newUserData);
+  
+    return createdUser;
+  };
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    return createUser({ email: email, hashedPassword: hashedPassword, name: name, baekjoonName: baekjoonName });
-}
+  export const loginService = async (email, plainPassword) => {
+    const user = await findUserByEmail(email);
+    if (!user) {
+      throw new Error("존재하지 않는 이메일입니다.");
+    }
+  
+    const isMatch = await bcrypt.compare(plainPassword, user.password);
+    if (!isMatch) {
+      throw new Error("비밀번호가 일치하지 않습니다.");
+    }
+  
+    return user;
+  };
