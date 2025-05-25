@@ -66,12 +66,18 @@ export default function Home() {
     const allChecked = footprints.every(Boolean);
     if (allChecked && !rewardGiven) {
       const today = new Date().toISOString().split("T")[0];
-      const newCard = {
-        title: "꾸준 카드",
-        date: today,
-        image: "/꾸준.png", 
-      };
-      const updatedCards = [newCard, ...cards];
+      const newCards = [
+        { title: "끈기 카드", comment : "쉽지 않았지만 끝까지 해냈어요!", image: "/카드/끈기.png" },
+  { title: "문제해결 카드", comment : "스스로 해답을 찾아낸 똑똑한 우주인!", image: "/카드/문제해결.png" },
+  { title: "인내 카드", comment : "끝까지 포기하지 않는 우주인!", image: "/카드/인내.png" },
+  { title: "꾸준 카드", comment : "오래 걸려도 끝까지 도전!", image: "/카드/꾸준.png" },
+  { title: "도전 카드", comment : "처음 푸는 유형도 멋지게 도전Q", image: "/카드/도전.png" },
+  { title: "정직 카드", comment : "올바르게, 스스로 풀었어요!", image: "/카드/정직.png" },
+  { title: "성실 카드", comment : "언제나 꾸준하게 임무 수행!", image: "/카드/성실.png" },
+];
+      const randomIndex = Math.floor(Math.random() * newCards.length);
+const selectedCard = newCards[randomIndex];
+      const updatedCards = [selectedCard, ...cards];
       setCards(updatedCards);
       setRewardGiven(true);
       localStorage.setItem("cards", JSON.stringify(updatedCards));

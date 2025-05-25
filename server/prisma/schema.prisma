@@ -23,6 +23,8 @@ model User {
   solvedProblems SolvedProblem[]
   snapshots SolveSnapshot[]
   weeklyRanks WeeklyRank[]
+
+  comments       Comment[] //사용자 댓글
 }
 
 model SolveSnapshot {
@@ -64,7 +66,20 @@ model Post {
   id        Int      @id @default(autoincrement())
   title     String
   content   String
-  author    String
+  code    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  comments  Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  userId    Int
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

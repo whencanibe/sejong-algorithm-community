@@ -9,6 +9,8 @@ import { startSyncSolvedList } from './jobs/syncSolvedListJob.js';
 import { startWeeklySnapshot } from './jobs/weeklySnapshotJob.js';
 import errorHandler from './middlewares/errorHandler.js';
 import session from 'express-session';
+import commentRouter from './routes/commentRouter.js';
+import dayquestRouter from './routes/dayquestRouter.js';
 
 dotenv.config();
 const app = express();
@@ -34,7 +36,9 @@ app.use(session({
 app.use('/solvedac', solvedacRouter);
 app.use('/posts', postRouter);
 app.use('/info', userInfoRouter);
+app.use('/comments', commentRouter);
 app.use('/user', userRouter);
+app.use('/dayquest', dayquestRouter);
 
 app.use(errorHandler);
 app.listen(PORT, () => {
