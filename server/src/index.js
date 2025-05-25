@@ -20,11 +20,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.use('/solvedac', solvedacRouter);
-app.use('/posts', postRouter);
-app.use('/info', userInfoRouter);
-app.use('/user', userRouter);
-
 app.use(session({
   secret: process.env.SESSION_SECRET, 
   resave: false,
@@ -36,6 +31,10 @@ app.use(session({
   }
 }));
 
+app.use('/solvedac', solvedacRouter);
+app.use('/posts', postRouter);
+app.use('/info', userInfoRouter);
+app.use('/user', userRouter);
 
 app.use(errorHandler);
 app.listen(PORT, () => {

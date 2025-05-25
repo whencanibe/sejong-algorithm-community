@@ -33,12 +33,14 @@ export const login = async (req, res) => {
       };
   
       res.status(200).json({
+        success: true,
         message: '로그인 성공',
         user: req.session.user,
       });
     } catch (err) {
       console.error("로그인 오류:", err);
       res.status(401).json({
+        success: false,
         message: '로그인 실패',
         error: err.message,
       });
