@@ -46,7 +46,7 @@ function Dayquest() {
       >
         일일 퀘스트
         <button
-          onClick={() => (window.location.href = '/')}
+          onClick={() => (window.location.href = '/home')}
           style={{
             padding: '8px 16px',
             fontSize: '14px',

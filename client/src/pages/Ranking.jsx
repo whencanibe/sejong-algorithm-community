@@ -12,9 +12,6 @@ function Ranking() {
       style={{
         fontFamily: 'Arial, sans-serif',
         minHeight: '100vh',
-        overflowX: 'hidden',   
-        overflowY: 'hidden',     
-        maxWidth: '100vw',    
         backgroundColor: '#fff',
       }}
     >
@@ -36,7 +33,7 @@ function Ranking() {
       >
         랭킹 페이지
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/home')}
           style={{
             padding: '8px 16px',
             fontSize: '14px',

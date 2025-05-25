@@ -81,7 +81,7 @@ const handleDelete = (id) => {
       >
         자유 게시판
         <button
-          onClick={() => (window.location.href = "/")}
+          onClick={() => (window.location.href = '/home')}
           style={{
             padding: "8px 16px",
             fontSize: "14px",
