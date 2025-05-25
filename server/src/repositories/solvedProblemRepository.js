@@ -41,3 +41,20 @@ export async function getSolvedDates(userId) {
     select: { solvedAt: true },
   });
 }
+
+// 오늘의 문제 id를 해결한 유저 수 세기
+export async function countUsersWhoSolved(problemId) {
+  return await prisma.solvedProblem.count({
+    where: { problemId }
+  });
+}
+
+// 오늘의 문제를 풀었는지 확인
+export async function hasUserSolvedProblem(userId, problemId) {
+  const record = await prisma.solvedProblem.findUnique({
+    where: {
+      userId_problemId: { userId, problemId }
+    }
+  });
+  return !!record;
+}
