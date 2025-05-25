@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
 import { Cell, LabelList } from "recharts";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip,
+  CartesianGrid, ReferenceDot, ResponsiveContainer,
+  BarChart, Bar, Legend
+} from "recharts";
+import {
+  XAxis as BXAxis, YAxis as BYAxis,
+  CartesianGrid as BGrid, Tooltip as BTooltip,
+  ResponsiveContainer as BContainer
+} from "recharts";
 
 function useWindowSize() {
   const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
@@ -15,20 +25,9 @@ function useWindowSize() {
   return size;
 }
 
-import {
-  LineChart, Line, XAxis, YAxis, Tooltip,
-  CartesianGrid, ReferenceDot, ResponsiveContainer,
-  BarChart, Bar, Legend
-} from "recharts";
-import {
-  XAxis as BXAxis, YAxis as BYAxis,
-  CartesianGrid as BGrid, Tooltip as BTooltip,
-  ResponsiveContainer as BContainer
-} from "recharts";
-
 function UniversityRanking() {
   const [windowWidth] = useWindowSize();
-  // 곡선 데이터
+
   const curveData = Array.from({ length: 100 }, (_, i) => {
     const x = i;
     const y = Math.exp(-((x - 50) ** 2) / (2 * 15 ** 2));
@@ -39,7 +38,6 @@ function UniversityRanking() {
   const myY = Math.exp(-((myX - 50) ** 2) / (2 * 15 ** 2));
   const percentile = 100 - Math.round((myX / 100) * 100);
 
-  // 막대그래프 데이터
   const data = [
     { name: '소프트웨어22', solved: 12 },
     { name: '컴퓨터공학22', solved: 17 },
@@ -50,7 +48,7 @@ function UniversityRanking() {
   const sortedData = [...data].sort((a, b) => b.solved - a.solved);
   const myName = '소프트웨어22';
   const myData = sortedData.find((d) => d.name === myName);
-  
+
   return (
     <div style={{
       display: 'flex',
@@ -62,7 +60,15 @@ function UniversityRanking() {
     }}>
       
       {/* 왼쪽: 그래프 2개 세로 정렬 */}
-      <div style={{ flex: '1 1 700px', display: 'flex', flexDirection: 'column', gap: '40px' }}>
+      <div style={{
+        minWidth: '700px',
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: '0',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '40px',
+      }}>
         
         {/* 곡선 그래프 */}
         <div style={{ width: '100%', height: '250px' }}>
@@ -132,7 +138,6 @@ function UniversityRanking() {
                     return `${name}${isMe ? ' (나)' : ''} ${value}개`;
                   }}
                 />
-
                 {sortedData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
@@ -148,14 +153,16 @@ function UniversityRanking() {
       {/* 오른쪽: 내 정보 */}
       <div style={{
         flex: '0 0 300px',
+        minWidth: '300px',
+        maxWidth: '100%',
         background: '#f9f9f9',
         padding: '24px',
         borderRadius: '10px',
         boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
         boxSizing: 'border-box',
         marginTop: '80px',
-        }}>
-  <h3 style={{ fontSize: '20px', marginBottom: '16px' }}>👤 내 정보</h3>
+      }}>
+        <h3 style={{ fontSize: '20px', marginBottom: '16px' }}>👤 내 정보</h3>
         <div style={{ marginBottom: '10px' }}><strong>백준 ID:</strong> {myName}</div>
         <div style={{ marginBottom: '10px' }}>
           <strong>이번주 풀이:</strong> {myData ? myData.solved : '-'}개
