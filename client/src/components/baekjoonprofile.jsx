@@ -27,9 +27,9 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
         }}
       >
         <img
-          src={`https://static.solved.ac/tier/tier${tier}.svg`}
+          src='\등급\다이아1.png'
           alt="백준 티어"
-          style={{ width: "80px", height: "80px" }}
+          style={{ width: "100px", height: "100px" }}
         />
       </div>
 

@@ -1,6 +1,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import axios from 'axios';
 
 // CodeMirror 관련 import
 import CodeMirror from '@uiw/react-codemirror';
@@ -8,22 +9,39 @@ import { javascript } from '@codemirror/lang-javascript';
 import { githubLight } from '@uiw/codemirror-theme-github';
 
 function WritePost() {
+  const handleGoBack = () => {
+  navigate('/community');
+};
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [code, setCode] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title || !content) {
       alert('제목과 내용을 모두 입력해주세요.');
       return;
     }
 
-    alert(`제목: ${title}\n내용: ${content}\n코드: \n${code}`);
-    navigate('/community');
-  };
+    console.log("✅ 보내는 데이터", { title, content, code }); // 이거!
+    
+    try {
+      
+      await axios.post('http://localhost:4000/posts', {
+        title,
+        content,
+        code,
+        
+      });
 
+      alert('글이 성공적으로 작성되었습니다!');
+      navigate('/community'); 
+    } catch (error) {
+      console.error('글 작성 중 오류 발생:', error);
+      alert('서버 오류로 인해 글 작성에 실패했습니다.');
+    }
+  };
   return (
     <div
       style={{
@@ -38,6 +56,7 @@ function WritePost() {
       {/* 상단바 */}
       <header
         style={{
+          position: 'relative',
           backgroundColor: '#2b2d42',
           color: 'white',
           padding: '18px 80px',
@@ -46,7 +65,26 @@ function WritePost() {
         }}
       >
         <h3 style={{ margin: 0 }}>글 작성</h3>
-      </header>
+        {/* 🔙 오른쪽에 위치한 버튼 */}
+  <button
+    onClick={() => navigate('/community')}
+    style={{
+      position: 'absolute',
+      right: '20px',                // 오른쪽 정렬
+      top: '50%',
+      transform: 'translateY(-50%)',
+      padding: '8px 16px',
+      fontSize: '14px',
+      backgroundColor: '#8d99ae',
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+    }}
+  >
+    글 목록으로
+  </button>
+</header>
 
       {/* 글쓰기 영역 */}
       <div
