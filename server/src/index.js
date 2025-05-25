@@ -9,6 +9,7 @@ import { startSyncSolvedList } from './jobs/syncSolvedListJob.js';
 import { startWeeklySnapshot } from './jobs/weeklySnapshotJob.js';
 import errorHandler from './middlewares/errorHandler.js';
 import session from 'express-session';
+import commentRouter from './routes/commentRouter.js';
 
 dotenv.config();
 const app = express();
@@ -19,11 +20,6 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-
-app.use('/solvedac', solvedacRouter);
-app.use('/posts', postRouter);
-app.use('/info', userInfoRouter);
-app.use('/user', userRouter);
 
 app.use(session({
   secret: process.env.SESSION_SECRET, 
@@ -36,6 +32,11 @@ app.use(session({
   }
 }));
 
+app.use('/solvedac', solvedacRouter);
+app.use('/posts', postRouter);
+app.use('/info', userInfoRouter);
+app.use('/comments', commentRouter);
+app.use('/user', userRouter);
 
 app.use(errorHandler);
 app.listen(PORT, () => {
