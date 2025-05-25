@@ -6,14 +6,10 @@ import MyProfile from "../components/MyProfile";
 import QuestCapsule from "../components/QuestCapsule";
 import FreeBoardPreview from "../components/FreeBoard";
 import CardAlbum from "../components/CardAlbum";
+import axios from "axios";
 
-// 더미 게시글 게시글 DB 연결
-const dummyPosts = [
-  { id: 1, title: "세번째 글" },
-  { id: 2, title: "두 번째 글" },
-  { id: 3, title: "첫번째 글" },
 
-];
+  
 
 // 더미 문제 (오늘의 퀘스트), 백준 문제 DB 연결결
 const dummyTop100 = [
@@ -24,11 +20,26 @@ const dummyTop100 = [
 export default function Home() {
   const navigate = useNavigate();
   const todayProblem = dummyTop100[0];
+   const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/posts")
+      .then((res) => {
+        const recent = res.data.slice(0, 3); // 최근 3개만
+        setPosts(recent);
+      })
+      .catch((err) => {
+        console.error("게시글 불러오기 실패:", err);
+      });
+  }, []);
+
+
 
   // 발자국 출석 상태 백엔드 
   const [footprints, setFootprints] = useState(() => {
     const saved = localStorage.getItem("footprints");
-    return saved ? JSON.parse(saved) : Array(6).fill(false);
+    return saved ? JSON.parse(saved) : Array(7).fill(false);
   });
 
   // 카드 보관함 상태 백엔드 연결 
@@ -190,7 +201,7 @@ const selectedCard = newCards[randomIndex];
         {/* 퀘스트 + 자유게시판 + 카드첩 */}
         <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
           <QuestCapsule problem={todayProblem} />
-          <FreeBoardPreview posts={dummyPosts} />
+          <FreeBoardPreview posts={posts} />
           <CardAlbum cards={cards} />
         </div>
 

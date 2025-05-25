@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function FreeBoardPreview({ posts }) {
@@ -18,9 +17,8 @@ export default function FreeBoardPreview({ posts }) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        marginTop:"50px",
-        marginLeft:"30px",
-
+        marginTop: "50px",
+        marginLeft: "30px",
       }}
     >
       {/* 제목 + + 버튼 */}
@@ -55,23 +53,27 @@ export default function FreeBoardPreview({ posts }) {
 
       {/* 게시글 목록 */}
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        {posts.slice(0, 3).map((post) => (
-          <div
-            key={post.id}
-            onClick={() => navigate(`/community/postdetail/${post.id}`)}
-            style={{
-              fontSize: "14px",
-              color: "#333",
-              borderBottom: "1px solid #ddd",
-              paddingBottom: "4px",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#3f3fff")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#333")}
-          >
-            {post.title}
-          </div>
-        ))}
+        {Array.isArray(posts) && posts.length > 0 ? (
+          posts.slice(0, 3).map((post) => (
+            <div
+              key={post.id}
+              onClick={() => navigate(`/community/postdetail/${post.id}`)}
+              style={{
+                fontSize: "14px",
+                color: "#333",
+                borderBottom: "1px solid #ddd",
+                paddingBottom: "4px",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#3f3fff")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#333")}
+            >
+              {post.title}
+            </div>
+          ))
+        ) : (
+          <div style={{ fontSize: "14px", color: "#bbb" }}>게시글이 없습니다.</div>
+        )}
         <div style={{ fontSize: "14px", color: "#bbb" }}>⋯</div>
       </div>
     </div>
