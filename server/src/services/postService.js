@@ -9,8 +9,8 @@ export function readPost(id) {
 }
 
 export function writePost(data) {
-  if (!data.title || !data.content || !data.author) {
-    throw new Error('제목, 내용, 작성자 모두 입력하세요');
+  if (!data.title || !data.content) {
+    throw new Error('제목, 내용, 모두 입력하세요');
   }
   return repo.createPost(data);
 }

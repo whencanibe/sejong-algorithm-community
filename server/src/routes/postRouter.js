@@ -6,13 +6,14 @@ import {
   updatePost,
   deletePost
 } from '../controllers/postController.js';
+import { isLoggedIn } from '../middlewares/middleware.js';
 
 const router = express.Router();
 
 router.get('/', getAllPosts);
 router.get('/:id', getPost);
-router.post('/', createPost);
-router.put('/:id', updatePost);
-router.delete('/:id', deletePost);
+router.post('/', isLoggedIn, createPost);
+router.put('/:id', isLoggedIn, updatePost);
+router.delete('/:id', isLoggedIn, deletePost);
 
 export default router;
