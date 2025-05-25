@@ -8,30 +8,60 @@ datasource db {
 }
 
 model User {
-  id    Int   @id @default(autoincrement())
-  email String @unique
-  password String
-  name String
+  id        Int   @id @default(autoincrement())
+  email     String @unique
+  password  String
+  name      String
   baekjoonName String
+  department     String @default("unknown")
   studentId String
-  department String
-  rank Int?
-  tier String?
+  rank      Int?
+  tier      String?
   solvedNum Int?
+  createdAt DateTime @default(now())
 
   solvedProblems SolvedProblem[]
-  createdAt DateTime @default(now())
-  //snapshots SolveSnapshot[]
-  //weeklyRanks WeeklyRank[]
+  snapshots SolveSnapshot[]
+  weeklyRanks WeeklyRank[]
+
+  comments       Comment[] //사용자 댓글
+}
+
+model SolveSnapshot {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  solvedCount Int
+  snapedAt    DateTime
+
+  user        User    @relation(fields: [userId], references:[id])
+
+  @@index([snapedAt])
+}
+
+model WeeklyRank {
+  id         Int      @id @default(autoincrement())
+  weekStart  DateTime 
+  department      String
+  userId     Int
+  solvedThisWeek Int  
+
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([weekStart, department])
+  @@unique([weekStart, userId, department])
 }
 
 model SolvedProblem {
   id         Int      @id @default(autoincrement())
   userId     Int
   problemId  Int
+  solvedAt   DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, problemId]) // 중복 방지하기 위해
 }
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
@@ -39,4 +69,17 @@ model Post {
   code    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  comments  Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  userId    Int
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
