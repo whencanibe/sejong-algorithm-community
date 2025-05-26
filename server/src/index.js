@@ -12,7 +12,6 @@ import session from 'express-session';
 import commentRouter from './routes/commentRouter.js';
 import dayquestRouter from './routes/dayquestRouter.js';
 
-
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT;

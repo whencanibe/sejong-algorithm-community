@@ -66,6 +66,7 @@ export default function Home() {
     localStorage.setItem("footprints", JSON.stringify(updated));
   };
 
+
   const closeCardModal = () => {
     setShowCardModal(false);
   };
@@ -110,7 +111,7 @@ export default function Home() {
           <button onClick={() => navigate("/community")} style={navBtnStyle}>자유게시판</button>
           <button onClick={() => navigate("/mypage")} style={navBtnStyle}>마이페이지</button>
           <button
-            onClick={() => (window.location.href = "/")}
+            onClick={() => (window.location.href = "/home")}
             style={{
               padding: "8px 16px",
               fontSize: "14px",
