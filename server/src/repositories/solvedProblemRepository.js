@@ -60,7 +60,7 @@ export async function hasUserSolvedProblem(userId, problemId) {
 }
 
 export async function getSolvedDatesSince(userId, fromDate) {
-  return prisma.solvedProblem.findMany({
+  return await prisma.solvedProblem.findMany({
     where: {
       userId,
       solvedAt: { gte: fromDate }
