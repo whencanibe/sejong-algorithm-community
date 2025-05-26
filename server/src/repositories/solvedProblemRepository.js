@@ -58,3 +58,13 @@ export async function hasUserSolvedProblem(userId, problemId) {
   });
   return !!record;
 }
+
+export async function getSolvedDatesSince(userId, fromDate) {
+  return prisma.solvedProblem.findMany({
+    where: {
+      userId,
+      solvedAt: { gte: fromDate }
+    },
+    select: { solvedAt: true }
+  });
+}
