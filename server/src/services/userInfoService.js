@@ -76,12 +76,12 @@ export async function getUserInfo(id) {
       weeklyRankInDepartment,
       solvedDates
     ] = await Promise.all([
-      userRepo.getRankByUserId(user.id),
-      userRepo.getRankInDepartmentByUserId(user.id),
-      weeklyRankRepo.getMyWeeklySolved(user.id, weekStart),
-      weeklyRankRepo.getRank(user.id, weekStart, 'ALL'),
-      weeklyRankRepo.getRank(user.id, weekStart, user.department),
-      solvedProblemRepo.getSolvedDates(user.id)
+      userRepo.getRankByUserId(user.id), //rank
+      userRepo.getRankInDepartmentByUserId(user.id), //rankInDepartment
+      weeklyRankRepo.getMyWeeklySolved(user.id, weekStart), // weeklySolved
+      weeklyRankRepo.getRank(user.id, weekStart, 'ALL'), // weeklyRankInSchool
+      weeklyRankRepo.getRank(user.id, weekStart, user.department), //weeklyRankInDepartment
+      solvedProblemRepo.getSolvedDates(user.id) //weeklyRankInDepartment
     ]);
 
     const streak = calcStreak(solvedDates.map(d => d.solvedAt));

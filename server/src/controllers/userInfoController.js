@@ -1,5 +1,5 @@
 import { getUserInfo } from "../services/userInfoService.js";
-import { buildFootprints } from '../service/footprintService.js';
+import { buildFootprints } from '../services/footprintService.js';
 
 export async function getUserInfoCtrl(req, res, next) {
     try {
