@@ -10,7 +10,7 @@ function PostDetail() {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [input, setInput] = useState("");
-  const [activeMenuId, setActiveMenuId] = useState(null); // ... 메뉴 열림 여부
+  const [activeMenuId, setActiveMenuId] = useState(null);
 
   useEffect(() => {
     axios
@@ -84,8 +84,6 @@ function PostDetail() {
     >
       {/* 상단바 */}
       <header
-      {/* 상단바 */}
-      <header
         style={{
           width: "100%",
           backgroundColor: "#2b2d42",
@@ -103,13 +101,6 @@ function PostDetail() {
         <button
           onClick={() => navigate("/")}
           style={{
-            padding: "8px 16px",
-            fontSize: "14px",
-            backgroundColor: "white",
-            color: "#2b2d42",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
             padding: "8px 16px",
             fontSize: "14px",
             backgroundColor: "white",
@@ -158,7 +149,6 @@ function PostDetail() {
           fontSize: "14px",
           marginBottom: "40px",
           padding: "0 30px",
-          padding: "0 30px",
         }}
       >
         <div>작성자: {post.author}</div>
@@ -173,13 +163,12 @@ function PostDetail() {
           marginBottom: "50px",
           textAlign: "left",
           padding: "0 30px",
-          padding: "0 30px",
         }}
       >
         {post.content}
       </div>
 
-{/* ✅ 댓글 영역 */}
+      {/* ✅ 댓글 영역 */}
       <CommentSection />
 
       {/* 목록으로 돌아가기 */}

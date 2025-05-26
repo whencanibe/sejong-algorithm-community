@@ -10,6 +10,7 @@ function Community() {
   useEffect(() => {
     axios.get('http://localhost:4000/posts') // 백엔드 API 주소
       .then((res) => {
+         console.log('✅ 받아온 게시글:', res.data); 
         setPosts(res.data); // 응답 데이터를 상태에 저장
       })
       .catch((err) => {

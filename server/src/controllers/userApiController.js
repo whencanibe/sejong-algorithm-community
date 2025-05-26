@@ -33,20 +33,14 @@ export const login = async (req, res) => {
       };
   
       res.status(200).json({
-<<<<<<< HEAD
-=======
         success: true,
->>>>>>> cf3728d1189a89721f0caa7c2d68341ad76fc68f
         message: '로그인 성공',
         user: req.session.user,
       });
     } catch (err) {
       console.error("로그인 오류:", err);
       res.status(401).json({
-<<<<<<< HEAD
-=======
         success: false,
->>>>>>> cf3728d1189a89721f0caa7c2d68341ad76fc68f
         message: '로그인 실패',
         error: err.message,
       });
