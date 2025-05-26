@@ -40,3 +40,75 @@
 .read-the-docs {
   color: #888;
 }
+
+
+html, body {
+  background-color: #0d1117;  /* 🔥 진한 우주색 */
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes neon-flicker {
+  0% {
+    text-shadow: 0 0 6px #00e5ff, 0 0 10px #00e5ff; 
+    opacity: 1;
+  }
+  50% {
+    text-shadow: 0 0 2px #00e5ff, 0 0 6px #00e5ff;
+    opacity: 0.7;
+  }
+  100% {
+    text-shadow: 0 0 8px #00e5ff, 0 0 18px #00e5ff;
+    opacity: 1;
+  }
+}
+
+
+@keyframes neon-flicker {
+  0% { opacity: 1; text-shadow: 0 0 6px #00e5ff, 0 0 12px #00e5ff; }
+  50% { opacity: 0.7; text-shadow: 0 0 2px #00e5ff, 0 0 6px #00e5ff; }
+  100% { opacity: 1; text-shadow: 0 0 8px #00e5ff, 0 0 18px #00e5ff; }
+}
+
+
+@keyframes twinkleAnim {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.2; }
+}
+
+.twinkle {
+  animation: twinkleAnim 2.5s infinite ease-in-out;
+}
+
+@keyframes float-spin {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(10deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+
+
+
+.alien {
+  position: absolute;
+  top: 330px;
+  width: 50px;
+  animation: alien-bounce 30s infinite ease-in-out;
+}
+
+.alien1 { left: 40%; animation-delay: 0s; }
+.alien2 { left: 45%; animation-delay: 1s; }
+.alien3 { left: 50%; animation-delay: 2s; }
+
+@keyframes alien-bounce {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(30px); }
+  50% { transform: translateX(60px); }
+  75% { transform: translateX(30px); }
+}

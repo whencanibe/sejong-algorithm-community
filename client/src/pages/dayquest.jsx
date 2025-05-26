@@ -1,24 +1,49 @@
 
 
-import { useState } from 'react' //상태 관리용
+import { useEffect, useState } from "react";
+import axios from "axios";
 import viteLogo from '/vite.svg'
 import { PieChart, Pie, Cell } from 'recharts';
 import '../App.css' // css 스타일일
 
-function Dayquest() {
+function Dayquest({ userId, problemId }) {
   const [count, setCount] = useState(false);
 
-  const data = [
-    { name: '풀었음', value: 52 },
-    { name: '못 풀었음', value: 48 },
-  ];
+ const [data, setData] = useState([
+    { name: '현재 푼 학생', value: 0 },
+    { name: '현재 아직 못 푼 학생', value: 100 },
+  ]);
+
+  useEffect(() => {
+    axios.get("http://localhost:4000/solved/check", {
+      params: { userId, problemId }
+    }).then((res) => {
+      const isSolved = res.data.solved;
+      setData([
+        { name: '풀었음', value: isSolved ? 100 : 0 },
+        { name: '못 풀었음', value: isSolved ? 0 : 100 },
+      ]);
+    }).catch(err => {
+      console.error("체크 실패:", err);
+    });
+  }, [userId, problemId]);
+
+
   const COLORS = ['#00C49F', '#FF8042'];
 
-  const problems = Array.from({ length: 1000 }, (_, i) => ({
-    id: 1000 + i,
-  }));
-  const randomIndex = Math.floor(Math.random() * problems.length);
-  const todayProblem = problems[randomIndex];
+const [todayProblemId, setTodayProblemId] = useState(null);
+
+useEffect(() => {
+  axios.get("http://localhost:4000/dayquest/today")
+    .then((res) => {
+      console.log("💡 오늘의 문제 ID:", res.data.id);
+      setTodayProblemId(res.data.id);
+    })
+    .catch((err) => {
+      console.error("오늘의 문제 가져오기 실패:", err);
+    });
+}, []);
+
 
   return (
     <div
@@ -83,20 +108,24 @@ function Dayquest() {
         />
 
         <p style={{ marginTop: '30px', fontSize: '18px' }}>
-          &nbsp;
-          <a
-            href={`https://www.acmicpc.net/problem/${todayProblem.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: '#2b2d42',
-              fontWeight: 'bold',
-              textDecoration: 'underline',
-            }}
-          >
-            백준 {todayProblem.id}번 문제 풀기
-          </a>
-        </p>
+  &nbsp;
+  {todayProblemId ? (
+    <a
+      href={`https://www.acmicpc.net/problem/${todayProblemId}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        color: '#ffffff',
+        fontWeight: 'bold',
+        textDecoration: 'underline',
+      }}
+    >
+      백준 {todayProblemId}번 문제 풀기
+    </a>
+  ) : (
+    <span style={{ color: "white" }}>문제를 불러오는 중입니다...</span>
+  )}
+</p>
 
         <a
           href="https://www.acmicpc.net/problemset"
@@ -105,7 +134,7 @@ function Dayquest() {
             display: 'block',
             marginTop: '20px',
             textDecoration: 'underline',
-            color: '#2b2d42',
+            color: '#ffffff',
             fontWeight: 'bold',
           }}
         >
