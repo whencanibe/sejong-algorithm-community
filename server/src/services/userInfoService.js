@@ -48,9 +48,9 @@ function calcStreak(timestamps) {
   return streak;
 }
 
-export async function getUserInfo(id) {
+export async function getUserInfo(userId) {
   try {
-    const user = await userRepo.findUserById(id);
+    const user = await userRepo.findUserById(userId);
     if (!user) {
       throw new Error("유저를 찾을 수 없습니다.");
     }
@@ -74,14 +74,16 @@ export async function getUserInfo(id) {
       weeklySolved,
       weeklyRankInSchool,
       weeklyRankInDepartment,
-      solvedDates
+      solvedDates,
+      percentile
     ] = await Promise.all([
-      userRepo.getRankByUserId(user.id),
-      userRepo.getRankInDepartmentByUserId(user.id),
-      weeklyRankRepo.getMyWeeklySolved(user.id, weekStart),
-      weeklyRankRepo.getRank(user.id, weekStart, 'ALL'),
-      weeklyRankRepo.getRank(user.id, weekStart, user.department),
-      solvedProblemRepo.getSolvedDates(user.id)
+      userRepo.getRankByUserId(userId),
+      userRepo.getRankInDepartmentByUserId(userId),
+      weeklyRankRepo.getMyWeeklySolved(userId, weekStart),
+      weeklyRankRepo.getRank(userId, weekStart, 'ALL'),
+      weeklyRankRepo.getRank(userId, weekStart, user.department),
+      solvedProblemRepo.getSolvedDates(userId),
+      userRepo.getPercentile(userId)
     ]);
 
     const streak = calcStreak(solvedDates.map(d => d.solvedAt));
@@ -98,6 +100,7 @@ export async function getUserInfo(id) {
       weeklyRankInSchool,
       weeklyRankInDepartment,
       streak,
+      percentile
     };
   } catch (err) {
     console.error("getUserInfo 에러:", err.message);

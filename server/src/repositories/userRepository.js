@@ -99,5 +99,13 @@ export async function getRankInDepartmentByUserId(id) {
   return count + 1; 
 }
 
+export async function getPercentile(userId) {
+  const [rank, total] = await Promise.all([
+    getRankByUserId(userId),
+    prisma.user.count()
+  ]);
 
+  if (!rank) return null;          // rank가 아직 계산되지 않은 경우
 
+  return Math.round((rank / total) * 100);
+}
