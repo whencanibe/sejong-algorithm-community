@@ -12,6 +12,7 @@ import session from 'express-session';
 import commentRouter from './routes/commentRouter.js';
 import dayquestRouter from './routes/dayquestRouter.js';
 import { getProblemDetail } from './services/solvedacService.js';
+import { getDeptTotalsThisWeek, getDeptUserRanking } from './repositories/weeklyRankRepository.js';
 
 dotenv.config();
 const app = express();

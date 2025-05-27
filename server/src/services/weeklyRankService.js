@@ -22,3 +22,21 @@ export async function updateWeeklyRank(userId) {
     const delta = user.solvedNum - base.solvedCount;
     await weeklyRankRepo.upsertWeeklyRank({ user, delta });
 }
+
+export async function getDepartmentWeeklyRanking() {
+    const deptRanking = await weeklyRankRepo.getDeptTotalsThisWeek();
+
+    return deptRanking.map(d => ({
+        department: d.department,
+        solvedThisWeek: d._sum.solvedThisWeek
+    }));
+}
+
+export async function getStudentInDeptWeeklyRanking(department) {
+    const studentRanking = await weeklyRankRepo.getDeptUserRanking(department);
+
+    return studentRanking.map(s => ({
+        name: s.user.name,
+        solvedThisWeek: s.solvedThisWeek
+    }))
+}
