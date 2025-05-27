@@ -8,23 +8,24 @@ datasource db {
 }
 
 model User {
-  id        Int   @id @default(autoincrement())
-  email     String @unique
-  password  String
-  name      String
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  password     String
+  name         String
   baekjoonName String
-  department     String @default("unknown")
-  studentId String
-  rank      Int?
-  tier      String?
-  solvedNum Int?
-  createdAt DateTime @default(now())
+  department   String   @default("unknown")
+  studentId    String
+  rank         Int?
+  tier         String?
+  solvedNum    Int?
+  createdAt    DateTime @default(now())
 
   solvedProblems SolvedProblem[]
-  snapshots SolveSnapshot[]
-  weeklyRanks WeeklyRank[]
+  snapshots      SolveSnapshot[]
+  weeklyRanks    WeeklyRank[]
 
-  comments       Comment[] //사용자 댓글
+  comments  Comment[] //사용자 댓글
+  userCards UserCard[] //사용자 카드
 }
 
 model SolveSnapshot {
@@ -33,42 +34,42 @@ model SolveSnapshot {
   solvedCount Int
   snapedAt    DateTime
 
-  user        User    @relation(fields: [userId], references:[id])
+  user User @relation(fields: [userId], references: [id])
 
   @@index([snapedAt])
 }
 
 model WeeklyRank {
-  id         Int      @id @default(autoincrement())
-  weekStart  DateTime 
-  department      String
-  userId     Int
-  solvedThisWeek Int  
+  id             Int      @id @default(autoincrement())
+  weekStart      DateTime
+  department     String
+  userId         Int
+  solvedThisWeek Int
 
-  user       User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
-  @@index([weekStart, department])
   @@unique([weekStart, userId, department])
+  @@index([weekStart, department])
 }
 
 model SolvedProblem {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  problemId  Int
-  solvedAt   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  problemId Int
+  solvedAt  DateTime @default(now())
 
-  user       User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
   @@unique([userId, problemId]) // 중복 방지하기 위해
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
   content   String
-  code    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  code      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   comments  Comment[]
 }
 
@@ -80,6 +81,27 @@ model Comment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Card {
+  id      Int    @id @default(autoincrement())
+  title   String @unique
+  comment String
+  image   String
+
+  ownedBy UserCard[]
+}
+
+model UserCard {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  cardId    Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  card Card @relation(fields: [cardId], references: [id])
+
+  @@unique([userId, cardId])
 }
