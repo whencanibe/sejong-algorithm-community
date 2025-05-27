@@ -1,24 +1,24 @@
 import { AppError } from "../errors/AppError.js";
 import prisma from "../models/prisma.js";
 
-export async function createUser({ email, hashedPassword, name, baekjoonName , department, studentId}) {
-    return prisma.user.create({
-        data: { email, password: hashedPassword, name, baekjoonName, department, studentId }, // db에 저장할 값
-        select: { id: true, email: true, name: true , department: true, studentId: true} // 응답에 반환될 값 선택
-    })
+export async function createUser({ email, hashedPassword, name, baekjoonName, department, studentId }) {
+  return prisma.user.create({
+    data: { email, password: hashedPassword, name, baekjoonName, department, studentId }, // db에 저장할 값
+    select: { id: true, email: true, name: true, department: true, studentId: true } // 응답에 반환될 값 선택
+  })
 }
 
 export async function findUserById(id) {
-    if(id == null) throw new AppError('userId가 없습니다', 400);
-    return await prisma.user.findUnique({
-        where: { id }
-    })
+  if (id == null) throw new AppError('userId가 없습니다', 400);
+  return await prisma.user.findUnique({
+    where: { id }
+  })
 }
 
 export const findUserByEmail = async (email) => {
-    return await prisma.user.findUnique({
-        where: { email }
-    });
+  return await prisma.user.findUnique({
+    where: { email }
+  });
 }
 
 
@@ -78,13 +78,13 @@ export async function getRankByUserId(id) {
     }
   });
 
-  return count + 1; 
+  return count + 1;
 }
 
 export async function getRankInDepartmentByUserId(id) {
   const me = await prisma.user.findUnique({
     where: { id },
-    select: { rank : true }
+    select: { rank: true }
   });
 
   if (!me) throw new Error("해당 유저 없음");
@@ -96,8 +96,38 @@ export async function getRankInDepartmentByUserId(id) {
     }
   });
 
-  return count + 1; 
+  return count + 1;
 }
 
+export async function getPercentile(userId) {
+  const [rank, total] = await Promise.all([
+    getRankByUserId(userId),
+    prisma.user.count()
+  ]);
 
+  if (!rank) return null;          // rank가 아직 계산되지 않은 경우
 
+  return Math.round((rank / total) * 100);
+}
+
+export async function getPercentileInDepartement(userId) {
+  // 사용자 전공 알아오기
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { department: true }
+  });
+  if (!user) throw new AppError('유저 없음', 404);
+
+  const [rank, total] = await Promise.all([
+    getRankInDepartmentByUserId(userId),
+    prisma.user.count({
+      where: {
+        department: user.department
+      }
+    })
+  ]);
+
+  if (!rank) return null;          // rank가 아직 계산되지 않은 경우
+
+  return Math.round((rank / total) * 100);
+}
