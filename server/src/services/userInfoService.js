@@ -38,14 +38,14 @@ export async function getUserInfo(userId) {
       throw new Error("Solved.ac API 호출 실패");
     }
 
-    const enrollYear = user.studentId.slice(0,2); // 학번 년도 예) 24
+    const enrollYear = user.studentId.slice(0, 2); // 학번 년도 예) 24
     const tier = stringifyTier(rankInfo.tier);
 
     const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 }); // 이번 주 일요일 주의 시작으로 설정
 
     //병렬 처리 - 하나라도 실패하면 에러
     const [
-      rank, 
+      rank,
       rankInDepartment,
       weeklySolved,
       weeklyRankInSchool,
@@ -81,6 +81,24 @@ export async function getUserInfo(userId) {
   } catch (err) {
     console.error("getUserInfo 에러:", err.message);
     throw err; // 컨트롤러로 그대로 넘겨주기
+  }
+}
+
+export async function getPercentilesForUser(userId) {
+
+  try {
+    const [percentileInTotal, percentileInDepartment] = await Promise.all([
+      userRepo.getPercentile(userId),
+      userRepo.getPercentileInDepartement(userId)
+    ]);
+
+    return {
+      percentileInTotal,
+      percentileInDepartment
+    };
+  } catch (error) {
+    console.error("getPercentilesForUser 에러:", error.message);
+    throw error;
   }
 }
 
