@@ -3,7 +3,7 @@ import prisma from '../models/prisma.js';
 import * as solvedacService from '../services/solvedacService.js';
 import * as userRepo from '../repositories/userRepository.js';
 import * as solvedProblemRepo from '../repositories/solvedProblemRepository.js';
-import { stringifyTier } from '../services/userInfoService.js';
+import { stringifyTier } from '../utils/stringifyTier.js';
 import { AppError } from '../errors/AppError.js';
 import { ExternalError } from '../errors/ExternalError.js';
 import { ensureSnapshotForUser } from '../services/snapshotService.js';

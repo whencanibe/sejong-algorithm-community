@@ -54,3 +54,25 @@ export async function getRankandTier(baekjoonName) {
     }
 
 }
+
+export async function getProblemDetail(problemId) {
+    const url = 'https://solved.ac/api/v3/problem/show'; // ex ) ?problemId=2759
+    try {
+        const response = await axios.get(url, {
+            params: { problemId }
+        })
+
+        let title = response.data.titleKo;
+        let level = response.data.level;
+        let averageTries = response.data.averageTries;
+        return {
+            problemId,
+            title,
+            level,
+            averageTries
+        };
+    } catch (error) {
+        console.error('API 요청 실패:', err.message);
+        throw new Error('문제 정보 불러오기 실패');
+    }
+}
