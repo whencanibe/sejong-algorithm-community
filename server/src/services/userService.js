@@ -14,7 +14,6 @@ export async function signupService({ email, password, name, baekjoonName, depar
   });
 
   await syncSingleUser(user.id);
-  const updatedUser = await findUserById(user.id);
   return user;
 }
 

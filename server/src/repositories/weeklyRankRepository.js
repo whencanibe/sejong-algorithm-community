@@ -23,7 +23,7 @@ export async function getMyWeeklySolved(userId, weekStart, department = 'ALL') {
 /**
  * 특정 스코프(ALL=전체 or 전공)에서 이번 주 랭킹 숫자 반환
  * @param {number} userId
- * @param {Date}   weekStart  - 이번 주 월요일 00:00
+ * @param {Date}   weekStart  - 이번 주 일요일 00:00
  * @param {string} department - 'ALL' = 학교 전체, 그 외 = 전공명
  * @returns {Promise<number|null>}  1부터 시작 랭킹, 없으면 null
  */
@@ -87,3 +87,49 @@ export async function upsertWeeklyRank({ user, delta }) {
     create: { weekStart, department: 'ALL', userId: user.id, solvedThisWeek: delta }
   });
 }
+
+//기본값 : 최대 상위 10개 학과 반환
+export async function getDeptTotalsThisWeek(limit = 10) {
+  const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 });
+
+  /* 반환 예시
+    [
+      { department: '컴퓨터공학과', _sum: { solvedThisWeek: 124 } },
+      { department: '소프트웨어학과', _sum: { solvedThisWeek: 93 } },
+      …
+    ]
+  */
+  return prisma.weeklyRank.groupBy({
+    by: ['department'],
+    where: { weekStart },
+    _sum: { solvedThisWeek: true },
+    orderBy: { _sum: { solvedThisWeek: 'desc' } },
+    take: limit
+  });
+}
+
+
+//기본값 : 최대 상위 10명 반환
+export async function getDeptUserRanking(dept, limit = 10) {
+  const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 });
+
+  /* 반환 예시
+    [
+      {
+        userId: 8,
+        solvedThisWeek: 17,
+        user: { name: '이름', baekjoonName: 'muzavicoder' }
+      },
+      …
+    ]
+  */
+  return prisma.weeklyRank.findMany({
+    where: { weekStart, department: dept },
+    orderBy: { solvedThisWeek: 'desc' },
+    take: limit,
+    include: {                     // 사용자 프로필도 함께
+      user: { select: { name: true, baekjoonName: true } }
+    }
+  });
+}
+
