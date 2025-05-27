@@ -40,42 +40,48 @@ function Dayquest({ userId, problemId }) {
     <div
       style={{
         fontFamily: "Arial, sans-serif",
-        minHeight: "100vh",
-        overflowX: "hidden",
+
       }}
     >
       {/* 상단바 */}
       <header
-        style={{
-          width: "100%",
-          backgroundColor: "#2b2d42",
-          color: "white",
-          padding: "18px 40px",
-          fontSize: "18px",
-          fontWeight: "bold",
-          marginBottom: "40px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          boxSizing: "border-box",
-        }}
-      >
-        일일 퀘스트
-        <button
-          onClick={() => (window.location.href = "/home")}
-          style={{
-            padding: "8px 16px",
-            fontSize: "14px",
-            backgroundColor: "white",
-            color: "#2b2d42",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          홈으로
-        </button>
-      </header>
+  style={{
+    position: "fixed",             // ❗헤더를 완전 고정 위치로
+    top: 0,
+    left: 0,
+    width: "100%",                 // ❗진짜로 화면 꽉 채움
+    backgroundColor: "#2a3142",
+    color: "#e0f7fa",
+    padding: "18px 40px",
+    fontSize: "18px",
+    fontWeight: "bold",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    boxSizing: "border-box",
+    borderBottom: "1px solid #00e5ff",
+    boxShadow: "0 2px 8px rgba(0, 229, 255, 0.15)",
+    animation: "neonFlicker 1.5s infinite alternate",
+    zIndex: 1000                  // 다른 요소 위로 오게
+  }}
+>
+  일일 퀘스트
+  <button
+    onClick={() => (window.location.href = "/home")}
+    style={{
+      padding: "8px 16px",
+      fontSize: "14px",
+      backgroundColor: "white",
+      color: "#2a3142",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+    }}
+  >
+    홈으로
+  </button>
+</header>
+
 
       <div
         style={{
@@ -93,7 +99,7 @@ function Dayquest({ userId, problemId }) {
             width: "350px",
             animation: "hueRotate 5s infinite linear",
             filter: "hue-rotate(0deg)",
-            marginTop: "50px",
+            marginTop: "100px",
             marginBottom: "30px",
           }}
         />
@@ -132,92 +138,103 @@ function Dayquest({ userId, problemId }) {
           사이트 바로가기
         </a>
 
+        
         {/* 두 개 박스 */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            marginTop: "40px",
-            gap: "20px",
-          }}
-        >
-          {/* 왼쪽 박스 */}
-          <div
-            
-            style={{
-              flex: "1 1 300px",
-              background: "white",
-              padding: "20px",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              boxSizing: "border-box",
-            }}
-          >
-            <img
-              src="/완료도장.png"
-              alt="도장"
-              style={{
-                width: "70%",
-                 filter: hasSolvedToday ? "none" : "grayscale(100%)",
-                transition: "filter 0.3s ease-in-out",
-              }}
-            />
-            <p style={{ marginTop: "10px", color: "#2b2d42" }}>
-              {hasSolvedToday ? "내가 완료함" : "아직 안 했음"}
-            </p>
-          </div>
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    marginTop: "40px",
+    gap: "20px",
+  }}
+>
+  {/* 왼쪽 박스 */}
+  <div
+    style={{
+      flex: "1 1 200px",
+      maxWidth: "280px",
+      height: "240px",
+      backgroundColor: "#2a3142",
+      border: "1px solid #00e5ff",
+      borderRadius: "12px",
+      boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
+      padding: "20px",
+      cursor: "pointer",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      boxSizing: "border-box",
+      color: "#e0f7fa",
+    }}
+  >
+    <img
+      src="/완료도장.png"
+      alt="도장"
+      style={{
+        width: "60%",
+        filter: hasSolvedToday ? "none" : "grayscale(100%)",
+        transition: "filter 0.3s ease-in-out",
+      }}
+    />
+    <p style={{ marginTop: "10px" }}>
+      {hasSolvedToday ? "내가 완료함" : "아직 안 했음"}
+    </p>
+  </div>
 
-          {/* 오른쪽 박스 */}
-          <div
-            style={{
-              flex: "1 1 300px",
-              background: "white",
-              padding: "20px",
-              boxSizing: "border-box",
-              textAlign: "center",
-              borderLeft: "1px solid #ccc",
-            }}
-          >
-            <h3 style={{ margin: 0, color: "#2b2d42" }}>
-              현재 학생들의 완료
-            </h3>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                marginTop: "20px",
-              }}
-            >
-              <PieChart width={200} height={200}>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={40}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-              <p style={{ marginTop: "10px", color: "#2b2d42" }}>
-                {solvedCount}명이 풀었습니다 <br /> (전체 {totalUsers}명 중)
-              </p>
-            </div>
-          </div>
-        </div>
+  {/* 오른쪽 박스 */}
+  <div
+    style={{
+      flex: "1 1 200px",
+      maxWidth: "280px",
+      height: "240px",
+      backgroundColor: "#2a3142",
+      border: "1px solid #00e5ff",
+      borderRadius: "12px",
+      boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
+      padding: "20px",
+      boxSizing: "border-box",
+      textAlign: "center",
+      color: "#e0f7fa",
+    }}
+  >
+    <h3 style={{ margin: 0 }}>현재 학생들의 완료</h3>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginTop: "14px",
+      }}
+    >
+      <PieChart width={160} height={160}>
+        <Pie
+          data={chartData}
+          cx="50%"
+          cy="50%"
+          innerRadius={30}
+          outerRadius={65}
+          fill="#8884d8"
+          paddingAngle={5}
+          dataKey="value"
+        >
+          {chartData.map((entry, index) => (
+            <Cell
+              key={`cell-${index}`}
+              fill={COLORS[index % COLORS.length]}
+            />
+          ))}
+        </Pie>
+      </PieChart>
+      <p style={{ marginTop: "10px", fontSize: "14px" }}>
+        {solvedCount}명이 풀었습니다 <br /> (전체 {totalUsers}명 중)
+      </p>
+    </div>
+  </div>
+</div>
+
+       
       </div>
     </div>
   );

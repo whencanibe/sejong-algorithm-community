@@ -5,18 +5,19 @@ export default function CardAlbum({ cards }) {
   return (
     <div
       style={{
-        width: "260px",
-        height: "250px",
-        border: "2px solid #3f3fff",
-        borderRadius: "10px",
-        backgroundColor: "#f7f9ff",
-        padding: "16px",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        overflowY: "auto",
-        marginTop:"50px",
-        boxShadow: "0 4px 10px rgba(63, 63, 255, 0.1)",
+         width: "260px",
+  height: "250px",
+  border: "1px solid #00e5ff",                   // 🔵 파란 테두리
+  borderRadius: "10px",
+  backgroundColor: "#2a3142",                     // 🔵 다크 블루 배경
+  color: "#e0f7fa",                                // 🔵 밝은 청록 글자
+  padding: "16px",
+  boxSizing: "border-box",
+  display: "flex",
+  flexDirection: "column",
+  overflowY: "auto",
+  marginTop: "50px",
+  boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",   // 🔵 푸른 빛 그림자  
       }}
     >
       {/* 제목 */}

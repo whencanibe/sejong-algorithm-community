@@ -7,27 +7,32 @@ export default function QuestCapsule({ problem }) {
   if (!problem) return null;
 
   useEffect(() => {
-    const capsuleX = 180;
-    const capsuleY1 = 100;
+    const capsuleX = 160;
+    const capsuleY1 = 110;
     const capsuleY2 = 160;
 
     const updateLines = () => {
-      if (boxRef.current) {
-        const rect = boxRef.current.getBoundingClientRect();
-        const parent = boxRef.current.offsetParent.getBoundingClientRect();
+  if (boxRef.current) {
+    const rect = boxRef.current.getBoundingClientRect();
+    const parent = boxRef.current.offsetParent.getBoundingClientRect();
 
-        const offsetX = rect.left - parent.left;
-        const offsetY = rect.top - parent.top;
+    const offsetX = rect.left - parent.left;
+    const offsetY = rect.top - parent.top;
 
-        const boxTopLeft = { x: offsetX + 10, y: offsetY + 40 };
-        const boxBottomLeft = { x: offsetX + 10, y: offsetY + rect.height - 5 };
+    const paddingX = 25;
+    const paddingY = 10;
 
-        setLines({
-          line1: { x1: capsuleX, y1: capsuleY1, x2: boxTopLeft.x, y2: boxTopLeft.y },
-          line2: { x1: capsuleX, y1: capsuleY2, x2: boxBottomLeft.x, y2: boxBottomLeft.y },
-        });
-      }
-    };
+    const boxInnerTopLeft = { x: offsetX + paddingX, y: offsetY + paddingY+60 };
+    const boxInnerBottomLeft = { x: offsetX + paddingX, y: offsetY + rect.height - paddingY + 50 };
+
+    setLines({
+      line1: { x1: capsuleX, y1: capsuleY1, x2: boxInnerTopLeft.x, y2: boxInnerTopLeft.y },
+      line2: { x1: capsuleX, y1: capsuleY2, x2: boxInnerBottomLeft.x, y2: boxInnerBottomLeft.y },
+    });
+  }
+};
+
+
 
     updateLines();
     window.addEventListener("resize", updateLines);
@@ -38,18 +43,19 @@ export default function QuestCapsule({ problem }) {
     <div
       style={{
         height: "250px",
-        border: "2px solid #3f3fff",
+       border: "1px solid #00e5ff",  
         borderRadius: "10px",
         padding: "24px 32px",
         display: "flex",
         alignItems: "center",
         gap: "20px",
-        backgroundColor: "#f7f9ff",
+        backgroundColor: "#2a3142",   
         marginTop:"50px",
         width: "500px",
-        boxShadow: "0 4px 10px rgba(63, 63, 255, 0.1)",
+        boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
         boxSizing: "border-box",
         position: "relative",
+        color: "#e0f7fa",      
       }}
     >
       {/* 캡슐 + 박스 */}
@@ -97,6 +103,7 @@ export default function QuestCapsule({ problem }) {
             left: 0,
             zIndex: 1,
             pointerEvents: "none",
+            
           }}
         >
           <line
@@ -104,7 +111,7 @@ export default function QuestCapsule({ problem }) {
             y1={lines.line1.y1}
             x2={lines.line1.x2}
             y2={lines.line1.y2}
-            stroke="#3f3fff"
+            stroke="#ffffff"
             strokeWidth="2"
           />
           <line
@@ -112,7 +119,7 @@ export default function QuestCapsule({ problem }) {
             y1={lines.line2.y1}
             x2={lines.line2.x2}
             y2={lines.line2.y2}
-            stroke="#3f3fff"
+            stroke="#ffffff"
             strokeWidth="2"
           />
         </svg>
