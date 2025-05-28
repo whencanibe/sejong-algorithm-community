@@ -1,15 +1,22 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Community() {
   const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
 
-  const [posts, setPosts] = useState([
-    { id: 1, title: '세번째 글', author: '학생1', date: '2024-05-10' },
-    { id: 2, title: '두 번째 글', author: '학생2', date: '2024-05-09' },
-    { id: 3, title: '첫번째 글', author: '학생3', date: '2024-05-08' },
-  ]);
+  // 게시글 목록 받아오기
+  useEffect(() => {
+    axios.get('http://localhost:4000/posts') // 백엔드 API 주소
+      .then((res) => {
+         console.log('✅ 받아온 게시글:', res.data); 
+        setPosts(res.data); // 응답 데이터를 상태에 저장
+      })
+      .catch((err) => {
+        console.error('게시글 불러오기 실패:', err);
+      });
+  }, []);
 
   return (
     <div
@@ -103,7 +110,6 @@ function Community() {
                     borderBottom: '1px solid #eee',
                     cursor: 'pointer',
                     color: '#2b2d42',
-                   
                     transition: 'background-color 0.2s',
                   }}
                   onMouseEnter={(e) => {
@@ -115,8 +121,8 @@ function Community() {
                 >
                   {post.title}
                 </td>
-                <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{post.author}</td>
-                <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{post.date}</td>
+                <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{post.author || '익명'}</td>
+                <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{post.date?.split('T')[0]}</td>
               </tr>
             ))}
           </tbody>

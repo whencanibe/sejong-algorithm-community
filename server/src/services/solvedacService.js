@@ -25,6 +25,7 @@ export async function getSolvedProblemIds(baekjoonName) {
             user: baekjoonName,
             count: solvedProblemIds.length,
             problemIds: solvedProblemIds,
+            
         };
     } catch (err) {//axios 에러 발생 시 실행될 catch
         console.error('API 요청 실패:', err.message);
