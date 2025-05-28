@@ -4,12 +4,13 @@ export default function MyProfile({ nickname, info, avatarSeed }) {
   return (
     <div
       style={{
-        height: "250px",
-        border: "2px solid #3f3fff",
+        height: "300px",
+        border: "1px solid #00e5ff",  
         padding: "24px",
         borderRadius: "14px",
         width: "400px",
-        backgroundColor: "#f0f4ff",
+        backgroundColor: "#2a3142",
+        color: "#e0f7fa",                      // 🔵 다크 블루 배경
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

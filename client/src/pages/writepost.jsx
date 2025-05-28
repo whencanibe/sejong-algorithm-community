@@ -1,17 +1,11 @@
-
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
-
-// CodeMirror 관련 import
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { githubLight } from '@uiw/codemirror-theme-github';
 
 function WritePost() {
-  const handleGoBack = () => {
-  navigate('/community');
-};
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -24,30 +18,29 @@ function WritePost() {
       return;
     }
 
-    console.log("✅ 보내는 데이터", { title, content, code }); // 이거!
-    
+    console.log("✅ 보내는 데이터", { title, content, code });
+
     try {
-      
       await axios.post('http://localhost:4000/posts', {
         title,
         content,
         code,
-         
       }, { withCredentials: true });
 
       alert('글이 성공적으로 작성되었습니다!');
-      navigate('/community'); 
+      navigate('/community');
     } catch (error) {
       console.error('글 작성 중 오류 발생:', error);
       alert('서버 오류로 인해 글 작성에 실패했습니다.');
     }
   };
+
   return (
     <div
       style={{
         fontFamily: 'Arial, sans-serif',
         height: '100vh',
-        width: '80vw',
+        width: '100%', 
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: '#f8f9fa',
@@ -56,40 +49,44 @@ function WritePost() {
       {/* 상단바 */}
       <header
         style={{
-          position: 'relative',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
           backgroundColor: '#2b2d42',
           color: 'white',
           padding: '18px 80px',
           fontSize: '18px',
           fontWeight: 'bold',
+          zIndex: 1000,
+          boxSizing: 'border-box',
         }}
       >
         <h3 style={{ margin: 0 }}>글 작성</h3>
-        {/* 🔙 오른쪽에 위치한 버튼 */}
-  <button
-    onClick={() => navigate('/community')}
-    style={{
-      position: 'absolute',
-      right: '20px',                // 오른쪽 정렬
-      top: '50%',
-      transform: 'translateY(-50%)',
-      padding: '8px 16px',
-      fontSize: '14px',
-      backgroundColor: '#8d99ae',
-      color: 'white',
-      border: 'none',
-      borderRadius: '5px',
-      cursor: 'pointer',
-    }}
-  >
-    글 목록으로
-  </button>
-</header>
+        <button
+          onClick={() => navigate('/community')}
+          style={{
+            position: 'absolute',
+            right: '20px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            padding: '8px 16px',
+            fontSize: '14px',
+            backgroundColor: '#8d99ae',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
+          글 목록으로
+        </button>
+      </header>
 
       {/* 글쓰기 영역 */}
       <div
         style={{
-          padding: '20px 40px',
+          padding: '90px 40px 20px', // 상단바 높이만큼 여백 추가
           overflowY: 'auto',
           boxSizing: 'border-box',
           width: '100%',
@@ -146,7 +143,6 @@ function WritePost() {
                 border: 'none',
                 borderRadius: '5px',
                 cursor: 'pointer',
-                textAlign :"left",
               }}
             >
               {showCodeEditor ? '코드 숨기기' : '코드 추가'}
@@ -155,8 +151,8 @@ function WritePost() {
 
           {/* CodeMirror 코드 입력창 */}
           {showCodeEditor && (
-            <div style={{ marginBottom: '40px', textAlign :"left" }}>
-              <label style={{ display: 'block', fontWeight: 'bold', textAlign: 'left', marginBottom: '8px' }}>
+            <div style={{ marginBottom: '40px' }}>
+              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
                 코드 입력
               </label>
               <CodeMirror
