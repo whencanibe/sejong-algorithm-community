@@ -20,9 +20,27 @@ export async function getFootprintsCtrl(req, res, next) {
   } catch (e) { next(e); }
 }
 
-export async function getSteakCtrl(req, res, next) {
+export async function getStreakCtrl(req, res, next) {
   try {
     const userId = Number(req.params.id);
+    const streak = await getStreak(userId);
+    res.status(201).json({ streak });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getFootprintsSessionCtrl(req, res, next) {
+  try {
+    const userId = Number(req.session?.user?.id);
+    const footprints = await buildFootprints(userId);
+    res.status(201).json({ footprints });
+  } catch (e) { next(e); }
+}
+
+export async function getStreakSessionCtrl(req, res, next) {
+  try {
+    const userId = Number(req.session?.user?.id);
     const streak = await getStreak(userId);
     res.status(201).json({ streak });
   } catch (error) {
