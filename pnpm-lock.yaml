@@ -84,6 +84,9 @@ importers:
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
+      bcrypt:
+        specifier: ^6.0.0
+        version: 6.0.0
       bcryptjs:
         specifier: ^3.0.2
         version: 3.0.2
@@ -103,8 +106,8 @@ importers:
         specifier: ^1.18.1
         version: 1.18.1
       node-cron:
-        specifier: ^4.0.5
-        version: 4.0.5
+        specifier: ^4.0.7
+        version: 4.0.7
       prisma:
         specifier: ^6.7.0
         version: 6.7.0
@@ -1383,8 +1386,8 @@ packages:
     resolution: {integrity: sha512-lytcDEdxKjGJPTLEfW4mYMigRezMlyJY8W4wxJK8zE533Jlb8L8dRuObJFWg2P+AuOIxoCgKF+2Oq4d4Zd0OUA==}
     engines: {node: ^18 || ^20 || >= 21}
 
-  node-cron@4.0.5:
-    resolution: {integrity: sha512-XN5PwNBniFz6y9Ic/VChtrBtlXfAqdKUFou7nid/1pLGNFKO7cXN1nmLKUL7KLnM/Y4nUe5/EC+GsAghCj/N5g==}
+  node-cron@4.0.7:
+    resolution: {integrity: sha512-A37UUDpxRT/kWanELr/oMayCWQFk9Zx9BEUoXrAKuKwKzH4XuAX+vMixMBPkgZBkADgJwXv91w5cMRTNSVP/mA==}
     engines: {node: '>=6.0.0'}
 
   node-gyp-build@4.8.4:
@@ -3108,7 +3111,7 @@ snapshots:
 
   node-addon-api@8.3.1: {}
 
-  node-cron@4.0.5: {}
+  node-cron@4.0.7: {}
 
   node-gyp-build@4.8.4: {}
 

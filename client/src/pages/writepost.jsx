@@ -32,8 +32,8 @@ function WritePost() {
         title,
         content,
         code,
-        
-      });
+         
+      }, { withCredentials: true });
 
       alert('글이 성공적으로 작성되었습니다!');
       navigate('/community'); 

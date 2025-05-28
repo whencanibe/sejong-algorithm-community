@@ -6,14 +6,15 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
       style={{
         width: "850px",
         height: "300px",
-        border: "2px solid #3f3fff",
-        borderRadius: "10px",
-        backgroundColor: "#f7f9ff",
-        display: "flex",
+         display: "flex",
         gap: "24px",
         padding: "24px 32px",
-        boxShadow: "0 4px 10px rgba(63, 63, 255, 0.1)",
-        boxSizing: "border-box",
+         backgroundColor: "#2a3142", // 밝은 다크 블루
+    borderRadius: "12px",
+    padding: "20px",
+    border: "1px solid #00e5ff",
+    boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
+    color: "#e0f7fa"
       }}
     >
       {/* 왼쪽: 티어 이미지 */}
