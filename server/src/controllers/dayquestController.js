@@ -1,5 +1,7 @@
+import { syncSingleUser } from '../jobs/syncSolvedListJob.js';
 import { getDayquestStatus } from '../services/dayquestService.js';
 import { buildFootprints, getStreak } from '../services/footprintService.js';
+import { updateWeeklyRank } from '../services/weeklyRankService.js';
 
 export async function getDayquestStatusCtrl(req, res, next) {
   try {
@@ -46,4 +48,14 @@ export async function getStreakSessionCtrl(req, res, next) {
   } catch (error) {
     next(error);
   }
+}
+
+export async function refreshDailyQuestCtrl(req, res, next) {
+  try {
+    const userId = req.user.id;
+    await syncSingleUser(userId);         
+    await updateWeeklyRank(userId);       
+    const status = await getDayquestStatus(userId);
+    res.json(status);                     
+  } catch (e) { next(e); }
 }

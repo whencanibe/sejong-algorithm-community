@@ -1,5 +1,5 @@
 import prisma from '../models/prisma.js';
-import { getTodayProblemId } from '../utils/dayquestUtils.js';
+import { getTodayProblemId } from '../utils/getTodayProblemId.js';
 
 export async function countTodaySolvedUsers() {
   const today = new Date();
