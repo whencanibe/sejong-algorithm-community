@@ -1,7 +1,7 @@
 import prisma from '../models/prisma.js';
 
-export function findByPostId(postId) {
-  return prisma.comment.findMany({
+export async function findByPostId(postId) {
+  return await prisma.comment.findMany({
     where: { postId },
     orderBy: { createdAt: 'asc' },
     include: {
@@ -14,8 +14,8 @@ export function findByPostId(postId) {
   });
 }
 
-export function create(data) {
-  return prisma.comment.create({
+export async function create(data) {
+  return await prisma.comment.create({
     data,
     include: {
       user: {
@@ -25,15 +25,15 @@ export function create(data) {
   });
 }
 
-export function update(id, text) {
-  return prisma.comment.update({
+export async function update(id, text) {
+  return await prisma.comment.update({
     where: { id },
     data: { text },
   });
 }
 
-export function remove(id) {
-  return prisma.comment.delete({
+export async function remove(id) {
+  return await prisma.comment.delete({
     where: { id },
   });
 }

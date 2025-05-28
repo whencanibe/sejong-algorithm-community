@@ -28,3 +28,12 @@ export async function getStudentInDeptWeeklyRankingCtrl(req, res, next) {
         next(error);
     }
 }
+
+export async function refreshSolvedInfoSessionCtrl(req, res, next) {
+    try {
+        const userId = Number(req.session?.user?.id);
+        await syncSingleUser(userId);             // Solved.ac <-> DB 
+        await updateWeeklyRank(userId);   // WeeklyRank 갱신
+        res.json({ ok: true });
+    } catch (e) { next(e); }
+}
