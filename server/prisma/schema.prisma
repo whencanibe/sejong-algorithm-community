@@ -25,6 +25,7 @@ model User {
   weeklyRanks WeeklyRank[]
 
   comments       Comment[] //사용자 댓글
+  questSolves  QuestSolve[]
 }
 
 model SolveSnapshot {
@@ -82,4 +83,25 @@ model Comment {
 
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DailyQuest {
+  date      DateTime
+  problemId Int
+
+  questSolves  QuestSolve[]
+
+  @@id([date, problemId])
+}
+
+model QuestSolve {
+  userId    Int
+  date      DateTime
+  problemId Int
+  solvedAt  DateTime @default(now())
+
+  user  User        @relation(fields:[userId], references:[id])
+  quest DailyQuest  @relation( fields:[date, problemId], references:[date, problemId])
+
+  @@id([userId, date, problemId])
 }
