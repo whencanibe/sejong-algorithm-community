@@ -30,7 +30,53 @@ async function main() {
     }
 
     console.log('테스트용 user 삽입 완료!');
-}
+
+    const cards = [
+        {
+          title: "문제해결 카드",
+          comment: "스스로 해답을 찾아낸 똑똑한 우주인!",
+          image: "/카드/문제해결.png",
+        },
+        {
+            title: "꾸준 카드",
+            comment: "쉽지 않았지만 끝까지 해냈어요!",
+            image: "/카드/꾸준.png",
+          },
+          {
+            title: "끈기 카드",
+            comment: "오래 걸려도 끝까지 도전!",
+            image: "/카드/끈기.png",
+          },
+          {
+            title: "도전 카드",
+            comment: "처음 푸는 유형도 멋지게 도전했어요!",
+            image: "/카드/도전.png",
+          },
+          {
+            title: "성실 카드",
+            comment: "언제나 꾸준하게 임무 수행!",
+            image: "/카드/성실.png",
+          },
+          {
+            title: "인내 카드",
+            comment: "끝까지 포기하지 않는 우주인!",
+            image: "/카드/인내.png",
+          },
+          {
+            title: "정직 카드",
+            comment: "올바르게, 스스로 풀었어요 !",
+            image: "/카드/정직.png",
+          },
+      ];
+    
+      for (const card of cards) {
+        await prisma.card.upsert({
+          where: { title: card.title },
+          update: {},
+          create: card,
+        });
+      }
+    }
 
 main()
     .catch(e => { console.error(e); process.exit(1); })
