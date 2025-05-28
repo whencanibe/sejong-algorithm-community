@@ -87,7 +87,7 @@ model Comment {
 }
 
 model DailyQuest {
-  date      DateTime
+  date      DateTime @db.DateTime(0) 
   problemId Int
 
   questSolves  QuestSolve[]
@@ -97,7 +97,7 @@ model DailyQuest {
 
 model QuestSolve {
   userId    Int
-  date      DateTime
+  date      DateTime @db.DateTime(0) 
   problemId Int
   solvedAt  DateTime @default(now())
 
