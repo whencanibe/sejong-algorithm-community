@@ -1,10 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 
 function MyPage() {
   const [profileImg, setProfileImg] = useState(`https://api.dicebear.com/7.x/bottts/svg?seed=${Date.now()}`);
-  const [nickname, setNickname] = useState('수정');
+  const [nickname, setNickname] = useState('');
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [nicknameError, setNicknameError] = useState(false);
+
+  // ✅ 추가: 사용자 정보 상태
+  const [userInfo, setUserInfo] = useState({
+    baekjoonName: '',
+    name: '',
+    department: '',
+    enrollYear: '',
+    tier: '',
+    rank: 0,
+    rankInDepartment: 0,
+    weeklySolved: 0,
+    weeklyRankInSchool: 0,
+    weeklyRankInDepartment: 0,
+    streak: 0,
+    percentile: 0
+  });
+
+  // ✅ useEffect 내부 비동기 함수
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        // ✅ 1) 세션/쿠키 갱신 (refresh)
+        await axios.post(`http://localhost:4000/info/api/refresh`, {}, {
+          withCredentials: true, // 쿠키 포함!
+        });
+        
+        const res = await axios.get(`http://localhost:4000/info/api/mypage`, {
+          withCredentials: true, // ✅ 세션 쿠키 포함
+        });
+        setUserInfo(res.data);
+        setNickname(res.data.name); // 닉네임 초기화
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUserInfo();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -20,6 +58,9 @@ function MyPage() {
     }
     setIsEditingNickname(false);
     setNicknameError(false);
+
+    // ✅ 서버에 닉네임 저장 요청 추가 (예: PUT 요청)
+    // axios.put(`http://localhost:4000/info/api/mypage`, { name: nickname })
   };
 
   const commonBoxStyle = {
@@ -84,7 +125,7 @@ function MyPage() {
       >
         <h1 style={{ marginBottom: '30px', textAlign: 'center' }}>👤 내 프로필</h1>
 
-        {/* 프로필 이미지 + 정보: 좌우 배치 */}
+        {/* 프로필 이미지 + 정보 */}
         <div
           style={{
             display: 'flex',
@@ -95,7 +136,7 @@ function MyPage() {
             marginBottom: '30px',
           }}
         >
-          {/* 왼쪽: 프로필 이미지 */}
+          {/* 프로필 이미지 */}
           <div style={{ position: 'relative', width: '200px', minWidth: '200px' }}>
             <img
               src={profileImg}
@@ -141,8 +182,8 @@ function MyPage() {
           <div style={{ flexGrow: 1, minWidth: '250px' }}>
             {/* 아이디 */}
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold' }}>아이디</label>
-              <div style={commonBoxStyle}>sojung22</div>
+              <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold' }}>백준 아이디</label>
+              <div style={commonBoxStyle}>{userInfo.baekjoonName}</div>
             </div>
 
             {/* 닉네임 */}
@@ -220,16 +261,15 @@ function MyPage() {
                 paddingLeft: '5px',
               }}
             >
-              <p><strong>학과:</strong> 소프트웨어학과</p>
-              <p><strong>학번:</strong> 22학번</p>
-              <p><strong>학년:</strong> 3</p>
-              <p><strong>백준 티어:</strong> 실버 3</p>
-              <p><strong>세종대 내 백준 티어 랭킹:</strong> 3</p>
-              <p><strong>학과 내 백준 티어 랭킹:</strong> 3</p>
-              <p><strong>이번주에 푼 백준 문제:</strong> 12</p>
-              <p><strong>세종대 내 이번주 백준 풀이 랭킹:</strong> 3</p>
-              <p><strong>학과 내 이번주 백준 풀이 랭킹:</strong> 3</p>
-              <p><strong>연속 풀이 일수:</strong> 4</p>
+              <p><strong>학과:</strong> {userInfo.department}</p>
+              <p><strong>학번:</strong> {userInfo.enrollYear}학번</p>
+              <p><strong>티어:</strong> {userInfo.tier}</p>
+              <p><strong>세종대 내 티어 랭킹:</strong> {userInfo.rank}</p>
+              <p><strong>학과 내 티어 랭킹:</strong> {userInfo.rankInDepartment}</p>
+              <p><strong>이번주 푼 문제 수:</strong> {userInfo.weeklySolved}</p>
+              <p><strong>세종대 내 이번주 랭킹:</strong> {userInfo.weeklyRankInSchool}</p>
+              <p><strong>학과 내 이번주 랭킹:</strong> {userInfo.weeklyRankInDepartment}</p>
+              <p><strong>연속 풀이 일수:</strong> {userInfo.streak}</p>
             </div>
           </div>
         </div>
