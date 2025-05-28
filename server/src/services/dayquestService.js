@@ -1,7 +1,6 @@
 import prisma from '../models/prisma.js';
 import { getTodayProblemId } from '../utils/getTodayProblemId.js';
 import { getProblemDetail } from '../services/solvedacService.js'; 
-import { saveDailyQuest } from '../repositories/dayquestRepository.js';
 import { saveQuestSolve } from '../repositories/questSolveRepository.js';
 import { utcMidnight } from '../utils/utcTodayMidnight.js';
 
