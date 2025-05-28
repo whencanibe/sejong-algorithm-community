@@ -21,6 +21,8 @@
     "dev:server": "pnpm --filter server dev",
     "lint": "eslint \"**/*.{js,jsx}\" --max-warnings=0",
     "format": "prettier -w \"**/*.{js,jsx,json,md}\"",
-    "prisma:generate": "pnpm --filter server exec prisma generate"
+    "prisma:generate": "pnpm --filter server exec prisma generate",
+    "prisma:migrate": "pnpm --filter server exec prisma migrate dev",
+    "prisma:seed": "pnpm --filter server exec prisma db seed"
   }
 }

@@ -24,7 +24,8 @@ model User {
   snapshots      SolveSnapshot[]
   weeklyRanks    WeeklyRank[]
 
-  comments  Comment[] //사용자 댓글
+  comments       Comment[] //사용자 댓글
+  questSolves  QuestSolve[]
   userCards UserCard[] //사용자 카드
 }
 
@@ -81,9 +82,31 @@ model Comment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model DailyQuest {
+  date      DateTime
+  problemId Int
+
+  questSolves  QuestSolve[]
+
+  @@id([date, problemId])
+}
+
+model QuestSolve {
+  userId    Int
+  date      DateTime
+  problemId Int
+  solvedAt  DateTime @default(now())
+
+  user  User        @relation(fields:[userId], references:[id])
+  quest DailyQuest  @relation( fields:[date, problemId], references:[date, problemId])
+
+  @@id([userId, date, problemId])
+}
+
 
 model Card {
   id      Int    @id @default(autoincrement())
