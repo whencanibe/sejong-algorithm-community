@@ -52,7 +52,7 @@ export async function getStreakSessionCtrl(req, res, next) {
 
 export async function refreshDailyQuestCtrl(req, res, next) {
   try {
-    const userId = req.user.id;
+    const userId = req.session?.user?.id;
     await syncSingleUser(userId);         
     await updateWeeklyRank(userId);       
     const status = await getDayquestStatus(userId);
