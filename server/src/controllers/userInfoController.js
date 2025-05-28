@@ -1,4 +1,3 @@
-import { buildFootprints } from '../services/footprintService.js';
 import { getPercentilesForUser, getUserInfo } from "../services/userInfoService.js"; 
 
 export async function getUserInfoCtrl(req, res, next) {
@@ -11,13 +10,6 @@ export async function getUserInfoCtrl(req, res, next) {
     }
 }
 
-export async function getFootprintsCtrl(req, res, next) {
-    try {
-        const userId = Number(req.params.id);
-        const footprints = await buildFootprints(userId);
-        res.status(201).json({ footprints });
-    } catch (e) { next(e); }
-}
 export async function getPercentilesForUserCtrl(req, res, next) {
     try {
         const userId = Number(req.params.id);
