@@ -74,6 +74,10 @@ function MyPage() {
     boxSizing: 'border-box',
   };
 
+  if (!userInfo || !userInfo.baekjoonName) {
+    return <div style={{ padding: "40px" }}>로딩 중...</div>;
+  }
+
   return (
     <div
       style={{
