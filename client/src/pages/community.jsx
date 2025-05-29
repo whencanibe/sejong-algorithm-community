@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+
 function Community() {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
@@ -17,14 +18,14 @@ function Community() {
         console.error('게시글 불러오기 실패:', err);
       });
   }, []);
-
+  
   return (
     <div
   style={{
     fontFamily: 'Arial, sans-serif',
     backgroundColor: "#0d1117",
     padding: '90px 20px 40px', // ✅ 상단 여백 + 좌우 여백
-    backgroundColor: '#fff',
+   
     boxSizing: 'border-box',
     minHeight: '100vh',        // 빈 공간 대비
   }}

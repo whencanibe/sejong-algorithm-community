@@ -9,7 +9,7 @@ import axios from "axios";
 
 export default function Home() {
   const navigate = useNavigate();
-  const todayProblem = { problemId: 1000, title: "다리놓기" };
+   const [todayProblem, setTodayProblem] = useState(null);
   const [posts, setPosts] = useState([]);
   const [footprints, setFootprints] = useState(() => {
     const saved = localStorage.getItem("footprints");
@@ -25,6 +25,36 @@ export default function Home() {
   const [showCardModal, setShowCardModal] = useState(false);
   const [newCard, setNewCard] = useState(null);
 
+  
+  const [bojInfo, setBojInfo] = useState({ baekjoonName: '' });
+
+useEffect(() => {
+  axios.get('http://localhost:4000/info/api/mypage', { withCredentials: true })
+    .then(res => {
+      setBojInfo({ baekjoonName: res.data.baekjoonName }); // ✅ 정확한 키로 설정
+    })
+    .catch(err => {
+      console.error('백준 닉네임 불러오기 실패:', err);
+    });
+}, []);
+
+
+
+
+  useEffect(() => {
+    axios.get('http://localhost:4000/dayquest/status', { withCredentials: true })
+      .then(res => {
+        const { problemId, title } = res.data;
+      setTodayProblem({ problemId, title });
+      })
+      .catch(err => {
+        console.error('오늘의 문제 불러오기 실패:', err);
+      });
+  }, []);
+
+
+
+
   useEffect(() => {
     axios.get("http://localhost:4000/posts")
       .then((res) => setPosts(res.data.slice(0, 3)))
@@ -32,22 +62,25 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const allChecked = footprints.every(Boolean);
-    if (allChecked && !rewardGiven) {
-      const newCards = [
-        { title: "끈기 카드", comment: "끝까지 해냈어요!", image: "/카드/끈기.png" },
-        { title: "문제해결 카드", comment: "스스로 해답을 찾아낸 똑똑한 우주인!", image: "/카드/문제 해결.png" },
-      ];
-      const selectedCard = newCards[Math.floor(Math.random() * newCards.length)];
-      const updatedCards = [selectedCard, ...cards];
-      setCards(updatedCards);
-      setNewCard(selectedCard);
-      setShowCardModal(true);
-      setRewardGiven(true);
-      localStorage.setItem("cards", JSON.stringify(updatedCards));
-      localStorage.setItem("rewardGiven", "true");
-    }
-  }, [footprints, rewardGiven]);
+  const allChecked = footprints.every(Boolean);
+  if (allChecked && !rewardGiven) {
+    axios.post("http://localhost:4000/card/reward", { stampCount: 7,}, { withCredentials: true })
+      .then(res => {
+        const selectedCard = res.data.card;  // 서버가 준 카드
+        const updatedCards = [selectedCard, ...cards];
+        setCards(updatedCards);
+        setNewCard(selectedCard);            // 모달에 쓸 카드 설정
+        setShowCardModal(true);              // 카드 모달 띄우기
+        setRewardGiven(true);
+      })
+      .catch(err => {
+        console.warn("카드 지급 실패:", err.response?.data?.error || err.message);
+      });
+  }
+}, [footprints, rewardGiven]);
+
+
+
 
   const navBtnStyle = {
     backgroundColor: "transparent",
@@ -71,8 +104,11 @@ export default function Home() {
     setShowCardModal(false);
   };
 
+  if (!todayProblem) return <div>로딩 중...</div>;
+
   return (
     <div style={{ backgroundColor: "#0d1117", color: "#e0f7fa", minHeight: "100vh" }}>
+        
        {/* 🌟 Floating Stars with animation */}
       <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "60px", left: "20px", width: "40px", zIndex: 0 }} alt="star1" />
 <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "120px", left: "80vw", width: "32px", zIndex: 0 }} alt="star1" />
@@ -203,7 +239,10 @@ export default function Home() {
       <div style={{ padding: "40px", marginTop: "30px" }}>
   {/* 백준 프로필 + 마이프로필 */}
   <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "40px" }}>
-    <BaekjoonProfile handle="rlatlql123" tier={15} ratingRank={3284} />
+    {bojInfo && (
+  <BaekjoonProfile handle={bojInfo.handle} tier={15} ratingRank={3284} />
+)}
+
     <MyProfile nickname="혜서" info="세종대 알고리즘 커뮤니티 운영자" avatarSeed="혜서" />
   </div>
 

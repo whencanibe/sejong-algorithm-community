@@ -6,15 +6,14 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
       style={{
         width: "850px",
         height: "300px",
-         display: "flex",
+        display: "flex",
         gap: "24px",
         padding: "24px 32px",
-         backgroundColor: "#2a3142", // 밝은 다크 블루
-    borderRadius: "12px",
-    padding: "20px",
-    border: "1px solid #00e5ff",
-    boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
-    color: "#e0f7fa"
+        backgroundColor: "#2a3142",
+        borderRadius: "12px",
+        border: "1px solid #00e5ff",
+        boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
+        color: "#e0f7fa"
       }}
     >
       {/* 왼쪽: 티어 이미지 */}
@@ -28,7 +27,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
         }}
       >
         <img
-          src='\등급\다이아1.png'
+          src='/등급/다이아1.png'
           alt="백준 티어"
           style={{ width: "100px", height: "100px" }}
         />
@@ -43,13 +42,13 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
           justifyContent: "flex-start",
         }}
       >
-        {/* 닉네임 */}
+        {/* 닉네임, 티어, 랭크 */}
         <div style={{ marginBottom: "8px" }}>
           <h3 style={{ margin: 0, fontSize: "16px" }}>
             닉네임: <span style={{ color: "#3f3fff" }}>{handle}</span>
           </h3>
-          <p style={{ margin: 0, fontSize: "13px", color: "#666" }}>
-            상위 약 {ratingRank}위
+          <p style={{ margin: 0, fontSize: "13px", color: "#ccc" }}>
+            티어: {tier} / 상위 약 {ratingRank}위
           </p>
         </div>
 
