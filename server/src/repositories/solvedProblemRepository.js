@@ -51,7 +51,7 @@ export async function countUsersWhoSolved(problemId) {
 
 // 오늘의 문제를 풀었는지 확인
 export async function hasUserSolvedProblem(userId, problemId) {
-  const record = await prisma.solvedProblem.findUnique({
+  const record = await prisma.solvedProblem.findFirst({
     where: {
       userId_problemId: { userId, problemId }
     }

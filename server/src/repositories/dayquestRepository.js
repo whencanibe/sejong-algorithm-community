@@ -1,5 +1,5 @@
 import prisma from '../models/prisma.js';
-import { getTodayProblemId } from '../utils/dayquestUtils.js';
+import { getTodayProblemId } from '../utils/getTodayProblemId.js';
 
 export async function countTodaySolvedUsers() {
   const today = new Date();
@@ -17,14 +17,4 @@ export async function countTodaySolvedUsers() {
   });
 
   return count;
-}
-
-export async function saveDailyQuest({ date, problemId }) {
-  return prisma.dailyQuest.upsert({
-    where: {
-      date_problemId: { date, problemId }
-    },
-    update: {},                 // 이미 있으면 그대로 둠
-    create: { date, problemId } // 없으면 새로 INSERT
-  });
 }

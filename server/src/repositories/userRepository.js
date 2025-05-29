@@ -131,3 +131,7 @@ export async function getPercentileInDepartement(userId) {
 
   return Math.round((rank / total) * 100);
 }
+
+export async function getNumberOfUsers() {
+  return await prisma.user.count();
+}

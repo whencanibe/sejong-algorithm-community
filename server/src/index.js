@@ -32,7 +32,7 @@ app.use(session({
   cookie: {
     secure: false, 
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 // 1시간
+    maxAge: 1000 * 60 * 60 * 2// 2시간
   }
 }));
 
