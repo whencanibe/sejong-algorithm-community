@@ -3,5 +3,5 @@ export function getTodayProblemId() {
     const hash = [...today].reduce((acc, c) => acc + c.charCodeAt(0), 0);
 
     const problemId = 1000 + (hash % 1000); // 일단 1000 ~ 1999
-    return problemId;
+    return 2884;
   }
