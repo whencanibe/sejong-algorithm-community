@@ -36,6 +36,7 @@ export async function getUserInfo(userId) {
       solvedDates,
       streak,
       percentile,
+      profileImage
     ] = await Promise.all([
       userRepo.getRankByUserId(userId),
       userRepo.getRankInDepartmentByUserId(userId),
@@ -59,7 +60,8 @@ export async function getUserInfo(userId) {
       weeklyRankInSchool,
       weeklyRankInDepartment,
       streak,
-      percentile
+      percentile,
+      profileImage: user.profileImage
     };
   } catch (err) {
     console.error("getUserInfo 에러:", err.message);
@@ -85,4 +87,6 @@ export async function getPercentilesForUser(userId) {
   }
 }
 
-
+export function updateUserProfileImage(userId, imageUrl) {
+  return userRepo.updateUserProfileImage(userId, imageUrl);
+}

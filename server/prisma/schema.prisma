@@ -19,6 +19,7 @@ model User {
   tier         String?
   solvedNum    Int?
   createdAt    DateTime @default(now())
+  profileImage  String?
 
   solvedProblems SolvedProblem[]
   snapshots      SolveSnapshot[]
@@ -86,15 +87,6 @@ model Comment {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model DailyQuest {
-  date      DateTime @db.DateTime(0) 
-  problemId Int
-
-  questSolves  QuestSolve[]
-
-  @@id([date, problemId])
-}
-
 model QuestSolve {
   userId    Int
   date      DateTime @db.DateTime(0) 
@@ -102,7 +94,6 @@ model QuestSolve {
   solvedAt  DateTime @default(now())
 
   user  User        @relation(fields:[userId], references:[id])
-  quest DailyQuest  @relation( fields:[date, problemId], references:[date, problemId])
 
   @@id([userId, date, problemId])
 }

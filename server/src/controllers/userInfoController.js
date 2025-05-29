@@ -1,4 +1,5 @@
 import { getPercentilesForUser, getUserInfo } from "../services/userInfoService.js"; 
+import * as userRepo from '../repositories/userRepository.js';
 
 export async function getUserInfoCtrl(req, res, next) {
     try {
@@ -39,3 +40,18 @@ export async function getPercentilesForUserSessionCtrl(req, res, next) {
         res.status(404).json({ error: error.message || '상위 퍼센트 조회 실패' });
     }
 }
+
+  export async function uploadProfileImage(req, res) {
+    try {
+      const userId = req.session.user.id;
+      const filename = req.file.filename;
+      const imageUrl = `/uploads/${filename}`; // static 경로
+  
+      await userRepo.updateUserProfileImage(userId, imageUrl);
+  
+      return res.status(200).json({ url: imageUrl }); // 클라이언트가 사용하기 쉽게 반환
+    } catch (err) {
+      console.error("uploadProfileImage 에러:", err.message);
+      res.status(500).json({ error: "이미지 업로드 실패" });
+    }
+  }
