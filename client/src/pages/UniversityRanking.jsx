@@ -1,20 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Cell, LabelList } from "recharts";
-
-function useWindowSize() {
-  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setSize([window.innerWidth, window.innerHeight]);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return size;
-}
-
 import {
   LineChart, Line, XAxis, YAxis, Tooltip,
   CartesianGrid, ReferenceDot, ResponsiveContainer,
@@ -26,60 +12,102 @@ import {
   ResponsiveContainer as BContainer
 } from "recharts";
 
-function UniversityRanking() {
-  const [windowWidth] = useWindowSize();
+function useWindowSize() {
+  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
+  useEffect(() => {
+    const handleResize = () => {
+      setSize([window.innerWidth, window.innerHeight]);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return size;
+}
 
-  // 곡선 데이터
+function UniversityRanking() {
+  const navigate = useNavigate();
+  const [windowWidth] = useWindowSize();
+  const [userInfo, setUserInfo] = useState(null);
+  const [deptRanking, setDeptRanking] = useState([]);
+  const [percentile, setPercentile] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await axios.post(`http://localhost:4000/info/api/refresh`, {}, {
+                  withCredentials: true, // 쿠키 포함!
+                });
+                
+        const meRes = await fetch("http://localhost:4000/user/me", { credentials: "include" });
+        const me = await meRes.json();
+
+        if (!me.user?.id) {
+          alert("로그인이 필요합니다");
+          navigate("/");
+          return;
+        }
+
+        const userRes = await fetch(`http://localhost:4000/info/api/mypage/${me.user.id}`);
+        const userData = await userRes.json();
+        setUserInfo(userData);
+        setPercentile(userData.percentile ?? 0);
+
+        const rankingRes = await fetch(`http://localhost:4000/info/api/deptranking`);
+        const rankData = await rankingRes.json();
+        setDeptRanking(rankData.slice(1));
+      } catch (err) {
+        console.error("데이터 불러오기 실패:", err);
+      }
+    };
+    fetchData();
+  }, [navigate]);
+
+  const data = deptRanking.map((dept) => ({
+    name: dept.department,
+    solved: dept.solvedThisWeek
+  }));
+
+  const sortedData = [...data].sort((a, b) => b.solved - a.solved);
+  const myName = userInfo?.department ?? '';
+  const myData = sortedData.find((d) => d.name === myName);
+
+  const myX = 100 - percentile;
+  const myY = Math.exp(-((myX - 50) ** 2) / (2 * 15 ** 2));
+
   const curveData = Array.from({ length: 100 }, (_, i) => {
     const x = i;
     const y = Math.exp(-((x - 50) ** 2) / (2 * 15 ** 2));
     return { x, y };
   });
 
-  const myX = 65;
-  const myY = Math.exp(-((myX - 50) ** 2) / (2 * 15 ** 2));
-  const percentile = 100 - Math.round((myX / 100) * 100);
-
-  // 막대그래프 데이터
-  const data = [
-    { name: '소프트웨어22', solved: 12 },
-    { name: '컴퓨터공학22', solved: 17 },
-    { name: '컴퓨터공학21', solved: 5 },
-    { name: '소프트웨어21', solved: 3 },
-    { name: '컴퓨터공학23', solved: 24 },
-  ];
-  const sortedData = [...data].sort((a, b) => b.solved - a.solved);
-  const myName = '소프트웨어22';
-  const myData = sortedData.find((d) => d.name === myName);
-
   return (
     <div style={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      gap: '40px',
-      flexWrap: 'wrap',
-      padding: '40px',
-      boxSizing: 'border-box',       
-      maxWidth: '1200px',            
-    }}>
-      
-      {/* 왼쪽: 그래프 2개 세로 정렬 */}
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    gap: '30px',
+    flexWrap: 'wrap',
+    padding: '0px',
+    width: '100%',
+    boxSizing: 'border-box',
+    color: '#e0f7fa',
+  }}>
+
+      {/* 왼쪽 그래프 영역 */}
       <div
         style={{
           flex: '1 1 700px',
-          minWidth: '600px', 
-          maxWidth: '1000px', 
+          minWidth: '600px',
+          maxWidth: '1000px',
           display: 'flex',
           flexDirection: 'column',
           gap: '40px'
         }}
       >
-        {/* 곡선 그래프 */}
-        <div style={{ width: '100%', height: '250px' }}>
+        <div style={{ width: '100%', height: '240px' }}>
           <h2 style={{ textAlign: 'center' }}>(세종대) 백준 티어 랭킹</h2>
           <ResponsiveContainer key={windowWidth} width="100%" height="100%">
-            <LineChart data={curveData}>
+             <LineChart data={curveData} margin={{ top: 0, right: 70, left: 70, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="x" domain={[0, 100]} />
               <YAxis />
@@ -117,14 +145,13 @@ function UniversityRanking() {
           </ResponsiveContainer>
         </div>
 
-        {/* 막대 그래프 */}
-        <div style={{ width: '100%', height: '350px', marginTop: '30px' }}>
+        <div style={{ width: '100%', height: '320px', marginTop: '40px' }}>
           <h2 style={{ textAlign: 'center' }}>(세종대) 이번주 백준 풀이 랭킹</h2>
           <BContainer key={windowWidth} width="100%" height="100%">
             <BarChart
               layout="vertical"
               data={sortedData}
-              margin={{ top: 0, right: 50, left: 50, bottom: 50 }}
+              margin={{ top: 0, right: 70, left: 70, bottom: 50 }}
               barCategoryGap="10%"
             >
               <BGrid strokeDasharray="3 3" />
@@ -155,27 +182,46 @@ function UniversityRanking() {
         </div>
       </div>
 
-      {/* 오른쪽: 내 정보 */}
+      {/* 오른쪽 내 정보 카드 */}
       <div
         style={{
           flex: '0 0 300px',
-          minWidth: '280px', 
-          background: '#f9f9f9',
+          minWidth: '280px',
+          background: '#1e293b',
+          color: '#ffffff',
+          fontWeight: '500',
           padding: '24px',
           borderRadius: '10px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+          boxShadow: '0 0 12px rgba(0, 229, 255, 0.2)',
           boxSizing: 'border-box',
-          alignSelf: 'flex-start', 
+          alignSelf: 'flex-start',
+          marginTop: '50px',
         }}
       >
-        <h3 style={{ fontSize: '20px', marginBottom: '16px' }}>👤 내 정보</h3>
-        <div style={{ marginBottom: '10px' }}><strong>백준 ID:</strong> {myName}</div>
-        <div style={{ marginBottom: '10px' }}><strong>총 풀이:</strong> 142개</div>
+        <h3 style={{
+          fontSize: '20px',
+          marginBottom: '16px',
+          fontWeight: '700',
+          color: '#00e5ff',
+          textShadow: '0 0 4px #00e5ff99'
+        }}>
+          👤 내 정보
+        </h3>
         <div style={{ marginBottom: '10px' }}>
-          <strong>이번주 풀이:</strong> {myData ? myData.solved : '-'}개
+          <strong style={{ fontWeight: '600' }}>백준 ID:</strong> {userInfo?.baekjoonName ?? '-'}
         </div>
-        <div style={{ marginBottom: '10px' }}><strong>티어:</strong> 실버 III 🥈</div>
-        <div><strong>상위 퍼센트:</strong> {percentile}%</div>
+        <div style={{ marginBottom: '10px' }}>
+          <strong style={{ fontWeight: '600' }}>총 풀이:</strong> {userInfo?.solvedNum ?? 0}개
+        </div>
+        <div style={{ marginBottom: '10px' }}>
+          <strong style={{ fontWeight: '600' }}>이번주 풀이:</strong> {myData?.solved ?? 0}개
+        </div>
+        <div style={{ marginBottom: '10px' }}>
+          <strong style={{ fontWeight: '600' }}>티어:</strong> {userInfo?.tier ?? '-'}
+        </div>
+        <div>
+          <strong style={{ fontWeight: '600' }}>상위 퍼센트:</strong> {percentile}%
+        </div>
       </div>
     </div>
   );
