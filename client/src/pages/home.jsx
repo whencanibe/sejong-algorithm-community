@@ -8,6 +8,7 @@ import CardAlbum from "../components/CardAlbum";
 import axios from "axios";
 
 export default function Home() {
+
   const navigate = useNavigate();
    const [todayProblem, setTodayProblem] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -55,18 +56,15 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
 
 
   useEffect(() => {
-  axios.get('http://localhost:4000/dayquest/status', { withCredentials: true })
-    .then(res => {
-      const { todayProblemId, todayProblemTitle } = res.data;
-      setTodayProblem({
-        problemId: todayProblemId,
-        title: todayProblemTitle
+    axios.get('http://localhost:4000/dayquest/status', { withCredentials: true })
+      .then(res => {
+        const { problemId, title } = res.data;
+      setTodayProblem({ problemId, title });
+      })
+      .catch(err => {
+        console.error('오늘의 문제 불러오기 실패:', err);
       });
-    })
-    .catch(err => {
-      console.error('오늘의 문제 불러오기 실패:', err);
-    });
-}, []);
+  }, []);
 
 
 
@@ -199,7 +197,7 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
     }}
   />
       <img
-  src="/public/배경/우주인.png" // 네가 방금 올린 파일 경로에 맞게 바꿔줘!
+  src="/public/배경/우주인.png" 
   alt="floating-astronaut"
   style={{
     position: "absolute",
