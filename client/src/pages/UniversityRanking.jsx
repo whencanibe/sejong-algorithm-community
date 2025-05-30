@@ -1,9 +1,18 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { Cell, LabelList } from "recharts";
+import {
+  BarChart, Bar, Legend, XAxis as BXAxis, YAxis as BYAxis,
+  CartesianGrid as BGrid, Tooltip as BTooltip, ResponsiveContainer as BContainer
+} from "recharts";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip,
+  CartesianGrid, ReferenceDot, ResponsiveContainer
+} from "recharts";
 
 function useWindowSize() {
   const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
-
   useEffect(() => {
     const handleResize = () => {
       setSize([window.innerWidth, window.innerHeight]);
@@ -11,81 +20,153 @@ function useWindowSize() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
   return size;
 }
 
-import {
-  LineChart, Line, XAxis, YAxis, Tooltip,
-  CartesianGrid, ReferenceDot, ResponsiveContainer,
-  BarChart, Bar, Legend
-} from "recharts";
-import {
-  XAxis as BXAxis, YAxis as BYAxis,
-  CartesianGrid as BGrid, Tooltip as BTooltip,
-  ResponsiveContainer as BContainer
-} from "recharts";
-
 function UniversityRanking() {
+  const navigate = useNavigate();
   const [windowWidth] = useWindowSize();
+  const [userInfo, setUserInfo] = useState(null);
+  const [deptRanking, setDeptRanking] = useState([]);
+  const [percentile, setPercentile] = useState(0);
+  const [rankInfo, setRankInfo] = useState({ rank: 0, total: 0 });
 
-  // 곡선 데이터
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await axios.post(`http://localhost:4000/info/api/refresh`, {}, {
+          withCredentials: true,
+        });
+
+        const userRes = await axios.get(`http://localhost:4000/info/api/mypage`, {
+          withCredentials: true,
+        });
+        const userData = userRes.data;
+        setUserInfo(userData);
+        setPercentile(userData.percentile ?? 0);
+
+        const statusRes = await axios.get(`http://localhost:4000/dayquest/status`, {
+        withCredentials: true,
+        });
+        const { totalUsers } = statusRes.data;
+        setRankInfo({ rank: userData.rank ?? 0, total: totalUsers });
+        
+        const rankingRes = await fetch(`http://localhost:4000/info/api/deptranking`, {
+          credentials: 'include',
+        });
+        const rankData = await rankingRes.json();
+        setDeptRanking(rankData.slice(1));
+      } catch (err) {
+        console.error("데이터 불러오기 실패:", err);
+      }
+    };
+    fetchData();
+  }, [navigate]);
+
+  if (!userInfo) {
+    return <div style={{ padding: "40px", fontSize: "18px" }}>로딩 중...</div>;
+  }
+
+  const data = deptRanking.map((dept) => ({
+    name: dept.department,
+    solved: dept.solvedThisWeek
+  }));
+
+  const sortedData = [...data].sort((a, b) => b.solved - a.solved);
+  const myName = userInfo?.department ?? '';
+  const rank = userInfo?.rank ?? 0;
+  const total = userInfo?.total ?? 0;
+  const myData = sortedData.find((d) => d.name === myName);
+
+  // 정규분포용 데이터
+  const myX = 100 - percentile;
+  const myY = Math.exp(-((myX - 50) ** 2) / (2 * 15 ** 2));
+
   const curveData = Array.from({ length: 100 }, (_, i) => {
     const x = i;
     const y = Math.exp(-((x - 50) ** 2) / (2 * 15 ** 2));
     return { x, y };
   });
 
-  const myX = 65;
-  const myY = Math.exp(-((myX - 50) ** 2) / (2 * 15 ** 2));
-  const percentile = 100 - Math.round((myX / 100) * 100);
-
-  // 막대그래프 데이터
-  const data = [
-    { name: '소프트웨어22', solved: 12 },
-    { name: '컴퓨터공학22', solved: 17 },
-    { name: '컴퓨터공학21', solved: 5 },
-    { name: '소프트웨어21', solved: 3 },
-    { name: '컴퓨터공학23', solved: 24 },
-  ];
-  const sortedData = [...data].sort((a, b) => b.solved - a.solved);
-  const myName = '소프트웨어22';
-  const myData = sortedData.find((d) => d.name === myName);
-
   return (
     <div style={{
       display: 'flex',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-start',
       alignItems: 'flex-start',
-      gap: '40px',
+      gap: '30px',
       flexWrap: 'wrap',
-      padding: '40px',
-      boxSizing: 'border-box',       
-      maxWidth: '1200px',            
+      padding: '0px',
+      width: '100%',
+      boxSizing: 'border-box',
+      color: '#e0f7fa',
     }}>
-      
-      {/* 왼쪽: 그래프 2개 세로 정렬 */}
+      {/* 왼쪽 그래프 영역 */}
       <div
         style={{
           flex: '1 1 700px',
-          minWidth: '600px', 
-          maxWidth: '1000px', 
+          minWidth: '600px',
+          maxWidth: '1000px',
           display: 'flex',
           flexDirection: 'column',
           gap: '40px'
         }}
       >
-        {/* 곡선 그래프 */}
-        <div style={{ width: '100%', height: '250px' }}>
-          <h2 style={{ textAlign: 'center' }}>(세종대) 백준 티어 랭킹</h2>
+        {/* 상위 퍼센트 시각화 바 */}
+        <div style={{
+          width: '90%',
+          height: '50px',
+          background: '#f0fdff',
+          borderRadius: '10px',
+          padding: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          boxShadow: '0 0 6px rgba(0,0,0,0.1)',
+          marginTop: '10px',
+          marginLeft: '30px'
+        }}>
+          <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#1e293b' }}>
+             <span style={{ color: '#00e5ff' }}>{userInfo?.name}</span>님의 백준 티어: 세종대 학생 {rankInfo.total}명 중 {rankInfo.rank}등
+          </div>
+          <div style={{
+            height: '18px',
+            width: '100%',
+            backgroundColor: '#cfe8f9',
+            borderRadius: '10px',
+            overflow: 'hidden',
+          }}>
+            <div
+              style={{
+                height: '100%',
+                width: `${100 - percentile}%`,
+                backgroundColor: '#3b82f6',
+                borderRadius: '10px 0 0 10px',
+                transition: 'width 0.5s ease'
+              }}
+            ></div>
+          </div>
+        </div>
+
+        {/* 정규분포 그래프 */}
+        <div style={{ width: '100%', height: '150px' }}>
+          <h2 style={{ textAlign: 'center', marginTop: 0 }}>(세종대) 백준 티어 랭킹</h2>
           <ResponsiveContainer key={windowWidth} width="100%" height="100%">
-            <LineChart data={curveData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="x" domain={[0, 100]} />
-              <YAxis />
-              <Tooltip content={({ active, payload, label }) => {
-                if (active && payload && payload.length) {
-                  return (
+            <LineChart data={curveData} margin={{ top: 0, right: 70, left: 70, bottom: 5 }}>
+              <XAxis
+                dataKey="x"
+                domain={[0, 100]}
+                label={{
+                  value: "백분율 (%)",
+                  position: "insideBottom",
+                  offset: -4,
+                  fill: "#6f728c",
+                  fontSize: 12,
+                }}
+              />
+              <YAxis hide />
+              <Tooltip
+                content={({ active, payload, label }) =>
+                  active && payload?.length ? (
                     <div style={{
                       background: '#fff',
                       padding: '8px 12px',
@@ -93,89 +174,158 @@ function UniversityRanking() {
                       borderRadius: '4px',
                       fontSize: '14px'
                     }}>
-                      <strong>{label}점</strong>
+                      <span style={{ color: '#000' }}>{label}%</span>
                     </div>
-                  );
+                  ) : null
                 }
-                return null;
-              }} />
+              />
               <Line type="monotone" dataKey="y" stroke="#6f728c" dot={false} />
               <ReferenceDot
                 x={myX}
                 y={myY}
                 r={5}
-                fill="#ff6b6b"
+                fill="#00e5ff"
                 stroke="none"
                 label={{
                   value: `나의 위치 (상위 ${percentile}%)`,
-                  position: "right",
+                  position: "top",
                   fontSize: 14,
-                  fill: "#000",
+                  fill: "#00e5ff",
                 }}
+                style={{ filter: "drop-shadow(0 0 6px #00e5ff)" }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        {/* 막대 그래프 */}
-        <div style={{ width: '100%', height: '350px', marginTop: '30px' }}>
+        {/* 학과별 풀이 수 랭킹 */}
+        <div style={{ width: '100%', height: '300px', marginTop: '40px' }}>
           <h2 style={{ textAlign: 'center' }}>(세종대) 이번주 백준 풀이 랭킹</h2>
           <BContainer key={windowWidth} width="100%" height="100%">
             <BarChart
               layout="vertical"
               data={sortedData}
-              margin={{ top: 0, right: 50, left: 50, bottom: 50 }}
+              margin={{ top: 0, right: 70, left: 70, bottom: 50 }}
               barCategoryGap="10%"
             >
               <BGrid strokeDasharray="3 3" />
               <BXAxis type="number" domain={[0, Math.max(...sortedData.map(d => d.solved))]} />
-              <BYAxis type="category" dataKey="name" />
-              <BTooltip />
+              <BYAxis
+                type="category"
+                dataKey="name"
+                tick={({ x, y, payload }) => {
+                  const isMe = payload.value === myName;
+                  return (
+                    <text
+                      x={x}
+                      y={y + 4}
+                      textAnchor="end"
+                      fill={isMe ? "#00e5ff" : "#6f728c"}
+                      style={{
+                        fontSize: 14,
+                        fontWeight: isMe ? "bold" : "normal",
+                      }}
+                    >
+                      {payload.value}
+                    </text>
+                  );
+                }}
+              />
+              <BTooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const { name, solved } = payload[0].payload;
+                    const isMe = name === myName;
+                    return (
+                      <div style={{
+                        background: "#fff",
+                        border: "1px solid #ccc",
+                        borderRadius: "6px",
+                        padding: "10px",
+                        fontSize: "14px",
+                        boxShadow: "0 0 6px rgba(0, 0, 0, 0.2)",
+                      }}>
+                        <div style={{
+                          fontWeight: "bold",
+                          color: isMe ? "#00e5ff" : "#6f728c",
+                        }}>
+                          {name}
+                        </div>
+                        <div style={{ color: "#000" }}>
+                          문제 풀이 수: {solved}개
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
               <Legend />
               <Bar dataKey="solved" name="문제 풀이 수">
                 <LabelList
-                  data={sortedData}
                   dataKey="solved"
                   position="right"
-                  formatter={(value, entry = {}, index) => {
-                    const name = typeof entry.name === 'string' ? entry.name : '';
-                    const isMe = name === myName;
-                    return `${name}${isMe ? ' (나)' : ''} ${value}개`;
+                  formatter={(value, entry) => {
+                    const isMe = entry?.payload?.name === myName;
+                    return `${value}개`;
                   }}
                 />
-                {sortedData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.name === myName ? "#ff6b6b" : "#6f728c"}
-                  />
-                ))}
+                {sortedData.map((entry, index) => {
+                  const isMe = entry.name === myName;
+                  return (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={isMe ? "#00e5ff" : "#6f728c"}
+                      style={isMe ? { filter: "drop-shadow(0 0 6px #00e5ff)" } : {}}
+                    />
+                  );
+                })}
               </Bar>
             </BarChart>
           </BContainer>
         </div>
       </div>
 
-      {/* 오른쪽: 내 정보 */}
+      {/* 내 정보 카드 */}
       <div
         style={{
           flex: '0 0 300px',
-          minWidth: '280px', 
-          background: '#f9f9f9',
+          minWidth: '280px',
+          background: '#1e293b',
+          color: '#ffffff',
+          fontWeight: '500',
           padding: '24px',
           borderRadius: '10px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+          boxShadow: '0 0 12px rgba(0, 229, 255, 0.2)',
           boxSizing: 'border-box',
-          alignSelf: 'flex-start', 
+          alignSelf: 'flex-start',
+          marginTop: '50px',
         }}
       >
-        <h3 style={{ fontSize: '20px', marginBottom: '16px' }}>👤 내 정보</h3>
-        <div style={{ marginBottom: '10px' }}><strong>백준 ID:</strong> {myName}</div>
-        <div style={{ marginBottom: '10px' }}><strong>총 풀이:</strong> 142개</div>
+        <h3 style={{
+          fontSize: '20px',
+          marginBottom: '16px',
+          fontWeight: '700',
+          color: '#00e5ff',
+          textShadow: '0 0 4px #00e5ff99'
+        }}>
+          👤 내 정보
+        </h3>
         <div style={{ marginBottom: '10px' }}>
-          <strong>이번주 풀이:</strong> {myData ? myData.solved : '-'}개
+          <strong style={{ fontWeight: '600' }}>백준 ID:</strong> {userInfo?.baekjoonName ?? '-'}
         </div>
-        <div style={{ marginBottom: '10px' }}><strong>티어:</strong> 실버 III 🥈</div>
-        <div><strong>상위 퍼센트:</strong> {percentile}%</div>
+        <div style={{ marginBottom: '10px' }}>
+          <strong style={{ fontWeight: '600' }}>티어:</strong> {userInfo?.tier ?? '-'}
+        </div>
+        <div style={{ marginBottom: '10px' }}>
+          <strong style={{ fontWeight: '600' }}>세종대 상위 퍼센트:</strong> {percentile}%
+        </div>
+        <div style={{ marginBottom: '10px' }}>
+          <strong style={{ fontWeight: '600' }}>총 풀이:</strong> {userInfo?.solvedNum ?? 0}개
+        </div>
+        <div style={{ marginBottom: '20px' }}>
+          <strong style={{ fontWeight: '600' }}>이번주 풀이:</strong> {myData?.solved ?? 0}개
+        </div>
       </div>
     </div>
   );
