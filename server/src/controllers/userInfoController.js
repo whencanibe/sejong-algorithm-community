@@ -55,3 +55,26 @@ export async function getPercentilesForUserSessionCtrl(req, res, next) {
       res.status(500).json({ error: "이미지 업로드 실패" });
     }
   }
+
+  export async function basicProfile(req, res) {
+    try {
+      const userId = req.session.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "로그인이 필요합니다." });
+      }
+  
+      const user = await userRepo.findUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "사용자 없음" });
+      }
+  
+      res.json({
+        name: user.name,
+        department: user.department,
+        profileImage: user.profileImage
+      });
+    } catch (err) {
+      console.error("basicProfile 에러:", err.message);
+      res.status(500).json({ message: "서버 오류" });
+    }
+  }

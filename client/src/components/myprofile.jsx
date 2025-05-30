@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function MyProfile({ nickname, info, imgUrl }) {
+export default function MyProfile({ nickname, department, imgUrl }) {
   return (
     <div
       style={{
@@ -32,7 +32,7 @@ export default function MyProfile({ nickname, info, imgUrl }) {
       <h3 style={{ fontSize: "18px", color: "#3f3fff", marginBottom: "8px" }}>
         닉네임: {nickname}
       </h3>
-      <p style={{ fontSize: "14px", color: "#333" }}>{info}</p>
+      <p style={{ fontSize: "14px", color: "#333" }}>학과: {department}</p>
     </div>
   );
 }

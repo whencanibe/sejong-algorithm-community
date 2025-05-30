@@ -24,11 +24,18 @@ export default function Home() {
   });
   const [showCardModal, setShowCardModal] = useState(false);
   const [newCard, setNewCard] = useState(null);
-
+  const [basicInfo, setBasicInfo] = useState({ name: "", profileImage: "", department: "" });  
   useEffect(() => {
     axios.get("http://localhost:4000/posts")
       .then((res) => setPosts(res.data.slice(0, 3)))
       .catch((err) => console.error("게시글 불러오기 실패:", err));
+  }, []);
+  useEffect(() => {
+    axios.get("http://localhost:4000/info/api/basicprofile", {
+      withCredentials: true,
+    })
+    .then((res) => setBasicInfo(res.data))
+    .catch((err) => console.error("기본 프로필 불러오기 실패:", err));
   }, []);
 
   useEffect(() => {
@@ -204,8 +211,12 @@ export default function Home() {
   {/* 백준 프로필 + 마이프로필 */}
   <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "40px" }}>
     <BaekjoonProfile handle="rlatlql123" tier={15} ratingRank={3284} />
-    <MyProfile nickname="혜서" info="세종대 알고리즘 커뮤니티 운영자" avatarSeed="혜서" />
-  </div>
+    <MyProfile
+  nickname={basicInfo.name}
+  department={basicInfo.department}
+  imgUrl={`http://localhost:4000${basicInfo.profileImage}`}
+/>
+        </div>
 
   {/* 퀘스트 + 외계인 + 다른 컴포넌트 */}
   <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>

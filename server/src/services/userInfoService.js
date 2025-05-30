@@ -5,7 +5,7 @@ import { getRankandTier } from "./solvedacService.js";
 import { startOfWeek, differenceInCalendarDays } from 'date-fns';
 import { stringifyTier } from "../utils/stringifyTier.js";
 import { getStreak } from "./footprintService.js";
-
+import { findUserById } from '../repositories/userRepository.js';
 
 export async function getUserInfo(userId) {
   try {
@@ -89,4 +89,14 @@ export async function getPercentilesForUser(userId) {
 
 export function updateUserProfileImage(userId, imageUrl) {
   return userRepo.updateUserProfileImage(userId, imageUrl);
+}
+
+export async function getBasicUserInfo(userId) {
+  const user = await userRepo.findUserById(userId);
+  if (!user) throw new Error("유저를 찾을 수 없습니다.");
+  return {
+    name: user.name,
+    department: user.department,
+    profileImage: user.profileImage,
+  };
 }
