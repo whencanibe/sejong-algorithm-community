@@ -4,31 +4,29 @@ import UniversityRanking from './UniversityRanking';
 import DepartmentRanking from './DepartmentRanking';
 
 function Ranking() {
-  const [activeTab, setActiveTab] = useState('university'); // 세종대학교 탭이 디폴트
+  const [activeTab, setActiveTab] = useState('university');
   const navigate = useNavigate();
 
   return (
-    <div
-      style={{
-        fontFamily: 'Arial, sans-serif',
-        minHeight: '100vh',
-        backgroundColor: '#fff',
-      }}
-    >
-      {/* 상단바 */}
+    <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#0d1117', color: '#e0f7fa' }}>
+      {/* 고정 헤더 */}
       <header
         style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
           width: '100%',
-          backgroundColor: '#2b2d42',
-          color: 'white',
+          backgroundColor: '#121826',
+          color: '#b3e5fc',
           padding: '18px 40px',
           fontSize: '18px',
           fontWeight: 'bold',
-          marginBottom: '40px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           boxSizing: 'border-box',
+          zIndex: 1000,
+          boxShadow: '0 2px 10px #00e5ff55',
         }}
       >
         랭킹 페이지
@@ -37,11 +35,13 @@ function Ranking() {
           style={{
             padding: '8px 16px',
             fontSize: '14px',
-            backgroundColor: 'white',
-            color: '#2b2d42',
+            backgroundColor: '#00e5ff',
+            color: '#0d1117',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
+            fontWeight: 'bold',
+            boxShadow: '0 0 10px #00e5ff',
           }}
         >
           홈으로
@@ -51,9 +51,12 @@ function Ranking() {
       {/* 본문 */}
       <main
         style={{
-          width: '100%',
+          marginTop: '70px',
           padding: '0 40px 40px',
           boxSizing: 'border-box',
+          maxWidth: '1200px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
         }}
       >
         {/* 탭 버튼 */}
@@ -62,11 +65,13 @@ function Ranking() {
             onClick={() => setActiveTab('university')}
             style={{
               padding: '10px 20px',
-              backgroundColor: activeTab === 'university' ? '#6f728c' : '#e0e0e0',
-              color: activeTab === 'university' ? 'white' : 'black',
+              backgroundColor: activeTab === 'university' ? '#00e5ff' : '#1e293b',
+              color: activeTab === 'university' ? '#0d1117' : '#e0f7fa',
               border: 'none',
               borderRadius: '5px',
               cursor: 'pointer',
+              fontWeight: 'bold',
+              boxShadow: activeTab === 'university' ? '0 0 8px #00e5ff' : 'none',
             }}
           >
             세종대학교
@@ -75,11 +80,13 @@ function Ranking() {
             onClick={() => setActiveTab('department')}
             style={{
               padding: '10px 20px',
-              backgroundColor: activeTab === 'department' ? '#6f728c' : '#e0e0e0',
-              color: activeTab === 'department' ? 'white' : 'black',
+              backgroundColor: activeTab === 'department' ? '#00e5ff' : '#1e293b',
+              color: activeTab === 'department' ? '#0d1117' : '#e0f7fa',
               border: 'none',
               borderRadius: '5px',
               cursor: 'pointer',
+              fontWeight: 'bold',
+              boxShadow: activeTab === 'department' ? '0 0 8px #00e5ff' : 'none',
             }}
           >
             학과
@@ -88,11 +95,7 @@ function Ranking() {
 
         {/* 탭 내용 */}
         <div style={{ width: '100%' }}>
-          {activeTab === 'university' ? (
-            <UniversityRanking />
-          ) : (
-            <DepartmentRanking />
-          )}
+          {activeTab === 'university' ? <UniversityRanking /> : <DepartmentRanking />}
         </div>
       </main>
     </div>
