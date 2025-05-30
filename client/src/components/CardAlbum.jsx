@@ -5,19 +5,19 @@ export default function CardAlbum({ cards }) {
   return (
     <div
       style={{
-         width: "260px",
-  height: "250px",
-  border: "1px solid #00e5ff",                   // 🔵 파란 테두리
-  borderRadius: "10px",
-  backgroundColor: "#2a3142",                     // 🔵 다크 블루 배경
-  color: "#e0f7fa",                                // 🔵 밝은 청록 글자
-  padding: "16px",
-  boxSizing: "border-box",
-  display: "flex",
-  flexDirection: "column",
-  overflowY: "auto",
-  marginTop: "50px",
-  boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",   // 🔵 푸른 빛 그림자  
+        width: "260px",
+        height: "250px",
+        border: "1px solid #00e5ff",
+        borderRadius: "10px",
+        backgroundColor: "#2a3142",
+        color: "#e0f7fa",
+        padding: "16px",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        overflowY: "auto",
+        marginTop: "50px",
+        boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
       }}
     >
       {/* 제목 */}
@@ -25,11 +25,11 @@ export default function CardAlbum({ cards }) {
 
       {/* 카드 리스트 */}
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        {cards.length === 0 && (
+        {(!cards || cards.length === 0) && (
           <div style={{ fontSize: "14px", color: "#888" }}>아직 카드가 없습니다.</div>
         )}
 
-        {cards.map((card, i) => (
+        {cards?.filter(Boolean).map((card, i) => (
           <div
             key={i}
             style={{
@@ -60,4 +60,3 @@ export default function CardAlbum({ cards }) {
     </div>
   );
 }
-

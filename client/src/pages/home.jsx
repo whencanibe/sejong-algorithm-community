@@ -25,32 +25,48 @@ export default function Home() {
   const [showCardModal, setShowCardModal] = useState(false);
   const [newCard, setNewCard] = useState(null);
 
-  
-  const [bojInfo, setBojInfo] = useState({ baekjoonName: '' });
+const [baekjoonProfile, setBaekjoonProfile] = useState({
+  handle: '',
+  tier: null,
+  ratingRank: null
+});
 
-useEffect(() => {
-  axios.get('http://localhost:4000/info/api/mypage', { withCredentials: true })
-    .then(res => {
-      setBojInfo({ baekjoonName: res.data.baekjoonName }); // ✅ 정확한 키로 설정
-    })
-    .catch(err => {
-      console.error('백준 닉네임 불러오기 실패:', err);
-    });
+  
+  useEffect(() => {
+  const fetchBaekjoonProfile = async () => {
+    try {
+      const res = await axios.get('http://localhost:4000/info/api/mypage', {
+        withCredentials: true,
+      });
+      const { baekjoonName, tier, rank } = res.data;
+      setBaekjoonProfile({
+        handle: baekjoonName,
+        tier,
+        ratingRank: rank
+      });
+    } catch (err) {
+      console.error('백준 정보 불러오기 실패:', err);
+    }
+  };
+  fetchBaekjoonProfile();
 }, []);
 
 
 
 
   useEffect(() => {
-    axios.get('http://localhost:4000/dayquest/status', { withCredentials: true })
-      .then(res => {
-        const { problemId, title } = res.data;
-      setTodayProblem({ problemId, title });
-      })
-      .catch(err => {
-        console.error('오늘의 문제 불러오기 실패:', err);
+  axios.get('http://localhost:4000/dayquest/status', { withCredentials: true })
+    .then(res => {
+      const { todayProblemId, todayProblemTitle } = res.data;
+      setTodayProblem({
+        problemId: todayProblemId,
+        title: todayProblemTitle
       });
-  }, []);
+    })
+    .catch(err => {
+      console.error('오늘의 문제 불러오기 실패:', err);
+    });
+}, []);
 
 
 
@@ -61,24 +77,7 @@ useEffect(() => {
       .catch((err) => console.error("게시글 불러오기 실패:", err));
   }, []);
 
-  useEffect(() => {
-  const allChecked = footprints.every(Boolean);
-  if (allChecked && !rewardGiven) {
-    axios.post("http://localhost:4000/card/reward", { stampCount: 7,}, { withCredentials: true })
-      .then(res => {
-        const selectedCard = res.data.card;  // 서버가 준 카드
-        const updatedCards = [selectedCard, ...cards];
-        setCards(updatedCards);
-        setNewCard(selectedCard);            // 모달에 쓸 카드 설정
-        setShowCardModal(true);              // 카드 모달 띄우기
-        setRewardGiven(true);
-      })
-      .catch(err => {
-        console.warn("카드 지급 실패:", err.response?.data?.error || err.message);
-      });
-  }
-}, [footprints, rewardGiven]);
-
+ 
 
 
 
@@ -239,8 +238,12 @@ useEffect(() => {
       <div style={{ padding: "40px", marginTop: "30px" }}>
   {/* 백준 프로필 + 마이프로필 */}
   <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "40px" }}>
-    {bojInfo && (
-  <BaekjoonProfile handle={bojInfo.handle} tier={15} ratingRank={3284} />
+   <BaekjoonProfile
+  handle={baekjoonProfile.handle}
+  tier={baekjoonProfile.tier}
+  ratingRank={baekjoonProfile.ratingRank}
+/>
+
 )}
 
     <MyProfile nickname="혜서" info="세종대 알고리즘 커뮤니티 운영자" avatarSeed="혜서" />

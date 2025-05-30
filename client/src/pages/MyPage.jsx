@@ -23,6 +23,7 @@ function MyPage() {
     percentile: 0
   });
 
+  
   // ✅ useEffect 내부 비동기 함수
   useEffect(() => {
     const fetchUserInfo = async () => {

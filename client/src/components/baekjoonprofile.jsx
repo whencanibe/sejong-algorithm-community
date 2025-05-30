@@ -1,6 +1,29 @@
 import React from "react";
 
 export default function BaekjoonProfile({ handle, tier, ratingRank }) {
+   const convertTierToImagePath = (tierString) => {
+    if (!tierString) return '/등급/default.png';
+    const parts = tierString.split(" ");
+    if (parts.length !== 2) return '/등급/default.png';
+
+    const tierMap = {
+      "Bronze": "브론즈",
+      "Silver": "실버",
+      "Gold": "골드",
+      "Platinum": "플래티넘",
+      "Diamond": "다이아",
+      "Ruby": "루비",
+    };
+
+    const korTier = tierMap[parts[0]];
+    const level = parts[1];
+
+    return `/등급/${korTier}${level}.png`;
+  };
+
+  const tierImgPath = convertTierToImagePath(tier);
+
+  
   return (
     <div
       style={{
@@ -26,11 +49,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
           justifyContent: "center",
         }}
       >
-        <img
-          src='/등급/다이아1.png'
-          alt="백준 티어"
-          style={{ width: "100px", height: "100px" }}
-        />
+         <img src={tierImgPath} alt="백준 티어" style={{ width: "100px", height: "100px" }} />
       </div>
 
       {/* 오른쪽: 닉네임 + 그래프 */}
@@ -45,7 +64,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
         {/* 닉네임, 티어, 랭크 */}
         <div style={{ marginBottom: "8px" }}>
           <h3 style={{ margin: 0, fontSize: "16px" }}>
-            닉네임: <span style={{ color: "#3f3fff" }}>{handle}</span>
+            백준ID: <span style={{ color: "#3f3fff" }}>{handle}</span>
           </h3>
           <p style={{ margin: 0, fontSize: "13px", color: "#ccc" }}>
             티어: {tier} / 상위 약 {ratingRank}위

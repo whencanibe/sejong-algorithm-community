@@ -8,7 +8,7 @@ export default function AttendanceAndCardAlbum() {
 
   // ✅ footprints 불러오기 (서버)
   useEffect(() => {
-    axios.get("http://localhost:4000/footprints", { withCredentials: true })
+     axios.get("http://localhost:4000/info/api/footprints", { withCredentials: true })
       .then(res => {
         setFootprints(res.data); // 예: [1, 1, 1, 1, 1, 1, 1]
       })
@@ -19,29 +19,36 @@ export default function AttendanceAndCardAlbum() {
 
 
    useEffect(() => {
-    axios.get("http://localhost:4000/cards", { withCredentials: true })
+    axios.get("http://localhost:4000/card", { withCredentials: true })
       .then(res => setCards(res.data))
       .catch(err => console.error("카드 불러오기 실패:", err));
   }, []);
 
-   // ✅ 출석 7개 완료 → 카드 요청
-  useEffect(() => {
-    const allSeven = footprints.length === 7 && footprints.every(v => v === 1 || v === true);
-    if (allSeven && !rewardGiven) {
-      axios.post("http://localhost:4000/cards/reward", {}, { withCredentials: true })
-        .then(res => {
-          const newCard = res.data.card;
-          setCards(prev => [newCard, ...prev]);
-          setRewardGiven(true);
-        })
-        .catch(err => {
-          console.warn("카드 지급 실패:", err.response?.data?.error || err.message);
-        });
-    }
-  }, [footprints, rewardGiven]);
+   useEffect(() => {
+  const allChecked = true;  // 그냥 무조건 true로
+  if (allChecked && !rewardGiven) {
+    axios.post("http://localhost:4000/card/reward", {
+      stampCount: 7  // 강제로 7개 도장 있다고 가정
+    }, {
+      withCredentials: true
+    })
+      .then(res => {
+        const newCard = res.data.card;
+        setCards(prev => [newCard, ...prev]);
+        setNewCard(newCard);  // 모달용
+        setShowCardModal(true);
+        setRewardGiven(true);
+      })
+      .catch(err => {
+        console.warn("카드 지급 실패:", err.response?.data?.error || err.message);
+      });
+  }
+}, []);
+
+
 
   
-  
+
 
   return (
     <div style={{ display: "flex", gap: "40px", margin: "60px 40px" }}>
