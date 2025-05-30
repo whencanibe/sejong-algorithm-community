@@ -19,6 +19,7 @@ model User {
   tier         String?
   solvedNum    Int?
   createdAt    DateTime @default(now())
+  profileImage  String?
 
   solvedProblems SolvedProblem[]
   snapshots      SolveSnapshot[]

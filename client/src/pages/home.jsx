@@ -74,6 +74,13 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
       .then((res) => setPosts(res.data.slice(0, 3)))
       .catch((err) => console.error("게시글 불러오기 실패:", err));
   }, []);
+  useEffect(() => {
+    axios.get("http://localhost:4000/info/api/basicprofile", {
+      withCredentials: true,
+    })
+    .then((res) => setBasicInfo(res.data))
+    .catch((err) => console.error("기본 프로필 불러오기 실패:", err));
+  }, []);
 
  
 
@@ -197,7 +204,7 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
     }}
   />
       <img
-  src="/public/배경/우주인.png" 
+  src="/public/배경/우주인.png" // 네가 방금 올린 파일 경로에 맞게 바꿔줘!
   alt="floating-astronaut"
   style={{
     position: "absolute",

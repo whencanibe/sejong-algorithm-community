@@ -135,3 +135,10 @@ export async function getPercentileInDepartement(userId) {
 export async function getNumberOfUsers() {
   return await prisma.user.count();
 }
+
+export function updateUserProfileImage(userId, imageUrl) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { profileImage: imageUrl },
+  });
+}

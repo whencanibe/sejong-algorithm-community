@@ -37,18 +37,44 @@ function MyPage() {
           withCredentials: true, // ✅ 세션 쿠키 포함
         });
         setUserInfo(res.data);
-        setNickname(res.data.name); // 닉네임 초기화
+        setNickname(res.data.name);
+        setProfileImg(
+          res.data.profileImage
+            ? `http://localhost:4000${res.data.profileImage}`
+            : `https://api.dicebear.com/7.x/bottts/svg?seed=${Date.now()}`
+        );
       } catch (error) {
         console.error(error);
       }
     };
     fetchUserInfo();
+
   }, []);
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setProfileImg(URL.createObjectURL(file));
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("image", file);
+  
+    try {
+      const res = await axios.post("http://localhost:4000/info/api/upload-profile", formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      // 서버가 반환한 URL을 상태에 저장
+      const uploadedUrl = `http://localhost:4000${res.data.url}`;
+      setProfileImg(uploadedUrl);
+      setUserInfo((prev) => ({
+        ...prev,
+        profileImage: uploadedUrl,
+      }));
+    } catch (err) {
+      console.error("이미지 업로드 실패:", err);
     }
   };
 
