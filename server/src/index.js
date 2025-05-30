@@ -14,6 +14,7 @@ import dayquestRouter from './routes/dayquestRouter.js';
 import { getProblemDetail } from './services/solvedacService.js';
 import { getDeptTotalsThisWeek, getDeptUserRanking } from './repositories/weeklyRankRepository.js';
 import cardRouter from './routes/cardRouter.js';
+import path from 'path';
 
 dotenv.config();
 const app = express();
@@ -43,7 +44,7 @@ app.use('/comments', commentRouter);
 app.use('/user', userRouter);
 app.use('/dayquest', dayquestRouter);
 app.use('/card', cardRouter);
-
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function MyProfile({ nickname, info, avatarSeed }) {
+export default function MyProfile({ nickname, department, imgUrl }) {
   return (
     <div
       style={{
@@ -19,7 +19,7 @@ export default function MyProfile({ nickname, info, avatarSeed }) {
       }}
     >
       <img
-        src={`https://api.dicebear.com/7.x/bottts/svg?seed=${avatarSeed}`}
+        src={imgUrl} //사용자 업로드 url
         alt="내 프로필 이미지"
         style={{
           width: "100px",
@@ -32,7 +32,7 @@ export default function MyProfile({ nickname, info, avatarSeed }) {
       <h3 style={{ fontSize: "18px", color: "#3f3fff", marginBottom: "8px" }}>
         닉네임: {nickname}
       </h3>
-      <p style={{ fontSize: "14px", color: "#333" }}>{info}</p>
+      <p style={{ fontSize: "14px", color: "#333" }}>학과: {department}</p>
     </div>
   );
 }
