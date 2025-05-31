@@ -11,7 +11,7 @@ export async function saveQuestSolve({ userId, date, problemId, solvedAt = new D
   });
 }
 
-// 일정 구간 내 해결 날짜 가져오기
+// 일정 구간 내 일일 퀘스트 해결 날짜 가져오기 (dateFrom <= 날짜 <= dateTo)
 export async function fetchSolvedDates({userId, dateFrom, dateTo}) {
   const rows = await prisma.questSolve.findMany({
     where: {
