@@ -51,7 +51,7 @@ function UniversityRanking() {
         const { totalUsers } = statusRes.data;
         setRankInfo({ rank: userData.rank ?? 0, total: totalUsers });
         
-        const rankingRes = await fetch(`http://localhost:4000/info/api/deptranking`, {
+        const rankingRes = await fetch(`http://localhost:4000/info/api/globalranking`, {
           credentials: 'include',
         });
         const rankData = await rankingRes.json();

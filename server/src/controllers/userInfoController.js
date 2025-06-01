@@ -1,6 +1,7 @@
 import { getPercentilesForUser, getUserInfo, updateUserProfileImage } from "../services/userInfoService.js";
 import * as userRepo from '../repositories/userRepository.js';
 import { AppError } from "../errors/AppError.js";
+import { normalizeBigInt } from "../utils/nomalizeBigint.js";
 
 export async function getUserInfoCtrl(req, res, next) {
   try {
@@ -78,5 +79,28 @@ export async function basicProfile(req, res) {
   } catch (err) {
     console.error("basicProfile 에러:", err.message);
     next(err);
+  }
+}
+
+export async function getGlobalRankingCtrl(req, res, next) {
+  try {
+    //const limit = req.query.limit ? Number(req.query.limit) : 10;
+    const limit = 20;
+    const data = await userRepo.getGlobalRanking(limit);
+    res.status(201).json(normalizeBigInt(data));
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function getDepartmentRankingCtrl(req, res, next) {
+  try {
+    const department = req.params.department;
+    //const limit = req.query.limit ? Number(req.query.limit) : undefined;
+    const limit = 20;
+    const data = await userRepo.getDepartmentRanking(department, limit);
+    res.status(201).json(normalizeBigInt(data));
+  } catch (e) {
+    next(e);
   }
 }

@@ -114,3 +114,11 @@ export async function getBasicUserInfo(userId) {
     profileImage: user.profileImage,
   };
 }
+
+export async function getGlobalRankingServ(limit) {
+  return await userRepo.getGlobalRanking(limit);
+}
+
+export async function getDepartmentRankingServ(dept, limit) {
+  return await userRepo.getDepartmentRanking(dept,limit);
+}
