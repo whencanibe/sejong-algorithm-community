@@ -2,44 +2,53 @@ import React, { useEffect, useState } from "react";
 import CardAlbum from "../components/CardAlbum";
 
 export default function AttendanceAndCardAlbum() {
-  const [footprints, setFootprints] = useState(() => {
-    const saved = localStorage.getItem("footprints");
-    return saved ? JSON.parse(saved) : Array(6).fill(false);
-  });
+   const [footprints, setFootprints] = useState([]);
+  const [cards, setCards] = useState([]);
+  const [rewardGiven, setRewardGiven] = useState(false);
 
-  const [cards, setCards] = useState(() => {
-    const saved = localStorage.getItem("cards");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [rewardGiven, setRewardGiven] = useState(() => {
-    return localStorage.getItem("rewardGiven") === "true";
-  });
-
-  // 수동 발자국 클릭
-  const handleFootprintClick = (index) => {
-    const updated = [...footprints];
-    updated[index] = true;
-    setFootprints(updated);
-    localStorage.setItem("footprints", JSON.stringify(updated));
-  };
-
-  // 출석 완료 시 카드 지급
+  // ✅ footprints 불러오기 (서버)
   useEffect(() => {
-    const allChecked = footprints.every(Boolean);
-    if (allChecked && !rewardGiven) {
-      const newCard = {
-        title: "꾸준 카드",
-        date: new Date().toISOString().split("T")[0],
-        image: "/꾸준.png"
-      };
-      const updatedCards = [newCard, ...cards];
-      setCards(updatedCards);
-      setRewardGiven(true);
-      localStorage.setItem("cards", JSON.stringify(updatedCards));
-      localStorage.setItem("rewardGiven", "true");
-    }
-  }, [footprints, rewardGiven]);
+     axios.get("http://localhost:4000/info/api/footprints", { withCredentials: true })
+      .then(res => {
+        setFootprints(res.data); // 예: [1, 1, 1, 1, 1, 1, 1]
+      })
+      .catch(err => {
+        console.error("발자국 불러오기 실패:", err);
+      });
+  }, []);
+
+
+   useEffect(() => {
+    axios.get("http://localhost:4000/card", { withCredentials: true })
+      .then(res => setCards(res.data))
+      .catch(err => console.error("카드 불러오기 실패:", err));
+  }, []);
+
+   useEffect(() => {
+  const allChecked = true;  // 그냥 무조건 true로
+  if (allChecked && !rewardGiven) {
+    axios.post("http://localhost:4000/card/reward", {
+      stampCount: 7  // 강제로 7개 도장 있다고 가정
+    }, {
+      withCredentials: true
+    })
+      .then(res => {
+        const newCard = res.data.card;
+        setCards(prev => [newCard, ...prev]);
+        setNewCard(newCard);  // 모달용
+        setShowCardModal(true);
+        setRewardGiven(true);
+      })
+      .catch(err => {
+        console.warn("카드 지급 실패:", err.response?.data?.error || err.message);
+      });
+  }
+}, []);
+
+
+
+  
+
 
   return (
     <div style={{ display: "flex", gap: "40px", margin: "60px 40px" }}>

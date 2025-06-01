@@ -24,7 +24,7 @@ model User {
   solvedProblems SolvedProblem[]
   snapshots      SolveSnapshot[]
   weeklyRanks    WeeklyRank[]
-
+  posts   Post[]  // 사용자가 작성한 게시글 목록
   comments       Comment[] //사용자 댓글
   questSolves  QuestSolve[]
   userCards UserCard[] //사용자 카드
@@ -72,6 +72,9 @@ model Post {
   code      String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  userId  Int
+
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   comments  Comment[]
 }
 
