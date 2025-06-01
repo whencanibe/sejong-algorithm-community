@@ -33,24 +33,19 @@ export async function getUserInfo(userId) {
 
   const enrollYear = user.studentId.slice(0, 2); // 학번 년도 예) 24
   const tier = stringifyTier(rankInfo.tier);
-  const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 }); // 이번 주 일요일 주의 시작으로 설정
+
+  const totalSolvedCount = rankInfo.solvedCount;
 
   //병렬 처리 - 하나라도 실패하면 에러
   const [
     rank,
     rankInDepartment,
-    weeklySolved,
-    weeklyRankInSchool,
-    weeklyRankInDepartment,
     solvedDates,
     streak,
     percentile
   ] = await Promise.all([
     userRepo.getRankByUserId(userId),
     userRepo.getRankInDepartmentByUserId(userId),
-    weeklyRankRepo.getMyWeeklySolved(userId, weekStart),
-    weeklyRankRepo.getRank(userId, weekStart, 'ALL'),
-    weeklyRankRepo.getRank(userId, weekStart, user.department),
     solvedProblemRepo.getSolvedDates(userId),
     getStreak(userId),
     userRepo.getPercentile(userId),
@@ -64,11 +59,9 @@ export async function getUserInfo(userId) {
     tier,
     rank,
     rankInDepartment,
-    weeklySolved: weeklySolved.solvedThisWeek,
-    weeklyRankInSchool,
-    weeklyRankInDepartment,
     streak,
     percentile,
+    totalSolvedCount,
     profileImage: user.profileImage
   };
 }

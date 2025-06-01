@@ -16,11 +16,9 @@ function MyPage() {
     tier: '',
     rank: 0,
     rankInDepartment: 0,
-    weeklySolved: 0,
-    weeklyRankInSchool: 0,
-    weeklyRankInDepartment: 0,
     streak: 0,
-    percentile: 0
+    percentile: 0,
+    totalSolvedCount: 0,
   });
 
   
@@ -297,10 +295,8 @@ function MyPage() {
               <p><strong>티어:</strong> {userInfo.tier}</p>
               <p><strong>세종대 내 티어 랭킹:</strong> {userInfo.rank}</p>
               <p><strong>학과 내 티어 랭킹:</strong> {userInfo.rankInDepartment}</p>
-              <p><strong>이번주 푼 문제 수:</strong> {userInfo.weeklySolved}</p>
-              <p><strong>세종대 내 이번주 랭킹:</strong> {userInfo.weeklyRankInSchool}</p>
-              <p><strong>학과 내 이번주 랭킹:</strong> {userInfo.weeklyRankInDepartment}</p>
               <p><strong>연속 풀이 일수:</strong> {userInfo.streak}</p>
+              <p><strong>해결한 총 문제 수</strong> {userInfo.totalSolvedCount}</p>
             </div>
           </div>
         </div>

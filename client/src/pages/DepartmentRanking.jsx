@@ -336,10 +336,7 @@ sorted.forEach((u, i) => {
           <strong style={{ fontWeight: '600' }}>학과 상위 퍼센트:</strong> {percentile}%
         </div>
         <div style={{ marginBottom: '10px' }}>
-          <strong style={{ fontWeight: '600' }}>총 풀이:</strong> {userInfo?.solvedNum ?? 0}개
-        </div>
-        <div style={{ marginBottom: '20px' }}>
-          <strong style={{ fontWeight: '600' }}>이번주 풀이:</strong> {myData?.solved ?? 0}개
+          <strong style={{ fontWeight: '600' }}>총 풀이:</strong> {userInfo?.totalSolvedCount ?? 0}개
         </div>
       </div>
     </div>
