@@ -1,22 +1,56 @@
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
-function CommentSection() {
+function CommentSection({ postId, userInfo }) {
   const [comments, setComments] = useState([]);
   const [input, setInput] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
 
-  const handleAddComment = () => {
-    if (input.trim() === "") return;
-    const newComment = {
-      id: Date.now(),
-      nickname: "익명",
-      text: input,
-      isEditing: false,
-      edited: false,
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await axios.get(`http://localhost:4000/api/comments/${postId}`);
+        setComments(res.data); // [{ id, user: { name }, text }]
+      } catch (err) {
+        console.error("댓글 불러오기 실패:", err);
+      }
     };
-    setComments([...comments, newComment]);
-    setInput("");
+    fetchComments();
+  }, [postId]);
+
+
+
+  const handleAddComment = async () => {
+    if (input.trim() === "") return;
+
+    try {
+       await axios.post(`http://localhost:4000/api/comments/${postId}`, {
+        postId: postId,
+        userId: userInfo.id,
+        text: input,
+      }, {
+        withCredentials: true,
+      });
+
+      setComments([
+        ...comments,
+        {
+          id: Date.now(),
+          nickname: userInfo.name,
+          text: input,
+          isEditing: false,
+          edited: false,
+        },
+      ]);
+       const res = await axios.get(`http://localhost:4000/api/comments/${postId}`);
+      setComments(res.data);
+      setInput("");
+
+
+    } catch (err) {
+      console.error("댓글 저장 실패:", err);
+      alert("댓글 저장 중 오류 발생!");
+    }
   };
 
   const handleEditStart = (id) => {
@@ -43,10 +77,11 @@ function CommentSection() {
     <div>
       <div
         style={{
-          fontSize: "18px",
+          fontSize: "25px",
           fontWeight: "bold",
-          marginBottom: "10px",
+          marginBottom: "50px",
           padding: "0 30px",
+           textAlign: "left", 
         }}
       >
         댓글
@@ -86,7 +121,8 @@ function CommentSection() {
                   alignItems: "center",
                 }}
               >
-                <span>{c.nickname}</span>
+                <span>{c.user?.name || "익명"}</span>
+
                 <div style={{ position: "relative", marginLeft: "auto" }}>
                   <button
                     onClick={() =>

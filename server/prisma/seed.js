@@ -24,7 +24,8 @@ async function main() {
                 studentId: year() + String(100000 + i),   // 예) 23100000
                 tier: '브론즈 V',
                 solvedNum: 0,
-                rank: null
+                rank: null,
+                 profileImage: "https://api.dicebear.com/7.x/bottts/svg?seed=default",
             }
         });
     }

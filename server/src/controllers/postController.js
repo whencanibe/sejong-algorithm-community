@@ -21,7 +21,12 @@ export async function getPost(req, res) {
 
 export async function createPost(req, res) {
   try {
-    const newPost = await service.writePost(req.body);
+    const userId = req.session?.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: '로그인이 필요합니다' });
+    }
+
+    const newPost = await service.writePost(req.body, userId);
     res.status(201).json(newPost);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -36,10 +41,15 @@ export async function updatePost(req, res) {
     res.status(400).json({ error: err.message });
   }
 }
-
 export async function deletePost(req, res) {
   try {
-    await service.removePost(req.params.id);
+    const postId = Number(req.params.id);
+    const userId = req.session.user?.id; // ✅ 세션에서 로그인한 사용자 ID 가져오기
+
+    const post = await service.readPost(postId); // 해당 글 정보 불러오기
+
+   
+    await service.removePost(postId);
     res.status(204).send();
   } catch (err) {
     res.status(500).json({ error: err.message });
