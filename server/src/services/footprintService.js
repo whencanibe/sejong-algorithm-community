@@ -1,6 +1,7 @@
 import { startOfWeek, differenceInCalendarDays, addDays, subDays } from 'date-fns';
 import { fetchSolvedDates } from '../repositories/questSolveRepository.js';
 import { kstMidnight } from '../utils/utcTodayMidnight.js';
+import { AppError } from '../errors/AppError.js';
 
 
 // YYYY-MM-DD 예) 2025-05-31 형식으로 문자열 반환 하는 함수
@@ -9,6 +10,9 @@ const toUtcKey = d =>
 
 
 export async function buildFootprints(userId) {
+  if (!userId || Number.isNaN(Number(userId))) {
+    throw new AppError('잘못된 userId 입니다.', 400);
+  }
   const todayUtc = kstMidnight(); // 오늘 자정을 UTC로 저장: 오늘 2025-05-31 00:00 KST => 2025-05-30 15:00:00 UTC             
   const weekStart = startOfWeek(todayUtc, { weekStartsOn: 0 }); // 오늘 날짜가 포함된 주의 첫 날
 
@@ -35,6 +39,10 @@ export async function buildFootprints(userId) {
 
 
 export async function getStreak(userId) {
+  if (!userId || Number.isNaN(Number(userId))) {
+    throw new AppError('잘못된 userId 입니다.', 400);
+  }
+
   const todayUtc = kstMidnight();
   const yesterdayUtc = subDays(todayUtc, 1);     // 어제 
   const pastUtc = subDays(todayUtc, 100);       // 최근 100일만 조회하기 위해 100일전 날짜
@@ -48,7 +56,7 @@ export async function getStreak(userId) {
   let started = false; // 첫 solved 발견 여부
 
   // 오늘도 퀘스트 안했는데 어제도 안했다면 0 반환
-  if (!solvedSet.has(toUtcKey(yesterdayUtc)) && !solvedSet.has(toUtcKey(todayUtc))){
+  if (!solvedSet.has(toUtcKey(yesterdayUtc)) && !solvedSet.has(toUtcKey(todayUtc))) {
     return 0;
   }
 

@@ -11,5 +11,5 @@ export default function errorHandler(err, _req, res, _next) {
   }
 
   console.error(err);         // 시스템 오류
-  res.status(500).json({ error: '서버 오류' });
+  res.status(500).json({ error: err.message });
 }
