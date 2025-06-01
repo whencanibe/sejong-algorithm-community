@@ -199,7 +199,7 @@ function UniversityRanking() {
         </div>
 
         {/* 학과별 풀이 수 랭킹 */}
-        <div style={{ width: '100%', height: '300px', marginTop: '40px' }}>
+        <div style={{ width: '100%', height: sortedData.length * 60, marginTop: '40px' }}>
           <h2 style={{ textAlign: 'center' }}>(세종대) 백준 문제 풀이 수 랭킹</h2>
           <BContainer key={windowWidth} width="100%" height="100%">
             <BarChart

@@ -2,15 +2,16 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { startOfWeek } from 'date-fns';
+
 const prisma = new PrismaClient();
 
 async function main() {
   const majors = ['컴퓨터공학과', '소프트웨어학과', '정보보호학과'];
   const year = () => String(19 + Math.floor(Math.random() * 5)); // 19~23
-  const names = ['오냐', '치팅', '했서', '소혀'];
-  const baekjoonNames = ['muzavicoder', '04select', 'choipr', 'shl3088'];
+  const names = ['오냐', '치팅', '했서', '소혀', '테스트1', '테스트2', '테스트3', '테스트4'];
+  const baekjoonNames = ['muzavicoder', '04select', 'choipr', 'shl3088','cowlgh2', 'gi2570', 'hahava', 'wsw3998'];
   // 4명 계정 임의 생성
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 8; i++) {
     const email = `testuser${i}@example.com`;
     await prisma.user.upsert({
       where: { email },
@@ -26,7 +27,7 @@ async function main() {
         solvedNum: 0,
         rank: null,
         profileImage: "https://api.dicebear.com/7.x/bottts/svg?seed=default",
-      }
+      },
     });
   }
 
