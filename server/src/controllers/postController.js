@@ -21,7 +21,12 @@ export async function getPost(req, res) {
 
 export async function createPost(req, res) {
   try {
-    const newPost = await service.writePost(req.body);
+    const userId = req.session?.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: '로그인이 필요합니다' });
+    }
+
+    const newPost = await service.writePost(req.body, userId);
     res.status(201).json(newPost);
   } catch (err) {
     res.status(400).json({ error: err.message });
