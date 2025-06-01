@@ -1,26 +1,44 @@
 import { AppError } from "../errors/AppError.js";
 import prisma from "../models/prisma.js";
 
-export async function createUser({ email, hashedPassword, name, baekjoonName, department, studentId }) {
-  return prisma.user.create({
+export async function createUser({ email, hashedPassword, name, baekjoonName, department, studentId }, tx = prisma) {
+  return tx.user.create({
     data: { email, password: hashedPassword, name, baekjoonName, department, studentId }, // db에 저장할 값
     select: { id: true, email: true, name: true, department: true, studentId: true } // 응답에 반환될 값 선택
   })
 }
 
-export async function findUserById(id) {
+export async function findUserById(id, tx = prisma) {
   if (id == null) throw new AppError('userId가 없습니다', 400);
-  return await prisma.user.findUnique({
+  return await tx.user.findUnique({
     where: { id }
   })
 }
 
-export const findUserByEmail = async (email) => {
-  return await prisma.user.findUnique({
+export const findUserByEmail = async (email, tx = prisma) => {
+  return await tx.user.findUnique({
     where: { email }
   });
 }
 
+//unique key or prime key 가 아니라면 findUnique 사용 x => findFirst
+export const findUserByName = async (name, tx = prisma) => {
+  return await tx.user.findFirst({
+    where: { name }
+  });
+}
+
+export const findUserByBaekjoonName = async (baekjoonName, tx = prisma) => {
+  return await tx.user.findFirst({
+    where: { baekjoonName }
+  });
+}
+
+export const findUserByStudentId = async (studentId, tx = prisma) => {
+  return await tx.user.findFirst({
+    where: { studentId }
+  });
+}
 
 /**
  * @param {number} id
@@ -136,9 +154,15 @@ export async function getNumberOfUsers() {
   return await prisma.user.count();
 }
 
-export function updateUserProfileImage(userId, imageUrl) {
-  return prisma.user.update({
+export async function updateUserProfileImage(userId, imageUrl) {
+  return await prisma.user.update({
     where: { id: userId },
     data: { profileImage: imageUrl },
+  });
+}
+
+export async function deleteUserById(userId) {
+  return await prisma.user.delete({
+    where: { id: userId },
   });
 }

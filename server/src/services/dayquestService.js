@@ -2,7 +2,7 @@ import prisma from '../models/prisma.js';
 import { getTodayProblemId } from '../utils/getTodayProblemId.js';
 import { getProblemDetail } from '../services/solvedacService.js'; 
 import { saveQuestSolve } from '../repositories/questSolveRepository.js';
-import { utcMidnight } from '../utils/utcTodayMidnight.js';
+import { kstMidnight } from '../utils/utcTodayMidnight.js';
 
 export async function getDayquestStatus(userId) {
   const todayProblemId = getTodayProblemId();
@@ -25,8 +25,8 @@ export async function getDayquestStatus(userId) {
   });
 
   if(!!hasSolvedToday){
-    const date = utcMidnight();
-    await saveQuestSolve({userId, date, problemId:todayProblemId})
+    const date = kstMidnight();
+    await saveQuestSolve({userId, date, problemId:todayProblemId});
   }
 
   return {
