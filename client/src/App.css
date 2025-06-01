@@ -51,6 +51,7 @@ html, body {
 }
 
 
+
 @keyframes neon-flicker {
   0% {
     text-shadow: 0 0 6px #00e5ff, 0 0 10px #00e5ff; 
@@ -121,4 +122,10 @@ html, body {
 @keyframes neonFlicker {
   0%, 100% { box-shadow: 0 0 12px rgba(0, 229, 255, 0.3); }
   50% { box-shadow: 0 0 18px rgba(0, 229, 255, 0.5); }
+}
+
+
+/* global.css 또는 App.css 등 공통 CSS에 추가 */
+.custom-codemirror .cm-editor {
+  text-align: left !important;
 }

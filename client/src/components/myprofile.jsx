@@ -1,15 +1,18 @@
 import React from "react";
 
 export default function MyProfile({ nickname, department, imgUrl }) {
+  const defaultImg = `https://api.dicebear.com/7.x/bottts/svg?seed=${Date.now()}`;
+  const profileImg = imgUrl ? imgUrl : defaultImg;
   return (
     <div
       style={{
-        height: "250px",
-        border: "2px solid #3f3fff",
+        height: "300px",
+        border: "1px solid #00e5ff",
         padding: "24px",
         borderRadius: "14px",
         width: "400px",
-        backgroundColor: "#f0f4ff",
+        backgroundColor: "#2a3142",
+        color: "#e0f7fa",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -19,7 +22,7 @@ export default function MyProfile({ nickname, department, imgUrl }) {
       }}
     >
       <img
-        src={imgUrl} //사용자 업로드 url
+        src={imgUrl}
         alt="내 프로필 이미지"
         style={{
           width: "100px",
@@ -32,7 +35,10 @@ export default function MyProfile({ nickname, department, imgUrl }) {
       <h3 style={{ fontSize: "18px", color: "#3f3fff", marginBottom: "8px" }}>
         닉네임: {nickname}
       </h3>
-      <p style={{ fontSize: "14px", color: "#333" }}>학과: {department}</p>
+      <p style={{ fontSize: "14px", color: "#3f3fff" }}>
+        학과: {department}
+      </p>
+      
     </div>
   );
 }
