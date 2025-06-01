@@ -102,10 +102,10 @@ export async function getRankByUserId(id) {
 export async function getRankInDepartmentByUserId(id) {
   const me = await prisma.user.findUnique({
     where: { id },
-    select: { rank: true }
+    select: { rank: true, department: true }
   });
 
-  if (!me) throw new Error("해당 유저 없음");
+  if (!me) throw new AppError("해당 유저 없음", 404);
 
   const count = await prisma.user.count({
     where: {
