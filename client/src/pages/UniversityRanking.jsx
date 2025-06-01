@@ -55,7 +55,7 @@ function UniversityRanking() {
           credentials: 'include',
         });
         const rankData = await rankingRes.json();
-        setDeptRanking(rankData.slice(1));
+        setDeptRanking(rankData);
       } catch (err) {
         console.error("데이터 불러오기 실패:", err);
       }
@@ -67,13 +67,13 @@ function UniversityRanking() {
     return <div style={{ padding: "40px", fontSize: "18px" }}>로딩 중...</div>;
   }
 
-  const data = deptRanking.map((dept) => ({
-    name: dept.department,
-    solved: dept.solvedThisWeek
+  const data = deptRanking.map((u) => ({
+    name: u.name,
+    solved: u.solvedNum,
   }));
 
   const sortedData = [...data].sort((a, b) => b.solved - a.solved);
-  const myName = userInfo?.department ?? '';
+  const myName = userInfo?.name ?? '';
   const rank = userInfo?.rank ?? 0;
   const total = userInfo?.total ?? 0;
   const myData = sortedData.find((d) => d.name === myName);
@@ -200,7 +200,7 @@ function UniversityRanking() {
 
         {/* 학과별 풀이 수 랭킹 */}
         <div style={{ width: '100%', height: '300px', marginTop: '40px' }}>
-          <h2 style={{ textAlign: 'center' }}>(세종대) 이번주 백준 풀이 랭킹</h2>
+          <h2 style={{ textAlign: 'center' }}>(세종대) 백준 문제 풀이 수 랭킹</h2>
           <BContainer key={windowWidth} width="100%" height="100%">
             <BarChart
               layout="vertical"

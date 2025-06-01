@@ -58,8 +58,8 @@ function DepartmentRanking() {
         setStudentRanking(studentRankingRes.data);
 
         // 학과 랭킹 정렬 및 내 순위 계산
-const sorted = [...studentRankingRes.data].sort((a, b) => b.solvedThisWeek - a.solvedThisWeek);
-const myRank = sorted.findIndex(user => user.name === userData.name) + 1;
+const sorted = [...studentRankingRes.data].sort((a, b) => b.solvedNum - a.solvedNum);
+const myRank = sorted.findIndex(u => u.name === userData.name) + 1;
 
 setRankInfo({
   rank: myRank,
@@ -86,7 +86,7 @@ sorted.forEach((u, i) => {
 
   const data = studentRanking.map((user) => ({
     name: user.name,
-    solved: user.solvedThisWeek,
+    solved: user.solvedNum,
   }));
 
   const sortedData = [...data].sort((a, b) => b.solved - a.solved);
@@ -215,7 +215,7 @@ sorted.forEach((u, i) => {
 
         {/* 학과 내 학생별 풀이 수 랭킹 */}
         <div style={{ width: '100%', height: '300px', marginTop: '40px' }}>
-          <h2 style={{ textAlign: 'center' }}>이번 주 학과 내 학생 랭킹</h2>
+          <h2 style={{ textAlign: 'center' }}>학과 내 문제 풀이 수 랭킹</h2>
           <BContainer key={windowWidth} width="100%" height="100%">
             <BarChart
               layout="vertical"
