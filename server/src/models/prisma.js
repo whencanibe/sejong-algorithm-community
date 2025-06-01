@@ -4,7 +4,7 @@ const {PrismaClient} = pkg;
 const prisma =
   global.prisma || // 이미 만들어 뒀으면 재사용
   new PrismaClient({
-    log: ['query', 'error', 'warn'],   // 옵션 예시
+    log: ['error', 'warn'],   // 옵션 예시
   });
 
 if (process.env.NODE_ENV !== 'production') {

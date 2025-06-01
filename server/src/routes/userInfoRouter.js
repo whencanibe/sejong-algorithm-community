@@ -17,8 +17,8 @@ router.get('/api/percentile/:id', getPercentilesForUserCtrl); // id => user id
 router.get('/api/streak/:id', getStreakCtrl);
 
 //userId 세션에서 불러올 필요 없는 api
-router.get('/api/deptranking', isLoggedIn, getDepartmentWeeklyRankingCtrl);
-router.get('/api/studentranking/:department', isLoggedIn, getStudentInDeptWeeklyRankingCtrl);
+router.get('/api/globalranking', isLoggedIn,userController.getGlobalRankingCtrl);
+router.get('/api/studentranking/:department',isLoggedIn, userController.getDepartmentRankingCtrl);
 
 //세션 기반
 router.get('/api/mypage', isLoggedIn, getUserInfoSessionCtrl);

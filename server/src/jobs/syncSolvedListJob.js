@@ -18,7 +18,7 @@ export async function syncAllUsers() {
     for (const user of users) {
         try {
             const profile = await solvedacService.getRankandTier(user.baekjoonName);
-            
+
             const updatedUser = await userRepo.updateUser(user.id, {
                 solvedNum: profile.solvedCount,
                 tier: stringifyTier(profile.tier),
@@ -30,7 +30,14 @@ export async function syncAllUsers() {
 
             await ensureSnapshotForUser(updatedUser);
         } catch (error) {
+            if (error.isAxiosError) {
+                // axios 에러면 응답코드 체크
+                const sec = error.response?.headers['retry-after'] ?? null;
+                throw new ExternalError(`Solved.ac (${error.response?.status})`, sec);
+            }
             console.error('Solved.ac sync fail', user.baekjoonName, error.message);
+            // 나머지는 시스템 오류로 그대로 throw
+            throw error;
         }
     }
 }
@@ -61,7 +68,7 @@ export async function syncSingleUser(userId) {
         console.error('Solved.ac sync fail', user.baekjoonName, error.message);
         // 나머지는 시스템 오류로 그대로 throw
         throw error;
-        
+
     }
 }
 

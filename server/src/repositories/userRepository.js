@@ -1,5 +1,6 @@
 import { AppError } from "../errors/AppError.js";
 import prisma from "../models/prisma.js";
+import { Prisma } from '@prisma/client';
 
 export async function createUser({ email, hashedPassword, name, baekjoonName, department, studentId }, tx = prisma) {
   return tx.user.create({
@@ -102,10 +103,10 @@ export async function getRankByUserId(id) {
 export async function getRankInDepartmentByUserId(id) {
   const me = await prisma.user.findUnique({
     where: { id },
-    select: { rank: true }
+    select: { rank: true, department: true }
   });
 
-  if (!me) throw new Error("해당 유저 없음");
+  if (!me) throw new AppError("해당 유저 없음", 404);
 
   const count = await prisma.user.count({
     where: {
@@ -165,4 +166,43 @@ export async function deleteUserById(userId) {
   return await prisma.user.delete({
     where: { id: userId },
   });
+}
+
+/**
+ * 학생 전체 문제 푼 개수 순위
+ * @param {Number} limit - 몇등까지 보여줄 지
+ * @returns {Array}
+ */
+export async function getGlobalRanking(limit) {
+  return await prisma.$queryRaw`
+    SELECT
+      id,
+      name,
+      department,
+      solvedNum,
+      RANK() OVER (ORDER BY solvedNum DESC) AS rank
+    FROM User
+    ORDER BY solvedNum DESC
+    ${limit ? Prisma.raw(`LIMIT ${Number(limit)}`) : Prisma.raw(``)}
+  `;
+}
+
+/**
+ * 학과별 랭킹
+ * @param {String} department - 사용자 학과
+ * @param {Number} limit - 몇등까지 보여줄 지
+ * @returns {Array}
+ */
+export async function getDepartmentRanking(department, limit) {
+  return await prisma.$queryRaw`
+    SELECT
+      id,
+      name,
+      solvedNum,
+      RANK() OVER (PARTITION BY department ORDER BY solvedNum DESC) AS rank
+    FROM User
+    WHERE department = ${department}
+    ORDER BY solvedNum DESC
+    ${limit ? Prisma.raw(`LIMIT ${Number(limit)}`) : Prisma.raw(``)}
+  `;
 }
