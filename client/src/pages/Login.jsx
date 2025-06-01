@@ -29,7 +29,7 @@ export default function Login() {
 
         if (sessionCheck.status === 200) {
           console.log("세션 확인 완료, 홈으로 이동");
-          navigate('/home');
+          navigate('/');
         } else {
           alert("세션 설정에 실패했습니다.");
         }

@@ -166,7 +166,7 @@ sorted.forEach((u, i) => {
         <div style={{ width: '100%', height: '200px' }}>
           <h2 style={{ textAlign: 'center', marginTop: 0 }}>(학과) 백준 티어 랭킹</h2>
           <ResponsiveContainer key={windowWidth} width="100%" height="100%">
-            <LineChart data={curveData} margin={{ top: 30, right: 70, left: 70, bottom: 5 }}>
+            <LineChart data={curveData} margin={{ top: 25, right: 70, left: 70, bottom: 5 }}>
               <XAxis
                 dataKey="x"
                 domain={[0, 100]}
