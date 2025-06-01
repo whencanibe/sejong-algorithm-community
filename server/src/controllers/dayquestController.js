@@ -1,5 +1,5 @@
 import { syncSingleUser } from '../jobs/syncSolvedListJob.js';
-import { getDayquestStatus } from '../services/dayquestService.js';
+import { getDailyQuest, getDayquestStatus } from '../services/dayquestService.js';
 import { buildFootprints, getStreak } from '../services/footprintService.js';
 import { updateWeeklyRank } from '../services/weeklyRankService.js';
 
@@ -58,4 +58,13 @@ export async function refreshDailyQuestCtrl(req, res, next) {
     const status = await getDayquestStatus(userId);
     res.json(status);                     
   } catch (e) { next(e); }
+}
+
+export async function getDailyQuestCtrl(req, res, next) {
+  try {
+    const response = await getDailyQuest();
+    return res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
 }
