@@ -1,11 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import UniversityRanking from './UniversityRanking';
 import DepartmentRanking from './DepartmentRanking';
 
 function Ranking() {
   const [activeTab, setActiveTab] = useState('university');
+  const [isLoggedIn, setIsLoggedIn] = useState(null); // null = 아직 확인 안됨
   const navigate = useNavigate();
+
+  // 로그인 확인
+  useEffect(() => {
+    axios.get("http://localhost:4000/info/api/basicprofile", { withCredentials: true })
+      .then(() => setIsLoggedIn(true))
+      .catch(() => {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+      });
+  }, []);
+
+if (isLoggedIn === null) return <div>로딩 중...</div>;
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#0d1117', color: '#e0f7fa' }}>
@@ -31,7 +45,7 @@ function Ranking() {
       >
         랭킹 페이지
         <button
-          onClick={() => navigate('/home')}
+          onClick={() => navigate('/')}
           style={{
             padding: '8px 16px',
             fontSize: '14px',

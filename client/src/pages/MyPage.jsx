@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 function MyPage() {
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+
   const [profileImg, setProfileImg] = useState(`https://api.dicebear.com/7.x/bottts/svg?seed=${Date.now()}`);
   const [nickname, setNickname] = useState('');
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [nicknameError, setNicknameError] = useState(false);
 
-  // ✅ 추가: 사용자 정보 상태
   const [userInfo, setUserInfo] = useState({
     baekjoonName: '',
     name: '',
@@ -23,20 +26,19 @@ function MyPage() {
     percentile: 0
   });
 
-  
-  // ✅ useEffect 내부 비동기 함수
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        // ✅ 1) 세션/쿠키 갱신 (refresh)
         await axios.post(`http://localhost:4000/info/api/refresh`, {}, {
-          withCredentials: true, // 쿠키 포함!
+          withCredentials: true,
         });
-        
+
         const res = await axios.get(`http://localhost:4000/info/api/mypage`, {
-          withCredentials: true, // ✅ 세션 쿠키 포함
+          withCredentials: true,
         });
+
         setUserInfo(res.data);
+        setIsLoggedIn(true);
         setNickname(res.data.name);
         setProfileImg(
           res.data.profileImage
@@ -44,20 +46,22 @@ function MyPage() {
             : `https://api.dicebear.com/7.x/bottts/svg?seed=${Date.now()}`
         );
       } catch (error) {
-        console.error(error);
+        console.error("로그인 확인 실패:", error);
+        alert("로그인이 필요합니다.");
+        setIsLoggedIn(false);
+        navigate("/login");
       }
     };
     fetchUserInfo();
-
   }, []);
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     const formData = new FormData();
     formData.append("image", file);
-  
+
     try {
       const res = await axios.post("http://localhost:4000/info/api/upload-profile", formData, {
         withCredentials: true,
@@ -65,8 +69,7 @@ function MyPage() {
           "Content-Type": "multipart/form-data",
         },
       });
-  
-      // 서버가 반환한 URL을 상태에 저장
+
       const uploadedUrl = `http://localhost:4000${res.data.url}`;
       setProfileImg(uploadedUrl);
       setUserInfo((prev) => ({
@@ -78,16 +81,29 @@ function MyPage() {
     }
   };
 
-  const handleNicknameSave = () => {
+  const handleNicknameSave = async () => {
     if (!nickname.trim()) {
       setNicknameError(true);
       return;
     }
-    setIsEditingNickname(false);
-    setNicknameError(false);
 
-    // ✅ 서버에 닉네임 저장 요청 추가 (예: PUT 요청)
-    // axios.put(`http://localhost:4000/info/api/mypage`, { name: nickname })
+    try {
+      const res = await axios.put(
+        `http://localhost:4000/info/api/mypage`,
+        { name: nickname },
+        { withCredentials: true }
+      );
+
+      setUserInfo((prev) => ({
+        ...prev,
+        name: nickname,
+      }));
+      setIsEditingNickname(false);
+      setNicknameError(false);
+    } catch (err) {
+      console.error("닉네임 수정 실패:", err);
+      alert("닉네임 수정에 실패했습니다.");
+    }
   };
 
   const commonBoxStyle = {
@@ -106,32 +122,23 @@ function MyPage() {
   }
 
   return (
-    <div
-      style={{
-        fontFamily: 'Arial, sans-serif',
-        minHeight: '100vh',
-        overflowX: 'hidden',
-      }}
-    >
-      {/* 상단바 */}
-      <header
-        style={{
-          width: '100%',
-          backgroundColor: '#2b2d42',
-          color: 'white',
-          padding: '18px 40px',
-          fontSize: '18px',
-          fontWeight: 'bold',
-          marginBottom: '40px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          boxSizing: 'border-box',
-        }}
-      >
+    <div style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
+      <header style={{
+        width: '100%',
+        backgroundColor: '#2b2d42',
+        color: 'white',
+        padding: '18px 40px',
+        fontSize: '18px',
+        fontWeight: 'bold',
+        marginBottom: '40px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        boxSizing: 'border-box',
+      }}>
         마이페이지
         <button
-          onClick={() => (window.location.href = '/home')}
+          onClick={() => (window.location.href = '/')}
           style={{
             padding: '8px 16px',
             fontSize: '14px',
@@ -146,28 +153,10 @@ function MyPage() {
         </button>
       </header>
 
-      <div
-        style={{
-          maxWidth: '1000px',
-          margin: '0 auto',
-          padding: '0 5vw 40px',
-          boxSizing: 'border-box',
-        }}
-      >
+      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 5vw 40px', boxSizing: 'border-box' }}>
         <h1 style={{ marginBottom: '30px', textAlign: 'center' }}>👤 내 프로필</h1>
 
-        {/* 프로필 이미지 + 정보 */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            gap: '40px',
-            marginBottom: '30px',
-          }}
-        >
-          {/* 프로필 이미지 */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start', gap: '40px', marginBottom: '30px' }}>
           <div style={{ position: 'relative', width: '200px', minWidth: '200px' }}>
             <img
               src={profileImg}
@@ -180,24 +169,21 @@ function MyPage() {
                 border: '1px solid #ccc',
               }}
             />
-            <label
-              htmlFor="profileInput"
-              style={{
-                position: 'absolute',
-                bottom: '10px',
-                left: '10px',
-                background: '#fff',
-                padding: '4px 8px',
-                borderRadius: '6px',
-                border: '1px solid #ddd',
-                fontSize: '14px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
-              }}
-            >
+            <label htmlFor="profileInput" style={{
+              position: 'absolute',
+              bottom: '10px',
+              left: '10px',
+              background: '#fff',
+              padding: '4px 8px',
+              borderRadius: '6px',
+              border: '1px solid #ddd',
+              fontSize: '14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
+            }}>
               ✏️ Edit
             </label>
             <input
@@ -209,15 +195,12 @@ function MyPage() {
             />
           </div>
 
-          {/* 오른쪽: 아이디 + 닉네임 */}
           <div style={{ flexGrow: 1, minWidth: '250px' }}>
-            {/* 아이디 */}
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold' }}>백준 아이디</label>
               <div style={commonBoxStyle}>{userInfo.baekjoonName}</div>
             </div>
 
-            {/* 닉네임 */}
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold' }}>닉네임</label>
               <div style={{ position: 'relative' }}>
@@ -283,15 +266,12 @@ function MyPage() {
               </div>
             </div>
 
-            {/* 기타 정보 */}
-            <div
-              style={{
-                textAlign: 'left',
-                marginTop: '30px',
-                lineHeight: '1.8',
-                paddingLeft: '5px',
-              }}
-            >
+            <div style={{
+              textAlign: 'left',
+              marginTop: '30px',
+              lineHeight: '1.8',
+              paddingLeft: '5px',
+            }}>
               <p><strong>학과:</strong> {userInfo.department}</p>
               <p><strong>학번:</strong> {userInfo.enrollYear}학번</p>
               <p><strong>티어:</strong> {userInfo.tier}</p>
