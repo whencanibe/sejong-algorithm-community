@@ -3,7 +3,6 @@ import prisma from "../models/prisma.js";
 import { createUser, deleteUserById, findUserByBaekjoonName, findUserByEmail, findUserById, findUserByName, findUserByStudentId } from '../repositories/userRepository.js';
 
 import { syncSingleUser } from '../jobs/syncSolvedListJob.js';
-import { ensureSnapshotForUser } from './snapshotService.js';
 import { AppError } from '../errors/AppError.js';
 
 export async function signupService({ email, password, name, baekjoonName, department, studentId }) {
