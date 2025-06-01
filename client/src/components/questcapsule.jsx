@@ -57,6 +57,7 @@ export default function QuestCapsule({ problem }) {
         position: "relative",
         color: "#e0f7fa",      
       }}
+      
     >
       {/* 캡슐 + 박스 */}
       <div
@@ -74,18 +75,18 @@ export default function QuestCapsule({ problem }) {
   ref={boxRef}
   style={{
     backgroundColor: "white",
-    border: "1px solid #d0d0d0",           
-    boxShadow: "0 3px 8px rgba(0,0,0,0.05)", 
+    border: "1px solid #00e5ff",                  // 테두리 두껍게
+    borderRadius: "14px",                         // 둥글게
+    boxShadow: "0 0 15px #00e5ff, 0 0 10px #00e5ff", // 네온 효과
     padding: "20px 24px",
     width: "190px",
     minHeight: "110px",
-    
     lineHeight: "1.6",
     letterSpacing: "0.3px",
   }}
 >
-  <p style={{ fontSize: "14px", marginBottom: "6px" }}>📄 {problem.problemId}번</p>
-  <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#3f3fff", margin: 0 }}>
+  <p style={{ fontSize: "16px", marginBottom: "6px",color: "#3f3fff", }}>📄 {problem.problemId}번</p>
+  <h3 style={{ fontSize: "22px", fontWeight: "bold", color: "#3f3fff", margin: 0 }}>
     {problem.title}
   </h3>
 </div>

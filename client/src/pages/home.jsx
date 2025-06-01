@@ -8,9 +8,8 @@ import CardAlbum from "../components/CardAlbum";
 import axios from "axios";
 
 export default function Home() {
-
   const navigate = useNavigate();
-   const [todayProblem, setTodayProblem] = useState(null);
+  const [todayProblem, setTodayProblem] = useState(null);
   const [posts, setPosts] = useState([]);
   const [footprints, setFootprints] = useState(() => {
     const saved = localStorage.getItem("footprints");
@@ -25,66 +24,53 @@ export default function Home() {
   });
   const [showCardModal, setShowCardModal] = useState(false);
   const [newCard, setNewCard] = useState(null);
+  const [basicInfo, setBasicInfo] = useState(null);
 
-const [baekjoonProfile, setBaekjoonProfile] = useState({
+ const [baekjoonProfile, setBaekjoonProfile] = useState({
   handle: '',
   tier: null,
   ratingRank: null
 });
 
-  
-  useEffect(() => {
-  const fetchBaekjoonProfile = async () => {
-    try {
-      const res = await axios.get('http://localhost:4000/info/api/mypage', {
-        withCredentials: true,
-      });
-      const { baekjoonName, tier, rank } = res.data;
-      setBaekjoonProfile({
-        handle: baekjoonName,
-        tier,
-        ratingRank: rank
-      });
-    } catch (err) {
-      console.error('백준 정보 불러오기 실패:', err);
-    }
-  };
-  fetchBaekjoonProfile();
-}, []);
-
-
-
 
   useEffect(() => {
-    axios.get('http://localhost:4000/dayquest/status', { withCredentials: true })
-      .then(res => {
-        const { problemId, title } = res.data;
-      setTodayProblem({ problemId, title });
-      })
-      .catch(err => {
-        console.error('오늘의 문제 불러오기 실패:', err);
-      });
+    const fetchBaekjoonProfile = async () => {
+      try {
+        const res = await axios.get('http://localhost:4000/info/api/mypage', { withCredentials: true });
+        const { baekjoonName, tier, rank } = res.data;
+        setBaekjoonProfile({ handle: baekjoonName, tier, ratingRank: rank });
+      } catch (err) {
+        console.error('백준 정보 불러오기 실패:', err);
+      }
+    };
+    fetchBaekjoonProfile();
   }, []);
 
 
+useEffect(() => {
+  axios.get('http://localhost:4000/dayquest/status', { withCredentials: true })
+    .then(res => {
+      const { todayProblemId, todayProblemTitle } = res.data;
+      setTodayProblem({
+        problemId: todayProblemId,
+        title: todayProblemTitle,
+      });
+    })
+    .catch(err => console.error('오늘의 문제 불러오기 실패:', err));
+}, []);
 
 
   useEffect(() => {
     axios.get("http://localhost:4000/posts")
-      .then((res) => setPosts(res.data.slice(0, 3)))
-      .catch((err) => console.error("게시글 불러오기 실패:", err));
+      .then(res => setPosts(res.data.slice(0, 3)))
+      .catch(err => console.error("게시글 불러오기 실패:", err));
   }, []);
+
   useEffect(() => {
-    axios.get("http://localhost:4000/info/api/basicprofile", {
-      withCredentials: true,
-    })
-    .then((res) => setBasicInfo(res.data))
-    .catch((err) => console.error("기본 프로필 불러오기 실패:", err));
+    axios.get("http://localhost:4000/info/api/basicprofile", { withCredentials: true })
+      .then(res => setBasicInfo(res.data))
+      .catch(err => console.error("기본 프로필 불러오기 실패:", err));
   }, []);
-
- 
-
-
 
   const navBtnStyle = {
     backgroundColor: "transparent",
@@ -93,7 +79,7 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
     fontWeight: "normal",
     fontSize: "15px",
     cursor: "pointer",
-    padding: "4px 8px",
+    padding: "4px 8px"
   };
 
   const handleFootprintClick = (index) => {
@@ -103,29 +89,27 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
     localStorage.setItem("footprints", JSON.stringify(updated));
   };
 
-
-  const closeCardModal = () => {
-    setShowCardModal(false);
-  };
+  const closeCardModal = () => setShowCardModal(false);
 
   if (!todayProblem) return <div>로딩 중...</div>;
 
   return (
     <div style={{ backgroundColor: "#0d1117", color: "#e0f7fa", minHeight: "100vh" }}>
-        
-       {/* 🌟 Floating Stars with animation */}
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "60px", left: "20px", width: "40px", zIndex: 0 }} alt="star1" />
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "120px", left: "80vw", width: "32px", zIndex: 0 }} alt="star1" />
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "30vh", left: "30vw", width: "28px", zIndex: 0 }} alt="star1" />
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "90vh", left: "90vw", width: "22px", zIndex: 0 }} alt="star1" />
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "15vh", left: "5vw", width: "30px", zIndex: 0 }} alt="star1" />
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "45vh", left: "85vw", width: "25px", zIndex: 0 }} alt="star1" />
+	{/* 🌟 Floating Stars with animation */}
+      	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "60px", left: "20px", width: "40px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "120px", left: "80vw", width: "32px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "30vh", left: "30vw", width: "28px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "90vh", left: "90vw", width: "22px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "15vh", left: "5vw", width: "30px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "45vh", left: "85vw", width: "25px", zIndex: 0 }} alt="star1" />
 
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "88vh", left: "15vw", width: "22px", zIndex: 0 }} alt="star1" />
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "92vh", left: "35vw", width: "25px", zIndex: 0 }} alt="star1" />
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "95vh", left: "50vw", width: "28px", zIndex: 0 }} alt="star1" />
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "98vh", left: "65vw", width: "24px", zIndex: 0 }} alt="star1" />
-<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "99vh", left: "85vw", width: "30px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "88vh", left: "15vw", width: "22px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "92vh", left: "35vw", width: "25px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "95vh", left: "50vw", width: "28px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "98vh", left: "65vw", width: "24px", zIndex: 0 }} alt="star1" />
+	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "99vh", left: "85vw", width: "30px", zIndex: 0 }} alt="star1" />
+
+
 
       <header style={{
         width: "100%",
@@ -150,30 +134,21 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
           <button onClick={() => navigate("/dayquest")} style={navBtnStyle}>일일퀘스트</button>
           <button onClick={() => navigate("/community")} style={navBtnStyle}>자유게시판</button>
           <button onClick={() => navigate("/mypage")} style={navBtnStyle}>마이페이지</button>
-          <button
-            onClick={() => (window.location.href = "/home")}
-            style={{
-              padding: "8px 16px",
-              fontSize: "14px",
-              backgroundColor: "#00e5ff",
-              color: "#0d1117",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              boxShadow: "0 0 10px #00e5ff"
-            }}
-          >
-            홈으로
-          </button>
+          <button onClick={() => (window.location.href = "/home")} style={{
+            padding: "8px 16px",
+            fontSize: "14px",
+            backgroundColor: "#00e5ff",
+            color: "#0d1117",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            boxShadow: "0 0 10px #00e5ff"
+          }}>홈으로</button>
         </div>
       </header>
 
-            
-
       <div style={{ display: "flex", gap: "20px", marginTop: "120px", paddingLeft: "40px" }}>
-        
-
         {footprints.map((filled, i) => (
           <img
             key={i}
@@ -188,12 +163,11 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
               transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
               filter: filled
                 ? "brightness(1.5) drop-shadow(0 0 10px #00e5ff)"
-                : "grayscale(70%) opacity(0.5)",
+                : "grayscale(70%) opacity(0.5)"
             }}
           />
         ))}
-
-        {/* 발자국 오른쪽에 우주 외계인 이미지 */}
+      {/* 발자국 오른쪽에 우주 외계인 이미지 */}
   <img
     src="/public/배경/달.png"
     alt="moon"
@@ -204,7 +178,7 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
     }}
   />
       <img
-  src="/public/배경/우주인.png" // 네가 방금 올린 파일 경로에 맞게 바꿔줘!
+  src="/public/배경/우주인.png" 
   alt="floating-astronaut"
   style={{
     position: "absolute",
@@ -220,6 +194,7 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
 
       </div>
 
+
       <button
         onClick={() => {
           localStorage.clear();
@@ -234,110 +209,83 @@ const [baekjoonProfile, setBaekjoonProfile] = useState({
           border: "none",
           borderRadius: "6px",
           cursor: "pointer",
-          boxShadow: "0 0 8px #ff4081",
+          boxShadow: "0 0 8px #ff4081"
         }}
       >
         초기화하기
       </button>
 
       <div style={{ padding: "40px", marginTop: "30px" }}>
-  {/* 백준 프로필 + 마이프로필 */}
-  <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "40px" }}>
-   <BaekjoonProfile
-  handle={baekjoonProfile.handle}
-  tier={baekjoonProfile.tier}
-  ratingRank={baekjoonProfile.ratingRank}
+        <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "40px" }}>
+          <BaekjoonProfile {...baekjoonProfile} />
+           {basicInfo && (
+  <MyProfile
+  nickname={basicInfo?.name}
+  department={basicInfo?.department}
+  imgUrl={basicInfo?.profileImage}
 />
 
 )}
 
-    <MyProfile nickname="혜서" info="세종대 알고리즘 커뮤니티 운영자" avatarSeed="혜서" />
-  </div>
+        </div>
 
-  {/* 퀘스트 + 외계인 + 다른 컴포넌트 */}
-  <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
-    
-    {/*  퀘스트 캡슐 + 외계인들 묶음 */}
-    <div style={{ position: "relative" }}>
-      <QuestCapsule problem={todayProblem} />
-
-      {/* 외계인 3마리 - 퀘스트 캡슐 위에 떠다니게 */}
-      <img src="/public/배경/에일리언.png" className="alien alien1" alt="alien1" />
-      <img src="/public/배경/에일리언.png" className="alien alien2" alt="alien2" />
-      <img src="/public/배경/에일리언.png" className="alien alien3" alt="alien3" />
-    </div>
-
-    {/* 자유게시판 프리뷰 */}
-    <FreeBoardPreview posts={posts} />
-    
-    {/* 카드첩 */}
-    <CardAlbum cards={cards} />
-  </div>
-</div>
-
+        <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
+          <div style={{ position: "relative" }}>
+            <QuestCapsule problem={todayProblem} />
+            <img src="/public/배경/에일리언.png" className="alien alien1" alt="alien1" />
+            <img src="/public/배경/에일리언.png" className="alien alien2" alt="alien2" />
+            <img src="/public/배경/에일리언.png" className="alien alien3" alt="alien3" />
+          </div>
+          <FreeBoardPreview posts={posts} />
+          <CardAlbum cards={cards} />
+        </div>
+      </div>
 
       {showCardModal && newCard && (
-  <div style={{
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 2000,
-  }}>
-    <div style={{
-      position: "relative",
-      backgroundColor: "#121826",
-      padding: "20px",
-      borderRadius: "20px",
-      width: "300px", // 💡 크기 줄임!
-      textAlign: "center",
-      boxShadow: "0 0 20px #00e5ff",
-      animation: "neon-flicker 1.5s infinite alternate"
-    }}>
-      {/* X 버튼 */}
-      <button
-        onClick={closeCardModal}
-        style={{
-          position: "absolute",
-          top: "-15px",
-          right: "-15px",
-          background: "#ff4081",
-          border: "none",
-          borderRadius: "50%",
-          color: "#fff",
-          fontWeight: "bold",
-          fontSize: "16px",
-          cursor: "pointer",
-          width: "32px",
-          height: "32px",
-          boxShadow: "0 0 8px #ff4081",
-          zIndex: 10
-        }}
-      >
-        ✕
-      </button>
-
-      <h2 style={{ color: "#00e5ff", marginBottom: "12px" }}>🎉 새로운 카드 획득!</h2>
-      <img
-        src={newCard.image}
-        alt={newCard.title}
-        style={{
-          width: "100%",
-          borderRadius: "12px",
-          boxShadow: "0 0 10px #00e5ff"
-        }}
-      />
-      <p style={{ marginTop: "12px", color: "#e0f7fa" }}>{newCard.comment}</p>
-    </div>
-  </div>
-)}
-
-       
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 2000
+        }}>
+          <div style={{
+            position: "relative",
+            backgroundColor: "#121826",
+            padding: "20px",
+            borderRadius: "20px",
+            width: "300px",
+            textAlign: "center",
+            boxShadow: "0 0 20px #00e5ff",
+            animation: "neon-flicker 1.5s infinite alternate"
+          }}>
+            <button onClick={closeCardModal} style={{
+              position: "absolute",
+              top: "-15px",
+              right: "-15px",
+              background: "#ff4081",
+              border: "none",
+              borderRadius: "50%",
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: "16px",
+              cursor: "pointer",
+              width: "32px",
+              height: "32px",
+              boxShadow: "0 0 8px #ff4081",
+              zIndex: 10
+            }}>✕</button>
+            <h2 style={{ color: "#00e5ff", marginBottom: "12px" }}>🎉 새로운 카드 획득!</h2>
+            <img src={newCard.image} alt={newCard.title} style={{ width: "100%", borderRadius: "12px", boxShadow: "0 0 10px #00e5ff" }} />
+            <p style={{ marginTop: "12px", color: "#e0f7fa" }}>{newCard.comment}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

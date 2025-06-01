@@ -2,30 +2,37 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CommentSection from "../pages/commentsection";
+import CodeMirror from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
 
 function PostDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [post, setPost] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null); // ✅ 로그인 유저 정보
 
+  // 게시글 조회
   useEffect(() => {
     axios
       .get(`http://localhost:4000/posts/${id}`)
-      .then((res) => {
-        setPost(res.data);
-      })
-      .catch((err) => {
-        console.error("글 불러오기 실패:", err);
-      });
+      .then((res) => setPost(res.data))
+      .catch((err) => console.error("글 불러오기 실패:", err));
   }, [id]);
+
+  // 로그인한 유저 정보 조회
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/info/api/mypage", { withCredentials: true })
+      .then((res) => setCurrentUser(res.data))
+      .catch((err) => console.error("유저 정보 불러오기 실패:", err));
+  }, []);
 
   const handleDeletePost = async () => {
     const confirm = window.confirm("정말 이 글을 삭제하시겠습니까?");
     if (!confirm) return;
 
     try {
-      await axios.delete(`http://localhost:4000/posts/${id}`);
+      await axios.delete(`http://localhost:4000/posts/${id}`, { withCredentials: true });
       alert("글이 삭제되었습니다.");
       navigate("/community");
     } catch (err) {
@@ -34,7 +41,7 @@ function PostDetail() {
     }
   };
 
-  if (!post) return <div style={{ padding: "40px" }}>로딩 중...</div>;
+  if (!post) return <div style={{ padding: "40px", color: "#fff" }}>로딩 중...</div>;
 
   return (
     <div
@@ -43,31 +50,39 @@ function PostDetail() {
         backgroundColor: "#0d1117",
         color: "#fff",
         minHeight: "100vh",
-        width: "100vw", // ✅ 화면 전체 너비 사용
+        width: "100%",
         overflowX: "hidden",
+        marginTop: "50px",
       }}
     >
       {/* 상단바 */}
       <header
         style={{
           width: "100%",
-          backgroundColor: "#2a3142",
-          padding: "16px 24px",
+          backgroundColor: "#121826",
+          color: "#b3e5fc",
+          padding: "18px 40px",
           fontSize: "18px",
           fontWeight: "bold",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          boxSizing: "border-box",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 1000,
+          boxShadow: "0 2px 10px #00e5ff55",
         }}
       >
-        자유게시판
+        자유 게시판
         <button
-          onClick={() => navigate("/home")}
+          onClick={() => (window.location.href = "/home")}
           style={{
             padding: "8px 16px",
             fontSize: "14px",
-            backgroundColor: "#fff",
-            color: "#2a3142",
+            backgroundColor: "white",
+            color: "#2b2d42",
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
@@ -80,84 +95,137 @@ function PostDetail() {
       {/* 본문 */}
       <main
         style={{
-          width: "100%", // ✅ 꽉 채우기
-          backgroundColor: "#f8f9fa",
-          color: "#000",
-          padding: "40px 20px", // ✅ 내부 여백만 줌
+          width: "100%",
+          minHeight: "100vh",
+          backgroundColor: "#0d1117",
+          color: "#fff",
+          padding: "40px 0",
           boxSizing: "border-box",
         }}
       >
-        {/* 제목 + 삭제 버튼 */}
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "20px",
+            minWidth: "1200px",
+            margin: "0 auto",
+            padding: "0 20px",
+            boxSizing: "border-box",
           }}
         >
-          <h2 style={{ margin: 0 }}>{post.title}</h2>
-          <button
-            onClick={handleDeletePost}
+          {/* 제목 + 삭제 버튼 */}
+          <div
             style={{
-              padding: "8px 12px",
-              backgroundColor: "#ff6b6b",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "40px",
             }}
           >
-            글 삭제
-          </button>
-        </div>
-
-        {/* 작성자/날짜 */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: "14px",
-            color: "#555",
-            marginBottom: "30px",
-          }}
-        >
-          <div>작성자: {post.author || "익명"}</div>
-          <div>
-            작성일:{" "}
-            {post.date ? new Date(post.date).toLocaleDateString() : "알 수 없음"}
+            <h2 style={{ margin: 0, fontSize: "28px", fontWeight: "bold" }}>
+              {post.title}
+            </h2>
+            {currentUser?.id === post.authorId && (
+              <button
+                onClick={handleDeletePost}
+                style={{
+                  padding: "8px 12px",
+                  backgroundColor: "#ff6b6b",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                글 삭제
+              </button>
+            )}
           </div>
-        </div>
 
-        {/* 본문 */}
-        <div
-          style={{
-            fontSize: "16px",
-            lineHeight: "1.6",
-            marginBottom: "50px",
-            whiteSpace: "pre-wrap",
-          }}
-        >
-          {post.content}
-        </div>
-
-        {/* 댓글 */}
-        <CommentSection />
-
-        {/* 목록으로 돌아가기 */}
-        <div style={{ marginTop: "40px", textAlign: "right" }}>
-          <button
-            onClick={() => navigate("/community")}
+          {/* 작성자/날짜 */}
+          <div
             style={{
-              padding: "10px 16px",
-              backgroundColor: "#cfd8dc",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "14px",
+              color: "#ccc",
+              marginBottom: "50px",
             }}
           >
-            목록으로 돌아가기
-          </button>
+            <div>작성자: {post.author || "익명"}</div>
+            <div>
+              작성일:{" "}
+              {post.date
+                ? new Date(post.date).toLocaleDateString()
+                : "알 수 없음"}
+            </div>
+          </div>
+
+          {/* 본문 내용 */}
+          <div
+            style={{
+              fontSize: "16px",
+              lineHeight: "1.6",
+              marginBottom: "150px",
+              whiteSpace: "pre-wrap",
+              color: "#fff",
+              textAlign: "left",
+            }}
+          >
+            {post.content}
+          </div>
+
+          {/* 코드 영역 */}
+          {post.code && (
+            <div style={{ marginBottom: "100px" }}>
+              <h3
+                style={{
+                  color: "#00e5ff",
+                  marginBottom: "12px",
+                  fontSize: "18px",
+                  textAlign: "left",
+                }}
+              >
+                📄 첨부 코드
+              </h3>
+              <CodeMirror
+                value={post.code}
+                height="200px"
+                extensions={[javascript()]}
+                theme="dark"
+                editable={false}
+                className="custom-codemirror"
+                style={{ borderRadius: "8px", overflow: "hidden" }}
+              />
+            </div>
+          )}
+
+          {/* 구분선 */}
+          <hr
+            style={{
+              border: "none",
+              borderTop: "1px solid #444",
+              margin: "60px 0",
+            }}
+          />
+
+          {/* 댓글 */}
+          <CommentSection postId={post.id} userInfo={currentUser} />
+
+          {/* 목록으로 */}
+          <div style={{ marginTop: "40px", textAlign: "right" }}>
+            <button
+              onClick={() => navigate("/community")}
+              style={{
+                padding: "10px 16px",
+                backgroundColor: "#3a3f58",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              목록으로 돌아가기
+            </button>
+          </div>
         </div>
       </main>
     </div>
