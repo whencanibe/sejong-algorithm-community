@@ -77,7 +77,7 @@ function PostDetail() {
       >
         자유 게시판
         <button
-          onClick={() => (window.location.href = "/home")}
+          onClick={() => (window.location.href = "/")}
           style={{
             padding: "8px 16px",
             fontSize: "14px",

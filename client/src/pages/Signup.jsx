@@ -127,7 +127,7 @@ export default function Signup() {
 
       if (response.status === 201) {
           alert(data.message || '회원가입이 성공적으로 완료되었습니다!');
-          navigate('/');
+          navigate('/login');
       } else {
           alert(`회원가입 실패: ${data.error || '알 수 없는 오류'}`);
       }

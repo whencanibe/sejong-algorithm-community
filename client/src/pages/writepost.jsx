@@ -24,6 +24,8 @@ useEffect(() => {
       setAuthor(res.data.name); // ← 닉네임
     } catch (err) {
       console.error("작성자 닉네임 가져오기 실패:", err);
+      alert("로그인이 필요합니다.");
+      navigate("/login");
     }
   };
   fetchAuthor();
