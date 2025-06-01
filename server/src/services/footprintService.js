@@ -36,8 +36,8 @@ export async function buildFootprints(userId) {
 
 export async function getStreak(userId) {
   const todayUtc = kstMidnight();
-  const yesterdayUtc = subDays(todayUtc, 1);      
-  const pastUtc = subDays(todayUtc, 100);       // 최근 100일만 조회
+  const yesterdayUtc = subDays(todayUtc, 1);     // 어제 
+  const pastUtc = subDays(todayUtc, 100);       // 최근 100일만 조회하기 위해 100일전 날짜
 
   const solvedSet = new Set(
     (await fetchSolvedDates({ userId, dateFrom: pastUtc, dateTo: todayUtc }))
@@ -47,7 +47,7 @@ export async function getStreak(userId) {
   let streak = 0;
   let started = false; // 첫 solved 발견 여부
 
-  
+  // 오늘도 퀘스트 안했는데 어제도 안했다면 0 반환
   if (!solvedSet.has(toUtcKey(yesterdayUtc)) && !solvedSet.has(toUtcKey(todayUtc))){
     return 0;
   }
@@ -62,7 +62,7 @@ export async function getStreak(userId) {
     } else {
       if (started) break;          // 끊기면 종료
     }
-    if (d <= pastUtc) break;       // 안전 장치
+    if (d <= pastUtc) break;       // 100일 넘어가면 종료
   }
   return streak;
 }

@@ -45,7 +45,7 @@ app.use('/user', userRouter);
 app.use('/dayquest', dayquestRouter);
 app.use('/card', cardRouter);
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
-app.use(errorHandler);
+app.use(errorHandler); // 최종 에러 처리기이므로 모든 라우터 뒤에 위치하여야 함.
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });

@@ -50,8 +50,8 @@ export async function getRankandTier(baekjoonName) {
             solvedCount: solvedCount,
         }
     } catch (err) {
-        console.error('API 요청 실패:', err.message);
-        throw new Error('사용자 랭킹 불러오기 실패');
+        console.error('solvedac API 요청 실패:', err.message);
+        throw new Error('존재하는 백준 아이디를 입력해 주세요');
     }
 
 }
