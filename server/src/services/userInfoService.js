@@ -1,3 +1,4 @@
+import prisma from '../models/prisma.js';
 import * as userRepo from "../repositories/userRepository.js";
 import * as weeklyRankRepo from "../repositories/weeklyRankRepository.js";
 import * as solvedProblemRepo from "../repositories/solvedProblemRepository.js";
@@ -122,3 +123,22 @@ export async function getGlobalRankingServ(limit) {
 export async function getDepartmentRankingServ(dept, limit) {
   return await userRepo.getDepartmentRanking(dept,limit);
 }
+
+export async function updateNickname(userId, newName) {
+  // 중복 닉네임 체크를 먼저 수행하고,
+  const existing = await prisma.user.findFirst({
+    where: { name: newName },
+  });
+
+  // 그런 다음 존재 여부를 판단해야 함
+  if (existing && existing.id !== userId) {
+    throw new AppError('이미 존재닉입니다.', 400);
+  }
+
+  // 닉네임 업데이트
+  return await prisma.user.update({
+    where: { id: Number(userId) },
+    data: { name: newName },
+  });
+}
+

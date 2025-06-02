@@ -84,14 +84,14 @@ function MyPage() {
       setNicknameError(true);
       return;
     }
-
+  
     try {
-      const res = await axios.put(
-        `http://localhost:4000/info/api/mypage`,
+      const res = await axios.patch(
+        `http://localhost:4000/info/api/change-nickname`,
         { name: nickname },
         { withCredentials: true }
       );
-
+  
       setUserInfo((prev) => ({
         ...prev,
         name: nickname,
@@ -99,8 +99,14 @@ function MyPage() {
       setIsEditingNickname(false);
       setNicknameError(false);
     } catch (err) {
-      console.error("닉네임 수정 실패:", err);
-      alert("닉네임 수정에 실패했습니다.");
+      console.error("닉네임 수정 실패:", err.response?.data);
+      console.log("상태 코드:", err.response?.status);
+    
+      if (err.response?.status === 400) {
+        alert("이미 존재하는 닉네임입니다.");
+      } else {
+        alert("닉네임 수정에 실패했습니다.");
+      }
     }
   };
 
