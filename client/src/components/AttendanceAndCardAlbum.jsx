@@ -33,6 +33,7 @@ export default function AttendanceAndCardAlbum() {
       withCredentials: true
     })
       .then(res => {
+        if (!res.data.card) return; //카드가 안 오면 리턴
         const newCard = res.data.card;
         setCards(prev => [newCard, ...prev]);
         setNewCard(newCard);  // 모달용
@@ -40,7 +41,8 @@ export default function AttendanceAndCardAlbum() {
         setRewardGiven(true);
       })
       .catch(err => {
-        console.warn("카드 지급 실패:", err.response?.data?.error || err.message);
+        const msg = err.response?.data?.message || err.message;
+        alert(msg); // ← 예: "오늘은 이미 카드를 받았습니다."
       });
   }
 }, []);
