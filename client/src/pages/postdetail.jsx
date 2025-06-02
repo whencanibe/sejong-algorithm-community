@@ -135,7 +135,7 @@ function PostDetail({ postId }) {
             <h2 style={{ margin: 0, fontSize: "28px", fontWeight: "bold" }}>
               {post.title}
             </h2>
-            {userInfo?.id === post.postId && (
+            {userInfo?.name === post.user.name && (
               <button
                 onClick={handleDeletePost}
                 style={{

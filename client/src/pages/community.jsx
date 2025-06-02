@@ -133,7 +133,7 @@ function Community() {
                   {post.title}
                 </td>
                 <td style={{ padding: "12px", borderBottom: "1px solid #eee", color: "#ccc" }}>
-                  {post.author || "익명"}
+                   {post.user?.name || "익명"}
                 </td>
                 <td style={{ padding: "12px", borderBottom: "1px solid #eee", color: "#ccc" }}>
   {post.createdAt?.split("T")[0]}
