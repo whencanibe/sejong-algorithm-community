@@ -108,16 +108,6 @@ function Dayquest({ userId, problemId }) {
         </button>
       </header>
 
-      {/* 동기화 버튼 */}
-      <button onClick={handleRefresh}
-        disabled={loading}
-        style={{
-          position: "fixed", bottom: 20, right: 20,
-          padding: "10px 18px", borderRadius: 6
-        }}>
-        동기화
-      </button>
-
       <div
         style={{
           maxWidth: "1200px",
@@ -186,39 +176,42 @@ function Dayquest({ userId, problemId }) {
             gap: "20px",
           }}
         >
-          {/* 왼쪽 박스 */}
-          <div
-            style={{
-              flex: "1 1 200px",
-              maxWidth: "280px",
-              height: "240px",
-              backgroundColor: "#2a3142",
-              border: "1px solid #00e5ff",
-              borderRadius: "12px",
-              boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
-              padding: "20px",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              boxSizing: "border-box",
-              color: "#e0f7fa",
-            }}
-          >
-            <img
-              src="/완료도장.png"
-              alt="도장"
-              style={{
-                width: "60%",
-                filter: hasSolvedToday ? "none" : "grayscale(100%)",
-                transition: "filter 0.3s ease-in-out",
-              }}
-            />
-            <p style={{ marginTop: "10px" }}>
-              {hasSolvedToday ? "내가 완료함" : "아직 안 했음"}
-            </p>
-          </div>
+          {/* 왼쪽 박스 - 클릭 시 동기화 */}
+<div
+  onClick={handleRefresh}
+  style={{
+    flex: "1 1 200px",
+    maxWidth: "280px",
+    height: "240px",
+    backgroundColor: "#2a3142",
+    border: "1px solid #00e5ff",
+    borderRadius: "12px",
+    boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
+    padding: "20px",
+    cursor: "pointer",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    boxSizing: "border-box",
+    color: "#e0f7fa",
+  }}
+>
+  <img
+    src="/완료도장.png"
+    alt="도장"
+    style={{
+      width: "60%",
+      filter: hasSolvedToday ? "none" : "grayscale(100%)",
+      boxShadow: hasSolvedToday ? "0 0 15px 5px #ff5252" : "none", // ✅ 빨간 도장 효과
+      transition: "filter 0.3s ease, box-shadow 0.3s ease",
+      borderRadius: "8px",
+    }}
+  />
+  <p style={{ marginTop: "10px", fontWeight: "bold" }}>
+    {hasSolvedToday ? "🎉 오늘의 문제 완료 !" : " 문제 제출 후 클릭 ! "}
+  </p>
+</div>
 
           {/* 오른쪽 박스 */}
           <div

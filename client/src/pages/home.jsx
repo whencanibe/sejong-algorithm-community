@@ -6,6 +6,8 @@ import QuestCapsule from "../components/QuestCapsule";
 import FreeBoardPreview from "../components/FreeBoard";
 import CardAlbum from "../components/CardAlbum";
 import axios from "axios";
+import AttendanceAndCardAlbum from "../components/Attendanceandcardalbum";
+
 
 export default function Home() {
   const navigate = useNavigate();
@@ -31,6 +33,16 @@ export default function Home() {
   tier: null,
   ratingRank: null
 });
+
+
+  
+  useEffect(() => {
+    // 카드첩 불러오기
+    axios.get("http://localhost:4000/card/me", { withCredentials: true })
+      .then(res => setCards(res.data))
+      .catch(err => console.error("카드 불러오기 실패:", err));
+    
+  },[]);
 
 
   useEffect(() => {
@@ -149,31 +161,19 @@ useEffect(() => {
       </header>
 
       <div style={{ display: "flex", gap: "20px", marginTop: "120px", paddingLeft: "40px" }}>
-        {footprints.map((filled, i) => (
-          <img
-            key={i}
-            src="/발자국.png"
-            alt={`footprint-${i}`}
-            onClick={() => handleFootprintClick(i)}
-            style={{
-              width: "70px",
-              height: "70px",
-              cursor: "pointer",
-              transition: "0.3s",
-              transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
-              filter: filled
-                ? "brightness(1.5) drop-shadow(0 0 10px #00e5ff)"
-                : "grayscale(70%) opacity(0.5)"
-            }}
-          />
-        ))}
+        
+          <AttendanceAndCardAlbum />  {/* 여기에 삽입 */}
+
       {/* 발자국 오른쪽에 우주 외계인 이미지 */}
   <img
     src="/public/배경/달.png"
     alt="moon"
     style={{
+       position: "absolute", 
+       top: "180px",
+       left: "680px",
       width: "100px",
-      height: "auto",
+      height: "100px",
       
     }}
   />

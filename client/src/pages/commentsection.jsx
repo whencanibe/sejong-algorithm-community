@@ -1,17 +1,21 @@
 
 import { useState,useEffect } from "react";
+import axios from "axios";
 
 function CommentSection({ postId, userInfo }) {
   const [comments, setComments] = useState([]);
   const [input, setInput] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
 
+
+  
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/api/comments/${postId}`);
+        const res = await axios.get(`http://localhost:4000/comments/${postId}`);
         setComments(res.data); // [{ id, user: { name }, text }]
       } catch (err) {
+        console.log("postId:", postId);
         console.error("댓글 불러오기 실패:", err);
       }
     };
@@ -19,39 +23,33 @@ function CommentSection({ postId, userInfo }) {
   }, [postId]);
 
 
-
+  
+  
   const handleAddComment = async () => {
-    if (input.trim() === "") return;
+  if (input.trim() === "") return;
 
-    try {
-       await axios.post(`http://localhost:4000/api/comments/${postId}`, {
-        postId: postId,
-        userId: userInfo.id,
-        text: input,
-      }, {
-        withCredentials: true,
-      });
+  console.log("postId", postId);
+console.log("userId", userInfo?.id);
 
-      setComments([
-        ...comments,
-        {
-          id: Date.now(),
-          nickname: userInfo.name,
-          text: input,
-          isEditing: false,
-          edited: false,
-        },
-      ]);
-       const res = await axios.get(`http://localhost:4000/api/comments/${postId}`);
-      setComments(res.data);
-      setInput("");
+  try {
+    await axios.post(`http://localhost:4000/comments/${postId}`, {
+      userId: userInfo.id,
+      text: input,
+    }, {
+      withCredentials: true,
+    });
+
+    // 최신 댓글 목록 다시 불러오기
+    const res = await axios.get(`http://localhost:4000/comments/${postId}`);
+    setComments(res.data);
+    setInput("");
+  } catch (err) {
+    console.error("댓글 저장 실패:", err.response?.data || err.message);
+    alert("댓글 저장 중 오류 발생!");
+  }
+};
 
 
-    } catch (err) {
-      console.error("댓글 저장 실패:", err);
-      alert("댓글 저장 중 오류 발생!");
-    }
-  };
 
   const handleEditStart = (id) => {
     setComments((prev) =>
@@ -60,18 +58,41 @@ function CommentSection({ postId, userInfo }) {
     setActiveMenuId(null);
   };
 
-  const handleEditSubmit = (id, newText) => {
-    setComments((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, text: newText, isEditing: false, edited: true } : c
-      )
-    );
-  };
+  const handleEditSubmit = async (id, newText) => {
+  try {
+    await axios.put(`http://localhost:4000/comments/${id}`, {
+      text: newText,
+    }, {
+      withCredentials: true,
+    });
 
-  const handleDelete = (id) => {
-    setComments((prev) => prev.filter((c) => c.id !== id));
-    setActiveMenuId(null);
-  };
+    // 업데이트 후 다시 불러오기
+    const res = await axios.get(`http://localhost:4000/comments/${postId}`);
+    setComments(res.data);
+  } catch (err) {
+    console.error("댓글 수정 실패:", err.response?.data || err.message);
+    alert("댓글 수정 중 오류 발생!");
+  }
+};
+
+
+ const handleDelete = async (id) => {
+  try {
+    await axios.delete(`http://localhost:4000/comments/${id}`, {
+      withCredentials: true,
+    });
+
+    // 삭제 후 다시 불러오기
+    const res = await axios.get(`http://localhost:4000/comments/${postId}`);
+    setComments(res.data);
+  } catch (err) {
+    console.error("댓글 삭제 실패:", err.response?.data || err.message);
+    alert("댓글 삭제 중 오류 발생!");
+  }
+
+  setActiveMenuId(null);
+};
+
 
   return (
     <div>
@@ -87,7 +108,7 @@ function CommentSection({ postId, userInfo }) {
         댓글
       </div>
 
-      <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+      <ul style={{ listStyle: "none", paddingLeft: 10 }}>
         {comments.map((c) => (
           <li
             key={c.id}
@@ -106,7 +127,7 @@ function CommentSection({ postId, userInfo }) {
                 height: "35px",
                 borderRadius: "50%",
                 backgroundColor: "#ccc",
-                marginRight: "12px",
+                marginRight: "25px",
                 flexShrink: 0,
               }}
             ></div>
@@ -115,15 +136,28 @@ function CommentSection({ postId, userInfo }) {
               <div
                 style={{
                   fontWeight: "bold",
-                  marginBottom: "4px",
+                  marginBottom: "8px",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                 }}
               >
-                <span>{c.user?.name || "익명"}</span>
+                <span
+  style={{
+    border: "1px solid #00e5ff",   // 네온색 테두리
+    padding: "4px 8px",
+    borderRadius: "8px",
+    color: "#00e5ff",
+    fontWeight: "bold",
+    fontSize: "14px",
+    backgroundColor: "#0d1117", // 배경 어두운 톤
+  }}
+>
+  {c.user?.name || "익명"}
+</span>
 
-                <div style={{ position: "relative", marginLeft: "auto" }}>
+
+                <div style={{ position: "relative", marginLeft: "auto", marginRight: "10px" }}>
                   <button
                     onClick={() =>
                       setActiveMenuId(activeMenuId === c.id ? null : c.id)
@@ -134,7 +168,7 @@ function CommentSection({ postId, userInfo }) {
                       fontSize: "18px",
                       cursor: "pointer",
                       padding: "0 4px",
-                      color: "#000",
+                      color: "#fff",
                     }}
                   >
                     ...
@@ -191,9 +225,12 @@ function CommentSection({ postId, userInfo }) {
                 <CommentEditor id={c.id} initial={c.text} onSubmit={handleEditSubmit} />
               ) : (
                 <>
-                  <div style={{ lineHeight: "1.5", color: "#333" }}>{c.text}</div>
+                  <div style={{ lineHeight: "1.6", color: "#fff", fontSize: "15px" }}>
+  {c.text}
+</div>
+
                   {c.edited && (
-                    <div style={{ fontSize: "12px", color: "#888" }}>수정됨</div>
+                    <div style={{ fontSize: "12px", color: "#fff" }}>수정됨</div>
                   )}
                 </>
               )}

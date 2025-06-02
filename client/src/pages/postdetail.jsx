@@ -5,11 +5,13 @@ import CommentSection from "../pages/commentsection";
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 
-function PostDetail() {
+function PostDetail({ postId }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null); // ✅ 로그인 유저 정보
+  const [userInfo, setUserInfo] = useState(null); // ✅ 로그인 유저 정보
+
+
 
   // 게시글 조회
   useEffect(() => {
@@ -19,13 +21,23 @@ function PostDetail() {
       .catch((err) => console.error("글 불러오기 실패:", err));
   }, [id]);
 
-  // 로그인한 유저 정보 조회
+ 
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/info/api/mypage", { withCredentials: true })
-      .then((res) => setCurrentUser(res.data))
-      .catch((err) => console.error("유저 정보 불러오기 실패:", err));
-  }, []);
+  axios
+    .get("http://localhost:4000/info/api/mypage", {
+      withCredentials: true,
+    })
+    .then((res) => {
+      const { id, name } = res.data; // ✨ 필요한 것만 꺼냄
+      setUserInfo({ id, name });     // ✅ 댓글 등 다른 컴포넌트에 넘길 값
+    })
+    .catch((err) => {
+      console.error("유저 정보 불러오기 실패:", err);
+    });
+}, []);
+
+
+
 
   const handleDeletePost = async () => {
     const confirm = window.confirm("정말 이 글을 삭제하시겠습니까?");
@@ -123,7 +135,7 @@ function PostDetail() {
             <h2 style={{ margin: 0, fontSize: "28px", fontWeight: "bold" }}>
               {post.title}
             </h2>
-            {currentUser?.id === post.authorId && (
+            {userInfo?.id === post.postId && (
               <button
                 onClick={handleDeletePost}
                 style={{
@@ -140,22 +152,23 @@ function PostDetail() {
             )}
           </div>
 
-          {/* 작성자/날짜 */}
+          {/* 날짜 */}
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
+              justifyContent: "flex-end",
               fontSize: "14px",
               color: "#ccc",
               marginBottom: "50px",
             }}
           >
-            <div>작성자: {post.author || "익명"}</div>
+           
             <div>
               작성일:{" "}
-              {post.date
-                ? new Date(post.date).toLocaleDateString()
-                : "알 수 없음"}
+{post.createdAt
+  ? new Date(post.createdAt).toLocaleDateString()
+  : "알 수 없음"}
+
             </div>
           </div>
 
@@ -207,8 +220,10 @@ function PostDetail() {
             }}
           />
 
-          {/* 댓글 */}
-          <CommentSection postId={post.id} userInfo={currentUser} />
+          {post && userInfo && (
+  <CommentSection postId={post.id} userInfo={userInfo} />
+)}
+
 
           {/* 목록으로 */}
           <div style={{ marginTop: "40px", textAlign: "right" }}>
