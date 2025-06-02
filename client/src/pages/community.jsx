@@ -11,14 +11,13 @@ function Community() {
   const fetchData = async () => {
     try {
       // 1단계: 세션 유효성 확인
-      await axios.post("http://localhost:4000/info/api/refresh", {}, {
+      await axios.get("http://localhost:4000/info/api/basicprofile", {
         withCredentials: true,
       });
     } catch (err) {
-      // 세션 만료 → 로그인 필요
       alert("로그인이 필요합니다.");
       navigate("/login");
-      return; // 아래 코드 실행하지 않도록 종료
+      return;
     }
 
     try {

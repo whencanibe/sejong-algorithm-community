@@ -28,7 +28,7 @@ function Dayquest({ userId, problemId }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        await axios.post("http://localhost:4000/info/api/refresh", {}, {
+        await axios.get("http://localhost:4000/info/api/basicprofile", {
           withCredentials: true,
         });
         fetchStatus(); 

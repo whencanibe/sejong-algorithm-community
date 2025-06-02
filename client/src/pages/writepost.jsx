@@ -45,7 +45,6 @@ useEffect(() => {
         title,
         content,
         code,
-        author: userInfo.name,
       }, { withCredentials: true });
 
       alert('글이 성공적으로 작성되었습니다!');
