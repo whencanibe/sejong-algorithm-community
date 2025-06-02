@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell } from "recharts";
 import "../App.css";
 
 const COLORS = ["#00C49F", "#FF8042"];
 
 function Dayquest({ userId, problemId }) {
+  const navigate = useNavigate();
   const [status, setStatus] = useState(null);   // 정상 데이터
   const [loading, setLoading] = useState(true); // 로딩 스피너
   const [error, setError] = useState(null); // 에러 메시지
@@ -23,7 +25,20 @@ function Dayquest({ userId, problemId }) {
     }
   };
 
-  useEffect(() => { fetchStatus(); }, []);
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        await axios.post("http://localhost:4000/info/api/refresh", {}, {
+          withCredentials: true,
+        });
+        fetchStatus(); 
+      } catch (err) {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+      }
+    };
+    checkSession();
+  }, [navigate]);
 
   /* 동기화 버튼 함수*/
   const handleRefresh = async () => {
@@ -93,7 +108,7 @@ function Dayquest({ userId, problemId }) {
       >
         일일 퀘스트
         <button
-          onClick={() => (window.location.href = "/home")}
+          onClick={() => (window.location.href = "/")}
           style={{
             padding: "8px 16px",
             fontSize: "14px",

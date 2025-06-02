@@ -50,8 +50,8 @@ export async function getRankandTier(baekjoonName) {
             solvedCount: solvedCount,
         }
     } catch (err) {
-        console.error('API 요청 실패:', err.message);
-        throw new Error('사용자 랭킹 불러오기 실패');
+        console.error('solvedac API 요청 실패:', err.message);
+        throw new Error('존재하는 백준 아이디를 입력해 주세요');
     }
 
 }
@@ -60,7 +60,7 @@ export async function getProblemDetail(problemId) {
     const url = 'https://solved.ac/api/v3/problem/show'; // ex ) ?problemId=2759
     try {
         const response = await axios.get(url, {
-            params: { problemId }
+            params: { problemId }, timeout: 7000
         })
 
         let title = response.data.titleKo;
@@ -73,7 +73,7 @@ export async function getProblemDetail(problemId) {
             averageTries
         };
     } catch (error) {
-        console.error('API 요청 실패:', err.message);
+        console.error('API 요청 실패:', error.message);
         throw new Error('문제 정보 불러오기 실패');
     }
 }

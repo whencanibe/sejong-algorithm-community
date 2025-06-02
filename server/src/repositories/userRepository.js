@@ -1,26 +1,45 @@
 import { AppError } from "../errors/AppError.js";
 import prisma from "../models/prisma.js";
+import { Prisma } from '@prisma/client';
 
-export async function createUser({ email, hashedPassword, name, baekjoonName, department, studentId }) {
-  return prisma.user.create({
+export async function createUser({ email, hashedPassword, name, baekjoonName, department, studentId }, tx = prisma) {
+  return tx.user.create({
     data: { email, password: hashedPassword, name, baekjoonName, department, studentId }, // db에 저장할 값
     select: { id: true, email: true, name: true, department: true, studentId: true } // 응답에 반환될 값 선택
   })
 }
 
-export async function findUserById(id) {
+export async function findUserById(id, tx = prisma) {
   if (id == null) throw new AppError('userId가 없습니다', 400);
-  return await prisma.user.findUnique({
+  return await tx.user.findUnique({
     where: { id }
   })
 }
 
-export const findUserByEmail = async (email) => {
-  return await prisma.user.findUnique({
+export const findUserByEmail = async (email, tx = prisma) => {
+  return await tx.user.findUnique({
     where: { email }
   });
 }
 
+//unique key or prime key 가 아니라면 findUnique 사용 x => findFirst
+export const findUserByName = async (name, tx = prisma) => {
+  return await tx.user.findFirst({
+    where: { name }
+  });
+}
+
+export const findUserByBaekjoonName = async (baekjoonName, tx = prisma) => {
+  return await tx.user.findFirst({
+    where: { baekjoonName }
+  });
+}
+
+export const findUserByStudentId = async (studentId, tx = prisma) => {
+  return await tx.user.findFirst({
+    where: { studentId }
+  });
+}
 
 /**
  * @param {number} id
@@ -84,10 +103,10 @@ export async function getRankByUserId(id) {
 export async function getRankInDepartmentByUserId(id) {
   const me = await prisma.user.findUnique({
     where: { id },
-    select: { rank: true }
+    select: { rank: true, department: true }
   });
 
-  if (!me) throw new Error("해당 유저 없음");
+  if (!me) throw new AppError("해당 유저 없음", 404);
 
   const count = await prisma.user.count({
     where: {
@@ -136,9 +155,54 @@ export async function getNumberOfUsers() {
   return await prisma.user.count();
 }
 
-export function updateUserProfileImage(userId, imageUrl) {
-  return prisma.user.update({
+export async function updateUserProfileImage(userId, imageUrl) {
+  return await prisma.user.update({
     where: { id: userId },
     data: { profileImage: imageUrl },
   });
+}
+
+export async function deleteUserById(userId) {
+  return await prisma.user.delete({
+    where: { id: userId },
+  });
+}
+
+/**
+ * 학생 전체 문제 푼 개수 순위
+ * @param {Number} limit - 몇등까지 보여줄 지
+ * @returns {Array}
+ */
+export async function getGlobalRanking(limit) {
+  return await prisma.$queryRaw`
+    SELECT
+      id,
+      name,
+      department,
+      solvedNum,
+      RANK() OVER (ORDER BY solvedNum DESC) AS rank
+    FROM User
+    ORDER BY solvedNum DESC
+    ${limit ? Prisma.raw(`LIMIT ${Number(limit)}`) : Prisma.raw(``)}
+  `;
+}
+
+/**
+ * 학과별 랭킹
+ * @param {String} department - 사용자 학과
+ * @param {Number} limit - 몇등까지 보여줄 지
+ * @returns {Array}
+ */
+export async function getDepartmentRanking(department, limit) {
+  return await prisma.$queryRaw`
+    SELECT
+      id,
+      name,
+      solvedNum,
+      RANK() OVER (PARTITION BY department ORDER BY solvedNum DESC) AS rank
+    FROM User
+    WHERE department = ${department}
+    ORDER BY solvedNum DESC
+    ${limit ? Prisma.raw(`LIMIT ${Number(limit)}`) : Prisma.raw(``)}
+  `;
 }

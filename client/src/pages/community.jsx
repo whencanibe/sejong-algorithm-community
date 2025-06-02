@@ -8,15 +8,32 @@ function Community() {
 
   // 게시글 목록 받아오기
   useEffect(() => {
-    axios.get('http://localhost:4000/posts')
-      .then((res) => {
-        console.log('✅ 받아온 게시글:', res.data);
-        setPosts(res.data);
-      })
-      .catch((err) => {
-        console.error('게시글 불러오기 실패:', err);
+  const fetchData = async () => {
+    try {
+      // 1단계: 세션 유효성 확인
+      await axios.post("http://localhost:4000/info/api/refresh", {}, {
+        withCredentials: true,
       });
-  }, []);
+    } catch (err) {
+      // 세션 만료 → 로그인 필요
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return; // 아래 코드 실행하지 않도록 종료
+    }
+
+    try {
+      // 2단계: 게시글 목록 요청
+      const res = await axios.get("http://localhost:4000/posts");
+      console.log("✅ 받아온 게시글:", res.data);
+      setPosts(res.data);
+    } catch (err) {
+      console.error("❌ 게시글 불러오기 실패:", err);
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   
   return (
@@ -52,7 +69,7 @@ function Community() {
       >
         자유 게시판
         <button
-          onClick={() => (window.location.href = '/home')}
+          onClick={() => (window.location.href = '/')}
           style={{
             padding: '8px 16px',
             fontSize: '14px',

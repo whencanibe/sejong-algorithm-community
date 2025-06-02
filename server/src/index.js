@@ -5,7 +5,7 @@ import postRouter from './routes/postRouter.js';
 import userRouter from './routes/userRouter.js';
 import solvedacRouter from './routes/solvedacRouter.js';
 import userInfoRouter from './routes/userInfoRouter.js';
-import { startSyncSolvedList } from './jobs/syncSolvedListJob.js';
+import { startSyncSolvedList, syncAllUsers } from './jobs/syncSolvedListJob.js';
 import { startWeeklySnapshot } from './jobs/weeklySnapshotJob.js';
 import errorHandler from './middlewares/errorHandler.js';
 import session from 'express-session';
@@ -45,9 +45,14 @@ app.use('/user', userRouter);
 app.use('/dayquest', dayquestRouter);
 app.use('/card', cardRouter);
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
-app.use(errorHandler);
-app.listen(PORT, () => {
+app.use(errorHandler); // 최종 에러 처리기이므로 모든 라우터 뒤에 위치하여야 함.
+app.listen(PORT, async () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
+  try {
+    await syncAllUsers();
+  } catch (err) {
+    console.error('서버 시작 후 초기 동기화 실패:', err.message);
+  }
 });
 
 startSyncSolvedList();

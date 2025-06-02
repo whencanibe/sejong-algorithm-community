@@ -6,14 +6,16 @@ export async function refreshSolvedInfoCtrl(req, res, next) {
         const userId = Number(req.params.id);
         await syncSingleUser(userId);             // Solved.ac <-> DB 
         await updateWeeklyRank(userId);   // WeeklyRank 갱신
-        res.json({ ok: true });
-    } catch (e) { next(e); }
+        res.status(200).json({ ok: true });
+    } catch (error) {
+        next(error);
+    }
 }
 
 export async function getDepartmentWeeklyRankingCtrl(req, res, next) {
     try {
         const ranking = await getDepartmentWeeklyRanking();
-        res.status(201).json(ranking);
+        res.status(200).json(ranking);
     } catch (error) {
         next(error);
     }
@@ -23,7 +25,7 @@ export async function getDepartmentWeeklyRankingCtrl(req, res, next) {
 export async function getStudentInDeptWeeklyRankingCtrl(req, res, next) {
     try {
         const ranking = await getStudentInDeptWeeklyRanking(req.params.department);
-        res.status(201).json(ranking);
+        res.status(200).json(ranking);
     } catch (error) {
         next(error);
     }
@@ -34,6 +36,8 @@ export async function refreshSolvedInfoSessionCtrl(req, res, next) {
         const userId = Number(req.session?.user?.id);
         await syncSingleUser(userId);             // Solved.ac <-> DB 
         await updateWeeklyRank(userId);   // WeeklyRank 갱신
-        res.json({ ok: true });
-    } catch (e) { next(e); }
+        res.status(200).json({ ok: true });
+    } catch (error) {
+        next(error);
+    }
 }

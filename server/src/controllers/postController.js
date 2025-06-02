@@ -5,7 +5,7 @@ export async function getAllPosts(req, res) {
     const posts = await service.listPosts();
     res.json(posts);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 }
 
@@ -15,7 +15,7 @@ export async function getPost(req, res) {
     if (!post) return res.status(404).json({ error: '글이 없습니다' });
     res.json(post);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 }
 
@@ -29,7 +29,7 @@ export async function createPost(req, res) {
     const newPost = await service.writePost(req.body, userId);
     res.status(201).json(newPost);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    next(err);
   }
 }
 
@@ -38,7 +38,7 @@ export async function updatePost(req, res) {
     const updated = await service.editPost(req.params.id, req.body);
     res.status(200).json(updated);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    next(err);
   }
 }
 export async function deletePost(req, res) {
@@ -52,6 +52,6 @@ export async function deletePost(req, res) {
     await service.removePost(postId);
     res.status(204).send();
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 }

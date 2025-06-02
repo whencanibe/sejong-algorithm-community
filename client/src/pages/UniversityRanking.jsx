@@ -51,11 +51,11 @@ function UniversityRanking() {
         const { totalUsers } = statusRes.data;
         setRankInfo({ rank: userData.rank ?? 0, total: totalUsers });
         
-        const rankingRes = await fetch(`http://localhost:4000/info/api/deptranking`, {
+        const rankingRes = await fetch(`http://localhost:4000/info/api/globalranking`, {
           credentials: 'include',
         });
         const rankData = await rankingRes.json();
-        setDeptRanking(rankData.slice(1));
+        setDeptRanking(rankData);
       } catch (err) {
         console.error("데이터 불러오기 실패:", err);
       }
@@ -67,13 +67,13 @@ function UniversityRanking() {
     return <div style={{ padding: "40px", fontSize: "18px" }}>로딩 중...</div>;
   }
 
-  const data = deptRanking.map((dept) => ({
-    name: dept.department,
-    solved: dept.solvedThisWeek
+  const data = deptRanking.map((u) => ({
+    name: u.name,
+    solved: u.solvedNum,
   }));
 
   const sortedData = [...data].sort((a, b) => b.solved - a.solved);
-  const myName = userInfo?.department ?? '';
+  const myName = userInfo?.name ?? '';
   const rank = userInfo?.rank ?? 0;
   const total = userInfo?.total ?? 0;
   const myData = sortedData.find((d) => d.name === myName);
@@ -151,7 +151,7 @@ function UniversityRanking() {
         <div style={{ width: '100%', height: '150px' }}>
           <h2 style={{ textAlign: 'center', marginTop: 0 }}>(세종대) 백준 티어 랭킹</h2>
           <ResponsiveContainer key={windowWidth} width="100%" height="100%">
-            <LineChart data={curveData} margin={{ top: 0, right: 70, left: 70, bottom: 5 }}>
+            <LineChart data={curveData} margin={{ top: 25, right: 70, left: 70, bottom: 5 }}>
               <XAxis
                 dataKey="x"
                 domain={[0, 100]}
@@ -199,8 +199,8 @@ function UniversityRanking() {
         </div>
 
         {/* 학과별 풀이 수 랭킹 */}
-        <div style={{ width: '100%', height: '300px', marginTop: '40px' }}>
-          <h2 style={{ textAlign: 'center' }}>(세종대) 이번주 백준 풀이 랭킹</h2>
+        <div style={{ width: '100%', height: sortedData.length * 60, marginTop: '40px' }}>
+          <h2 style={{ textAlign: 'center' }}>(세종대) 백준 문제 풀이 수 랭킹</h2>
           <BContainer key={windowWidth} width="100%" height="100%">
             <BarChart
               layout="vertical"
@@ -321,10 +321,7 @@ function UniversityRanking() {
           <strong style={{ fontWeight: '600' }}>세종대 상위 퍼센트:</strong> {percentile}%
         </div>
         <div style={{ marginBottom: '10px' }}>
-          <strong style={{ fontWeight: '600' }}>총 풀이:</strong> {userInfo?.solvedNum ?? 0}개
-        </div>
-        <div style={{ marginBottom: '20px' }}>
-          <strong style={{ fontWeight: '600' }}>이번주 풀이:</strong> {myData?.solved ?? 0}개
+          <strong style={{ fontWeight: '600' }}>총 풀이:</strong> {userInfo?.totalSolvedCount ?? 0}개
         </div>
       </div>
     </div>

@@ -58,8 +58,8 @@ function DepartmentRanking() {
         setStudentRanking(studentRankingRes.data);
 
         // 학과 랭킹 정렬 및 내 순위 계산
-const sorted = [...studentRankingRes.data].sort((a, b) => b.solvedThisWeek - a.solvedThisWeek);
-const myRank = sorted.findIndex(user => user.name === userData.name) + 1;
+const sorted = [...studentRankingRes.data].sort((a, b) => b.solvedNum - a.solvedNum);
+const myRank = sorted.findIndex(u => u.name === userData.name) + 1;
 
 setRankInfo({
   rank: myRank,
@@ -86,7 +86,7 @@ sorted.forEach((u, i) => {
 
   const data = studentRanking.map((user) => ({
     name: user.name,
-    solved: user.solvedThisWeek,
+    solved: user.solvedNum,
   }));
 
   const sortedData = [...data].sort((a, b) => b.solved - a.solved);
@@ -166,7 +166,7 @@ sorted.forEach((u, i) => {
         <div style={{ width: '100%', height: '200px' }}>
           <h2 style={{ textAlign: 'center', marginTop: 0 }}>(학과) 백준 티어 랭킹</h2>
           <ResponsiveContainer key={windowWidth} width="100%" height="100%">
-            <LineChart data={curveData} margin={{ top: 30, right: 70, left: 70, bottom: 5 }}>
+            <LineChart data={curveData} margin={{ top: 25, right: 70, left: 70, bottom: 5 }}>
               <XAxis
                 dataKey="x"
                 domain={[0, 100]}
@@ -214,8 +214,8 @@ sorted.forEach((u, i) => {
         </div>
 
         {/* 학과 내 학생별 풀이 수 랭킹 */}
-        <div style={{ width: '100%', height: '300px', marginTop: '40px' }}>
-          <h2 style={{ textAlign: 'center' }}>이번 주 학과 내 학생 랭킹</h2>
+        <div style={{ width: '100%', height: sortedData.length * 70, marginTop: '40px' }}>
+          <h2 style={{ textAlign: 'center' }}>학과 내 문제 풀이 수 랭킹</h2>
           <BContainer key={windowWidth} width="100%" height="100%">
             <BarChart
               layout="vertical"
@@ -336,10 +336,7 @@ sorted.forEach((u, i) => {
           <strong style={{ fontWeight: '600' }}>학과 상위 퍼센트:</strong> {percentile}%
         </div>
         <div style={{ marginBottom: '10px' }}>
-          <strong style={{ fontWeight: '600' }}>총 풀이:</strong> {userInfo?.solvedNum ?? 0}개
-        </div>
-        <div style={{ marginBottom: '20px' }}>
-          <strong style={{ fontWeight: '600' }}>이번주 풀이:</strong> {myData?.solved ?? 0}개
+          <strong style={{ fontWeight: '600' }}>총 풀이:</strong> {userInfo?.totalSolvedCount ?? 0}개
         </div>
       </div>
     </div>
