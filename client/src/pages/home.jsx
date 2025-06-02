@@ -8,7 +8,6 @@ import CardAlbum from "../components/CardAlbum";
 import axios from "axios";
 import AttendanceAndCardAlbum from "../components/Attendanceandcardalbum";
 
-
 export default function Home() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,8 +33,18 @@ export default function Home() {
   tier: null,
   ratingRank: null
 });
+  
+  useEffect(() => {
+    // 카드첩 불러오기
+     if (!isLoggedIn) return;
+    axios.get("http://localhost:4000/card/me", { withCredentials: true })
+      .then(res => setCards(res.data))
+      .catch(err => console.error("카드 불러오기 실패:", err));
+    
+  },[isLoggedIn]);
 
-    useEffect(() => {
+
+   useEffect(() => {
     axios.get("http://localhost:4000/info/api/basicprofile", { withCredentials: true })
       .then(res => {
         setBasicInfo(res.data);
@@ -49,16 +58,6 @@ export default function Home() {
   }, []);
 
   
-  useEffect(() => {
-    // 카드첩 불러오기
-     if (!isLoggedIn) return;
-    axios.get("http://localhost:4000/card/me", { withCredentials: true })
-      .then(res => setCards(res.data))
-      .catch(err => console.error("카드 불러오기 실패:", err));
-    
-  },[isLoggedIn]);
-
-
   useEffect(() => {
      if (!isLoggedIn) return;
     const fetchBaekjoonProfile = async () => {
@@ -74,18 +73,16 @@ export default function Home() {
   }, [isLoggedIn]);
 
 
-useEffect(() => {
-   if (!isLoggedIn) return;
-  axios.get('http://localhost:4000/dayquest/status', { withCredentials: true })
-    .then(res => {
-      const { todayProblemId, todayProblemTitle } = res.data;
-      setTodayProblem({
-        problemId: todayProblemId,
-        title: todayProblemTitle,
+ useEffect(() => {
+    axios.get('http://localhost:4000/dayquest/problem', { withCredentials: true })
+      .then(res => {
+        const { todayProblemId, todayProblemTitle } = res.data;
+        setTodayProblem({ problemId: todayProblemId, title: todayProblemTitle });
+      })
+      .catch(err => {
+        console.error('오늘의 문제 불러오기 실패:', err);
       });
-    })
-    .catch(err => console.error('오늘의 문제 불러오기 실패:', err));
-}, [isLoggedIn]);
+  }, []); 
 
 
   useEffect(() => {
@@ -117,23 +114,21 @@ useEffect(() => {
   if (!todayProblem) return <div>로딩 중...</div>;
 
   return (
-    <div style={{ backgroundColor: "#0d1117", color: "#e0f7fa", minHeight: "100vh" }}>
-	{/* 🌟 Floating Stars with animation */}
-      	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "60px", left: "20px", width: "40px", zIndex: 0 }} alt="star1" />
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "120px", left: "80vw", width: "32px", zIndex: 0 }} alt="star1" />
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "30vh", left: "30vw", width: "28px", zIndex: 0 }} alt="star1" />
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "90vh", left: "90vw", width: "22px", zIndex: 0 }} alt="star1" />
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "15vh", left: "5vw", width: "30px", zIndex: 0 }} alt="star1" />
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "45vh", left: "85vw", width: "25px", zIndex: 0 }} alt="star1" />
+   <div style={{ backgroundColor: "#0d1117", color: "#e0f7fa", minHeight: "100vh" }}>
+      {/* ⭐ 배경 별 이미지들 */}
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "60px", left: "20px", width: "40px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "120px", left: "80vw", width: "32px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "30vh", left: "30vw", width: "28px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "90vh", left: "90vw", width: "22px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "15vh", left: "5vw", width: "30px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "45vh", left: "85vw", width: "25px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "88vh", left: "15vw", width: "22px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "92vh", left: "35vw", width: "25px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "95vh", left: "50vw", width: "28px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "98vh", left: "65vw", width: "24px", zIndex: 0 }} alt="star1" />
+      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "99vh", left: "85vw", width: "30px", zIndex: 0 }} alt="star1" />
 
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "88vh", left: "15vw", width: "22px", zIndex: 0 }} alt="star1" />
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "92vh", left: "35vw", width: "25px", zIndex: 0 }} alt="star1" />
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "95vh", left: "50vw", width: "28px", zIndex: 0 }} alt="star1" />
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "98vh", left: "65vw", width: "24px", zIndex: 0 }} alt="star1" />
-	<img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "99vh", left: "85vw", width: "30px", zIndex: 0 }} alt="star1" />
-
-
- <header style={{
+      <header style={{
         width: "100%",
         backgroundColor: "#121826",
         color: "#b3e5fc",
@@ -230,7 +225,6 @@ useEffect(() => {
             <button onClick={() => navigate("/login")} style={navBtnStyle}>로그인</button>
           )}
           <button onClick={() => (window.location.href = "/")} style={{
-          
             padding: "8px 16px",
             fontSize: "14px",
             backgroundColor: "#00e5ff",
@@ -242,7 +236,7 @@ useEffect(() => {
             boxShadow: "0 0 10px #00e5ff"
           }}>홈으로</button>
         </div>
-        </header>
+      </header>
 
 
       <div style={{ display: "flex", gap: "20px", marginTop: "120px", paddingLeft: "40px" }}>
