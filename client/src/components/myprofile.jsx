@@ -4,7 +4,7 @@ import React from "react";
 export default function MyProfile({ nickname, department, imgUrl }) {
 
   // 이미지가 없을 경우를 대비해 Dicebear의 랜덤 아바타 URL을 기본값으로 설정
-  const defaultImg = `https://api.dicebear.com/7.x/bottts/svg?seed=${Date.now()}`;
+  const defaultImg = `https://api.dicebear.com/9.x/bottts/svg?seed=Felix`;
   const profileImg = imgUrl ? imgUrl : defaultImg;  
 
   return (
@@ -34,7 +34,8 @@ export default function MyProfile({ nickname, department, imgUrl }) {
           height: "150px",
           borderRadius: "50%",             
           marginBottom: "16px",             
-          backgroundColor: "white",         
+          backgroundColor: "#1a1e2a", 
+          border: '1px solid #ccc',        
         }}
       />
 
