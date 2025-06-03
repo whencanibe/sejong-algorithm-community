@@ -7,35 +7,35 @@ export default function MyProfile({ nickname, department, imgUrl }) {
     <div
       style={{
         height: "300px",
-        border: "1px solid #00e5ff",
+        border: "2px solid #00e5ff",
         padding: "24px",
         borderRadius: "14px",
         width: "400px",
-        backgroundColor: "#2a3142",
+         backgroundColor: "#1a1e2a",
         color: "#e0f7fa",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        boxShadow: "0 4px 10px rgba(63, 63, 255, 0.1)",
+         boxShadow: "0 0 18px rgba(0, 229, 255, 0.3)",
       }}
     >
       <img
         src={imgUrl}
         alt="내 프로필 이미지"
         style={{
-          width: "100px",
-          height: "100px",
+          width: "150px",
+          height: "150px",
           borderRadius: "50%",
           marginBottom: "16px",
           backgroundColor: "white",
         }}
       />
-      <h3 style={{ fontSize: "18px", color: "#3f3fff", marginBottom: "8px" }}>
+      <h3 style={{ fontSize: "20px", color: "#afefff", marginBottom: "8px" }}>
         닉네임: {nickname}
       </h3>
-      <p style={{ fontSize: "14px", color: "#3f3fff" }}>
+      <p style={{ fontSize: "14px", color: "#afefff" }}>
         학과: {department}
       </p>
       

@@ -5,10 +5,12 @@ import CardAlbum from "./CardAlbum";
 export default function AttendanceAndCardAlbum() {
   const [footprints, setFootprints] = useState([]);
   const [cards, setCards] = useState([]);
-  const [rewardGiven, setRewardGiven] = useState(false);
+  const [rewardGiven, setRewardGiven] = useState(() => {
+  return localStorage.getItem("rewardGiven") === "ture";
+});
+
   const [newCard, setNewCard] = useState(null);
   const [showCardModal, setShowCardModal] = useState(false);
-
 
 //   useEffect(() => {
 //   axios.get("http://localhost:4000/info/api/footprints", { withCredentials: true })
@@ -28,74 +30,59 @@ export default function AttendanceAndCardAlbum() {
 
 
   useEffect(() => {
-     axios.get("http://localhost:4000/info/api/footprints", { withCredentials: true })
-      .then(res => {
-        setFootprints(res.data); // 예: [1, 1, 1, 1, 1, 1, 1]
-      })
-      .catch(err => {
-        console.error("발자국 불러오기 실패:", err);
-      });
-  }, []);
+  axios.get("http://localhost:4000/info/api/footprints", { withCredentials: true })
+    .then(res => {
+      const data = res.data;
+      console.log("서버 응답 데이터:", data);
+      if (Array.isArray(data)) {
+        setFootprints(data);
+      } else if (Array.isArray(data.footprints)) {
+        setFootprints(data.footprints);
+      } else {
+        console.error("응답 데이터 형식이 올바르지 않습니다:", data);
+      }
+    })
+    .catch(err => {
+      console.error("발자국 불러오기 실패:", err);
+    });
+}, []);
 
 
    useEffect(() => {
-    axios.get("http://localhost:4000/card", { withCredentials: true })
+    axios.get("http://localhost:4000/card/me", { withCredentials: true })
       .then(res => setCards(res.data))
       .catch(err => console.error("카드 불러오기 실패:", err));
   }, []);
 
-   useEffect(() => {
-  const allChecked = true;  // 그냥 무조건 true로
-  if (allChecked && !rewardGiven) {
+
+
+  useEffect(() => {
+  const stampCount = 7; // 강제로 도장 7개 있다고 설정
+
+  //const stampCount = footprints.filter(f => f).length;
+
+  // 도장 7개 + 아직 카드 못 받았을 때만 지급 요청
+  if (stampCount === 7 && !rewardGiven) {
     axios.post("http://localhost:4000/card/reward", {
-      stampCount: 7  // 강제로 7개 도장 있다고 가정
+      stampCount: 7,
     }, {
-      withCredentials: true
+      withCredentials: true,
     })
       .then(res => {
-        if (!res.data.card) return; //카드가 안 오면 리턴
+        if (!res.data.card) return;
         const newCard = res.data.card;
         setCards(prev => [newCard, ...prev]);
-        setNewCard(newCard);  // 모달용
+        setNewCard(newCard);
         setShowCardModal(true);
         setRewardGiven(true);
+        localStorage.setItem("rewardGiven", "true");
       })
       .catch(err => {
         const msg = err.response?.data?.message || err.message;
-        alert(msg); // ← 예: "오늘은 이미 카드를 받았습니다."
+        console.warn("카드 지급 실패:", msg);
       });
   }
-}, []);
-
-
-
-  // ✅ 도장 7개면 카드 지급
-  useEffect(() => {
-     console.log("카드첩에 받은 카드 목록:", cards); // ✅ 여기에만 딱 한 번 찍히게
-    const stampCount = footprints.filter((f) => f).length;
-    if (stampCount === 7 && !rewardGiven) {
-      axios
-        .post(
-          "http://localhost:4000/card/reward",
-          { stampCount: 7 },
-          { withCredentials: true }
-          
-        )
-        .then((res) => {
-          const newCard = res.data.card;
-          setCards((prev) => [newCard, ...prev]);
-          setNewCard(newCard);
-          setShowCardModal(true);
-          setRewardGiven(true);
-        })
-        .catch((err) => {
-          console.warn(
-            "카드 지급 실패:",
-            err.response?.data?.error || err.message
-          );
-        });
-    }
-  }, [footprints, rewardGiven]);
+}, [footprints, rewardGiven]);
 
   const closeCardModal = () => setShowCardModal(false);
 
@@ -152,28 +139,30 @@ export default function AttendanceAndCardAlbum() {
             }}
           >
             <button
-              onClick={closeCardModal}
-              style={{
-                position: "absolute",
-                top: "-15px",
-                right: "-15px",
-                background: "#ff4081",
-                border: "none",
-                borderRadius: "50%",
-                color: "#fff",
-                fontWeight: "bold",
-                fontSize: "16px",
-                cursor: "pointer",
-                width: "32px",
-                height: "32px",
-                boxShadow: "0 0 8px #ff4081",
-                zIndex: 10,
-              }}
-            >
-              ✕
-            </button>
+  onClick={closeCardModal}
+  style={{
+    position: "absolute",
+    top: "-15px",
+    right: "-15px",
+    background: "#00e5ff", // 네온 블루
+    border: "none",
+    borderRadius: "50%",
+    color: "#121826",       // 어두운 배경에 대비되는 글자색
+    fontWeight: "bold",
+    fontSize: "16px",
+    cursor: "pointer",
+    width: "32px",
+    height: "32px",
+    boxShadow: "0 0 8px #00e5ff",  // 네온 블루 그림자
+    zIndex: 10,
+  }}
+>
+  ✕
+</button>
+
+
             <h2 style={{ color: "#00e5ff", marginBottom: "12px" }}>
-              🎉 새로운 카드 획득!
+              새로운 카드 획득!
             </h2>
             <img
               src={newCard.image}

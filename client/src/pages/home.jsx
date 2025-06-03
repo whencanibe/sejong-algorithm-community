@@ -7,9 +7,13 @@ import FreeBoardPreview from "../components/FreeBoard";
 import CardAlbum from "../components/CardAlbum";
 import axios from "axios";
 import AttendanceAndCardAlbum from "../components/Attendanceandcardalbum";
+import LoginWindow from '../components/LoginWindow';
+
 
 export default function Home() {
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState(null);
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [todayProblem, setTodayProblem] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -31,7 +35,8 @@ export default function Home() {
  const [baekjoonProfile, setBaekjoonProfile] = useState({
   handle: '',
   tier: null,
-  ratingRank: null
+  ratingRank: null,
+  rankpercentile: null,
 });
   
   useEffect(() => {
@@ -42,6 +47,9 @@ export default function Home() {
       .catch(err => console.error("카드 불러오기 실패:", err));
     
   },[isLoggedIn]);
+
+  
+
 
 
    useEffect(() => {
@@ -58,13 +66,15 @@ export default function Home() {
   }, []);
 
   
+
+
   useEffect(() => {
      if (!isLoggedIn) return;
     const fetchBaekjoonProfile = async () => {
       try {
         const res = await axios.get('http://localhost:4000/info/api/mypage', { withCredentials: true });
-        const { baekjoonName, tier, rank } = res.data;
-        setBaekjoonProfile({ handle: baekjoonName, tier, ratingRank: rank });
+        const { baekjoonName, tier, rankpercentile, } = res.data;
+        setBaekjoonProfile({ handle: baekjoonName, tier, ratingRank: rank,rankpercentile : percentile });
       } catch (err) {
         console.error('백준 정보 불러오기 실패:', err);
       }
@@ -297,16 +307,21 @@ export default function Home() {
       <div style={{ padding: "40px", marginTop: "30px" }}>
         <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "40px" }}>
           <BaekjoonProfile {...baekjoonProfile} />
-           {basicInfo && (
-  <MyProfile
-  nickname={basicInfo?.name}
-  department={basicInfo?.department}
-  imgUrl={basicInfo?.profileImage}
-/>
-
-)}
-
-        </div>
+            {basicInfo ? (
+    <MyProfile
+      nickname={basicInfo.name}
+      department={basicInfo.department}
+      imgUrl={basicInfo.profileImage}
+    />
+  ) : (
+    <LoginWindow
+      onLoginSuccess={(userInfo) => {
+        setBasicInfo(userInfo);
+        setIsLoggedIn(true);
+      }}
+    />
+  )}
+</div>
 
         <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
           <div style={{ position: "relative" }}>
