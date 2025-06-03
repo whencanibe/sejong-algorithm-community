@@ -25,11 +25,15 @@ function CommentSection({ postId, userInfo }) {
 
   
   
+
+
+  
+  
   const handleAddComment = async () => {
   if (input.trim() === "") return;
 
-  console.log("postId", postId);
-console.log("userId", userInfo?.id);
+console.log("postId", postId);
+console.log("userId", userInfo.id);
 
   try {
     await axios.post(`http://localhost:4000/comments/${postId}`, {
@@ -158,21 +162,25 @@ console.log("userId", userInfo?.id);
 
 
                 <div style={{ position: "relative", marginLeft: "auto", marginRight: "10px" }}>
-                  <button
-                    onClick={() =>
-                      setActiveMenuId(activeMenuId === c.id ? null : c.id)
-                    }
-                    style={{
-                      background: "none",
-                      border: "none",
-                      fontSize: "18px",
-                      cursor: "pointer",
-                      padding: "0 4px",
-                      color: "#fff",
-                    }}
-                  >
-                    ...
-                  </button>
+                 {userInfo?.id === c.userId && (
+  <button
+    onClick={() =>
+      setActiveMenuId(activeMenuId === c.id ? null : c.id)
+    }
+    style={{
+      background: "none",
+      border: "none",
+      fontSize: "18px",
+      cursor: "pointer",
+      padding: "0 4px",
+      color: "#fff",
+    }}
+  >
+    ...
+  </button>
+)}
+
+
 
                   {activeMenuId === c.id && (
                     <div

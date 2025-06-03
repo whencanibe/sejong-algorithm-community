@@ -7,7 +7,7 @@ export default function CardAlbum({ cards }) {
     <div
       style={{
         width: "320px",
-        height: "360px",
+        height: "250px",
         border: "2px solid #00e5ff",
         borderRadius: "16px",
         backgroundColor: "#1a1e2a",
@@ -17,7 +17,7 @@ export default function CardAlbum({ cards }) {
         display: "flex",
         flexDirection: "column",
         overflowY: "auto",
-        marginTop: "40px",
+        marginTop: "50px",
         boxShadow: "0 0 18px rgba(0, 229, 255, 0.3)",
       }}
     >

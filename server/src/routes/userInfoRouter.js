@@ -7,7 +7,9 @@ import { getFootprintsCtrl, getFootprintsSessionCtrl, getStreakCtrl, getStreakSe
 import { isLoggedIn } from '../middlewares/middleware.js';
 import { upload } from '../middlewares/upload.js';
 import * as userController from '../controllers/userInfoController.js'; 
-import { basicProfile } from '../controllers/userInfoController.js';const router = Router();
+import { basicProfile } from '../controllers/userInfoController.js';
+const router = Router();
+import { changeNickname } from '../controllers/userInfoController.js';
 
 //테스트용
 router.get('/api/mypage/:id', getUserInfoCtrl); //id => user id
@@ -28,4 +30,6 @@ router.get('/api/percentile', isLoggedIn, getPercentilesForUserSessionCtrl);
 router.get('/api/streak', isLoggedIn, getStreakSessionCtrl);
 router.post('/api/upload-profile', isLoggedIn, upload.single('image'), userController.uploadProfileImage);
 router.get('/api/basicprofile', isLoggedIn, basicProfile);
+router.patch('/api/change-nickname', isLoggedIn, changeNickname);
+
 export default router;

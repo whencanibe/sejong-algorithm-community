@@ -6,7 +6,7 @@ export default function FreeBoardPreview({ posts, isLoggedIn }) {
   return (
     <div
       style={{
-        width: "400px",
+        width: "300px",
         height: "250px",
         border: "1px solid #00e5ff",
         borderRadius: "10px",
@@ -19,7 +19,7 @@ export default function FreeBoardPreview({ posts, isLoggedIn }) {
         flexDirection: "column",
         justifyContent: "space-between",
         marginTop: "50px",
-        marginLeft: "30px",
+        marginLeft: "15px",
       }}
     >
       {/* 제목 + + 버튼 */}

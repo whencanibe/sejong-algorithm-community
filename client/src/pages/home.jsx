@@ -320,6 +320,7 @@ export default function Home() {
         </div>
       </div>
 
+
       {showCardModal && newCard && (
         <div style={{
           position: "fixed",
@@ -338,7 +339,7 @@ export default function Home() {
             backgroundColor: "#121826",
             padding: "20px",
             borderRadius: "20px",
-            width: "300px",
+            width: "400px",
             textAlign: "center",
             boxShadow: "0 0 20px #00e5ff",
             animation: "neon-flicker 1.5s infinite alternate"

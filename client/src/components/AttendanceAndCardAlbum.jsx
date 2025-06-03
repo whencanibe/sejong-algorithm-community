@@ -28,8 +28,43 @@ export default function AttendanceAndCardAlbum() {
 
 
   useEffect(() => {
-  // 테스트용: 도장 7개 강제 채우기
-  setFootprints([1, 1, 1, 1, 1, 1, 0]);
+     axios.get("http://localhost:4000/info/api/footprints", { withCredentials: true })
+      .then(res => {
+        setFootprints(res.data); // 예: [1, 1, 1, 1, 1, 1, 1]
+      })
+      .catch(err => {
+        console.error("발자국 불러오기 실패:", err);
+      });
+  }, []);
+
+
+   useEffect(() => {
+    axios.get("http://localhost:4000/card", { withCredentials: true })
+      .then(res => setCards(res.data))
+      .catch(err => console.error("카드 불러오기 실패:", err));
+  }, []);
+
+   useEffect(() => {
+  const allChecked = true;  // 그냥 무조건 true로
+  if (allChecked && !rewardGiven) {
+    axios.post("http://localhost:4000/card/reward", {
+      stampCount: 7  // 강제로 7개 도장 있다고 가정
+    }, {
+      withCredentials: true
+    })
+      .then(res => {
+        if (!res.data.card) return; //카드가 안 오면 리턴
+        const newCard = res.data.card;
+        setCards(prev => [newCard, ...prev]);
+        setNewCard(newCard);  // 모달용
+        setShowCardModal(true);
+        setRewardGiven(true);
+      })
+      .catch(err => {
+        const msg = err.response?.data?.message || err.message;
+        alert(msg); // ← 예: "오늘은 이미 카드를 받았습니다."
+      });
+  }
 }, []);
 
 
