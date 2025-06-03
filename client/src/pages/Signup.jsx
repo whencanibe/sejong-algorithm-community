@@ -88,11 +88,11 @@ const departments = [
 ];
 
 const fields = [
-  { label: '이메일', name: 'email' },
-  { label: '비밀번호', name: 'password' },
-  { label: '닉네임', name: 'name' },
-  { label: '백준 아이디', name: 'baekjoonName' },
-  { label: '학번', name: 'studentId' },
+  { label: '이메일', name: 'email', type: 'email' },
+  { label: '비밀번호', name: 'password', type: 'password' },
+  { label: '닉네임', name: 'name', type: 'text' },
+  { label: '백준 아이디', name: 'baekjoonName', type: 'text' },
+  { label: '학번', name: 'studentId', type: 'text' },
 ];
 
 export default function Signup() {
@@ -111,16 +111,15 @@ export default function Signup() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
-  try {
-      // 백엔드 API 엔드포인트를 '/user/signup'으로 변경
+  const handleSubmit = async () => {
+    try {
       const response = await fetch('http://localhost:4000/user/signup', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
           },
           body: JSON.stringify(form),
-          credentials: 'include' // 세션/쿠키를 통한 인증이 필요하므로 추가
+          credentials: 'include'
       });
 
       const data = await response.json();
@@ -131,35 +130,80 @@ export default function Signup() {
       } else {
           alert(`회원가입 실패: ${data.error || '알 수 없는 오류'}`);
       }
-  } catch (error) {
+    } catch (error) {
       console.error('회원가입 중 오류 발생:', error);
       alert('네트워크 오류 또는 서버에 연결할 수 없습니다.');
-  }
-};
+    }
+  };
+
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', backgroundColor: '#f3f4f6', margin: 0 }}>
+    <div style={{ 
+        fontFamily: 'Arial, sans-serif', 
+        minHeight: '100vh', 
+        margin: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        paddingTop: '80px',
+        boxSizing: 'border-box'
+    }}>
       <header style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
         width: '100%',
-        backgroundColor: '#2b2d42',
-        color: 'white',
+        backgroundColor: '#121826',
+        color: '#b3e5fc',
         padding: '18px 40px',
         fontSize: '18px',
         fontWeight: 'bold',
-        marginBottom: '40px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         boxSizing: 'border-box',
+        zIndex: 1000, 
+        boxShadow: '0 2px 10px #00e5ff55',
       }}>
         회원가입
+        <button
+          onClick={() => navigate('/')}
+          style={{
+            padding: '8px 16px',
+            fontSize: '14px',
+            backgroundColor: '#afefff',
+            color: '#0d1117',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            boxShadow: '0 0 10px #00e5ff',
+          }}
+        >
+          홈으로
+        </button>
       </header>
 
-      <div style={{ width: '90vw', maxWidth: '700px', margin: '0 auto', padding: '0 20px' }}>
-        {fields.map(({ label, name }) => (
+      <div 
+        style={{ 
+          width: '90vw', 
+          maxWidth: '500px',
+          margin: '0 auto', 
+          padding: '32px',
+          boxSizing: 'border-box',
+          border: '2px solid #00e5ff',
+          borderRadius: '12px',
+          backgroundColor: '#1a1e2a',
+          boxShadow: '0 0 12px rgba(0, 229, 255, 0.25)',
+          color: '#e0f7fa',
+        }}
+      >
+        <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#afefff' }}>회원가입</h2>
+        {fields.map(({ label, name, type }) => (
           <div key={name} style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold' }}>{label}</label>
+            <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold', color: '#b3e5fc' }}>{label}</label>
             <input
-              type={name === 'password' ? 'password' : 'text'}
+              type={type}
               name={name}
               value={form[name]}
               onChange={handleChange}
@@ -168,7 +212,9 @@ export default function Signup() {
                 width: '100%',
                 padding: '10px',
                 borderRadius: '6px',
-                border: '1px solid #ccc',
+                border: '1px solid #00e5ff55',
+                backgroundColor: '#0d1117',
+                color: '#e0f7fa',
                 boxSizing: 'border-box',
               }}
             />
@@ -176,7 +222,7 @@ export default function Signup() {
         ))}
 
         <div style={{ marginBottom: '16px' }}>
-          <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold' }}>학과전공</label>
+          <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold', color: '#b3e5fc' }}>학과전공</label>
           <select
             name="department"
             value={form.department}
@@ -185,13 +231,15 @@ export default function Signup() {
               width: '100%',
               padding: '10px',
               borderRadius: '6px',
-              border: '1px solid #ccc',
+              border: '1px solid #00e5ff55',
+              backgroundColor: '#0d1117',
+              color: '#e0f7fa',
               boxSizing: 'border-box',
             }}
           >
-            <option value="">- 선택 -</option>
+            <option value="" style={{ backgroundColor: '#0d1117', color: '#e0f7fa' }}>- 선택 -</option>
             {departments.map((dept, idx) => (
-              <option key={idx} value={dept}>{dept}</option>
+              <option key={idx} value={dept} style={{ backgroundColor: '#0d1117', color: '#e0f7fa' }}>{dept}</option>
             ))}
           </select>
         </div>
@@ -201,12 +249,15 @@ export default function Signup() {
           style={{
             width: '100%',
             padding: '12px',
-            backgroundColor: '#2b2d42',
-            color: 'white',
+            backgroundColor: '#afefff',
+            color: '#0d1117',
             border: 'none',
             borderRadius: '6px',
             fontWeight: 'bold',
             cursor: 'pointer',
+            marginTop: '10px',
+            boxShadow: '0 0 10px #00e5ff',
+            transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
           }}
         >
           가입하기
