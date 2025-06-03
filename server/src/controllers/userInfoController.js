@@ -2,7 +2,8 @@ import { getPercentilesForUser, getUserInfo, updateUserProfileImage } from "../s
 import * as userRepo from '../repositories/userRepository.js';
 import { AppError } from "../errors/AppError.js";
 import { normalizeBigInt } from "../utils/nomalizeBigint.js";
-
+import * as service from '../services/userInfoService.js';
+import { updateNickname } from '../services/userInfoService.js'; // ✅ 꼭 필요
 export async function getUserInfoCtrl(req, res, next) {
   try {
     const userId = Number(req.params.id);
@@ -102,5 +103,42 @@ export async function getDepartmentRankingCtrl(req, res, next) {
     res.status(201).json(normalizeBigInt(data));
   } catch (e) {
     next(e);
+  }
+}
+
+// export async function changeNickname(req, res, next) {
+//   try {
+//     const userId = req.session?.user?.id;
+//     const { newName } = req.body;
+
+//     if (!userId) return res.status(401).json({ error: '로그인이 필요합니다.' });
+//     if (!newName) return res.status(400).json({ error: '닉네임을 입력하세요.' });
+
+//     const updatedUser = await service.updateNickname(userId, newName);
+
+//     // 세션 정보도 업데이트 해줄 수 있음
+//    // req.session.user.name = newName;
+
+//     res.json({ message: '닉네임이 성공적으로 변경되었습니다.', user: updatedUser });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
+
+export async function changeNickname(req, res, next) {
+  try {
+    const userId = req.session.user?.id;
+    const { name: newName } = req.body;
+
+    console.log("📥 클라이언트 닉네임 요청:", { userId, newName }); // 여기 로그도 추가
+
+    if (!userId || !newName) {
+      throw new AppError("닉네임 변경 요청이 잘못되었습니다.", 400);
+    }
+
+    const updated = await updateNickname(userId, newName);
+    res.json({ success: true, updated });
+  } catch (err) {
+    next(err);
   }
 }
