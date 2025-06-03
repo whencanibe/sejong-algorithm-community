@@ -42,7 +42,7 @@ export default function PercentileChartMini({ percentile }) {
           fill="#00e5ff"
           stroke="none"
           label={{
-            value: 상위 ${percentile}%,
+            value: `상위 ${percentile}%`,
             position: "top",
             fontSize: 12,
             fill: "#00e5ff",

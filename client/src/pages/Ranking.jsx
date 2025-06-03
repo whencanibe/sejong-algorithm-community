@@ -49,7 +49,7 @@ if (isLoggedIn === null) return <div>로딩 중...</div>;
           style={{
             padding: '8px 16px',
             fontSize: '14px',
-            backgroundColor: '#00e5ff',
+            backgroundColor: '#afefff',
             color: '#0d1117',
             border: 'none',
             borderRadius: '4px',

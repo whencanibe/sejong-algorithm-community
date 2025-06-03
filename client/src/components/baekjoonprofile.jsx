@@ -73,7 +73,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
             백준ID: <span style={{  color: "#00e5ff" }}>{handle}</span>
           </h3>
           <p style={{ margin: 0, fontSize: "16px", color: "#afefff"}}>
-            티어: {tier} / 상위 약 {ratingRank}위
+            티어: {tier} / 세종대 내 랭킹 {ratingRank}위
           </p>
         </div>
 

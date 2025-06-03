@@ -71,7 +71,14 @@ export default function FreeBoardPreview({ posts, isLoggedIn }) {
           posts.slice(0, 3).map((post) => (
             <div
               key={post.id}
-              onClick={() => navigate(`/community/postdetail/${post.id}`)} // 게시글 클릭 시 상세 페이지 이동
+              onClick={() => {
+                if (!isLoggedIn) {
+                  alert("로그인이 필요합니다.");
+                  navigate("/login");
+                  return;
+                }
+                navigate(`/community/postdetail/${post.id}`);
+              }} // 게시글 클릭 시 상세 페이지 이동
               style={{
                 fontSize: "14px",
                 fontWeight: "600", 
