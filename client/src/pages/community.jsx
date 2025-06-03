@@ -47,42 +47,41 @@ function Community() {
         color: '#e0f7fa',
       }}
     >
-      {/* 상단바 */}
-      <header
-        style={{
-          width: "100%",
-          backgroundColor: "#121826",
-          color: "#b3e5fc",
-          padding: "18px 40px",
-          fontSize: "18px",
+      {/* 고정 상단바 */}
+      <header style={{
+        position: "fixed", 
+        top: 0, left: 0, 
+        width: "100%",
+        backgroundColor: "#0d1117", 
+        color: "#afefff", 
+        padding: "18px 40px",
+        fontSize: "18px", 
+        fontWeight: "bold", 
+        display: "flex",
+        justifyContent: "space-between", 
+        alignItems: "center",
+        borderBottom: "2px solid #00e5ff", 
+        boxShadow: "0 2px 8px rgba(0, 229, 255, 0.15)",
+        animation: "neonFlicker 1.5s infinite alternate", 
+        zIndex: 1000
+      }}>
+        자유게시판
+        <button onClick={() => (window.location.href = "/")} style={{
+          padding: "8px 16px", 
+          backgroundColor: "#afefff", 
+          color: "#0d1117",
+          border: "none", 
+          borderRadius: "4px", 
+          cursor: "pointer", 
           fontWeight: "bold",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          boxSizing: "border-box",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 1000,
-          boxShadow: "0 2px 10px #00e5ff55"
-        }}
-      >
-        자유 게시판
-        <button
-          onClick={() => (window.location.href = '/')}
-          style={{
-            padding: '8px 16px',
-            fontSize: '14px',
-            backgroundColor: 'white',
-            color: '#2b2d42',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          홈으로
-        </button>
+          boxShadow: "0 0 10px #00e5ff", 
+          fontSize: "14px",
+          marginRight:"60px",
+        }}>홈으로</button>
       </header>
+
+
+
 
       {/* 글쓰기 버튼 */}
       <div style={{ textAlign: 'right', padding: '20px 40px' }}>
@@ -91,8 +90,8 @@ function Community() {
           style={{
             padding: '10px 20px',
             fontSize: '16px',
-            backgroundColor: '#2b2d42',
-            color: 'white',
+            backgroundColor: '#afefff',
+            color: 'black',
             border: 'none',
             borderRadius: '5px',
             cursor: 'pointer',

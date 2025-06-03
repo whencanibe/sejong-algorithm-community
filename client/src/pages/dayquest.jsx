@@ -8,10 +8,11 @@ const COLORS = ["#00C49F", "#FF8042"];
 
 function Dayquest({ userId, problemId }) {
   const navigate = useNavigate();
-  const [status, setStatus] = useState(null);   // 정상 데이터
-  const [loading, setLoading] = useState(true); // 로딩 스피너
-  const [error, setError] = useState(null); // 에러 메시지
+  const [status, setStatus] = useState(null);       
+  const [loading, setLoading] = useState(true);      
+  const [error, setError] = useState(null);         
 
+  // 상태 정보 불러오기 함수
   const fetchStatus = async (path = "http://localhost:4000/dayquest/status") => {
     try {
       setError(null);
@@ -25,12 +26,11 @@ function Dayquest({ userId, problemId }) {
     }
   };
 
+  // 세션 확인 및 상태 초기 불러오기
   useEffect(() => {
     const checkSession = async () => {
       try {
-        await axios.post("http://localhost:4000/info/api/refresh", {}, {
-          withCredentials: true,
-        });
+        await axios.post("http://localhost:4000/info/api/refresh", {}, { withCredentials: true });
         fetchStatus(); 
       } catch (err) {
         alert("로그인이 필요합니다.");
@@ -40,7 +40,8 @@ function Dayquest({ userId, problemId }) {
     checkSession();
   }, [navigate]);
 
-  /* 동기화 버튼 함수*/
+
+  // 동기화 버튼 클릭 시 호출
   const handleRefresh = async () => {
     setLoading(true);
     try {
@@ -58,8 +59,10 @@ function Dayquest({ userId, problemId }) {
     }
   };
 
-  /* ───── 화면 표시 ───── */
+  // 로딩 상태 처리
   if (loading) return <p style={{ color: "#fff" }}>로딩 중…</p>;
+
+  // 에러 상태 처리
   if (error) return (
     <div style={{ color: "#fff", textAlign: "center" }}>
       <p>{error}</p>
@@ -69,82 +72,73 @@ function Dayquest({ userId, problemId }) {
     </div>
   );
 
-  const { todayProblemId, todayProblemTitle,
-    solvedCount, totalUsers, hasSolvedToday } = status;
+  // 상태에서 필요한 값 추출
+  const { todayProblemId, todayProblemTitle, solvedCount, totalUsers, hasSolvedToday } = status;
 
+  // 차트 데이터 구성
   const chartData = [
     { name: "푼 학생 수", value: solvedCount },
     { name: "안 푼 학생 수", value: totalUsers - solvedCount }
   ];
 
   return (
-    <div
-      style={{
-        fontFamily: "Arial, sans-serif",
-
-      }}
-    >
-      {/* 상단바 */}
-      <header
-        style={{
-          position: "fixed",             // ❗헤더를 완전 고정 위치로
-          top: 0,
-          left: 0,
-          width: "100%",                 // ❗진짜로 화면 꽉 채움
-          backgroundColor: "#2a3142",
-          color: "#e0f7fa",
-          padding: "18px 40px",
-          fontSize: "18px",
-          fontWeight: "bold",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          boxSizing: "border-box",
-          borderBottom: "1px solid #00e5ff",
-          boxShadow: "0 2px 8px rgba(0, 229, 255, 0.15)",
-          animation: "neonFlicker 1.5s infinite alternate",
-          zIndex: 1000                  // 다른 요소 위로 오게
-        }}
-      >
+    <div>
+      {/* 고정 상단바 */}
+      <header style={{
+        position: "fixed", 
+        top: 0, left: 0, 
+        width: "100%",
+        backgroundColor: "#0d1117", 
+        color: "#afefff", 
+        padding: "18px 40px",
+        fontSize: "18px", 
+        fontWeight: "bold", 
+        display: "flex",
+        justifyContent: "space-between", 
+        alignItems: "center",
+        borderBottom: "1px solid #00e5ff", 
+        boxShadow: "0 2px 8px rgba(0, 229, 255, 0.15)",
+        animation: "neonFlicker 1.5s infinite alternate", 
+        zIndex: 1000
+      }}>
         일일 퀘스트
-        <button
-          onClick={() => (window.location.href = "/")}
-          style={{
-            padding: "8px 16px",
-            fontSize: "14px",
-            backgroundColor: "white",
-            color: "#2a3142",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          홈으로
-        </button>
+        <button onClick={() => (window.location.href = "/")} style={{
+          padding: "8px 16px", 
+          backgroundColor: "#afefff", 
+          color: "#0d1117",
+          border: "none", 
+          borderRadius: "4px", 
+          cursor: "pointer", 
+          fontWeight: "bold",
+          boxShadow: "0 0 10px #00e5ff", 
+          fontSize: "14px",
+          marginRight:"60px",
+        }}>홈으로</button>
       </header>
 
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "0 20px 40px",
-          textAlign: "center",
-          boxSizing: "border-box",
-        }}
-      >
+      {/* 본문 영역 */}
+      <div style={{
+        maxWidth: "100%", 
+        margin: "0 auto", 
+        padding: "0 20px 40px", 
+        textAlign: "center",
+        boxSizing: "border-box"
+      }}>
+        {/* 상단 이미지 */}
         <img
           src="/오늘의문제.png"
           alt="오늘의 문제"
           style={{
-            width: "350px",
+            width: "350px", 
             animation: "hueRotate 5s infinite linear",
-            filter: "hue-rotate(0deg)",
-            marginTop: "100px",
-            marginBottom: "30px",
+            filter: "hue-rotate(0deg)", 
+            marginTop: "100px", 
+            marginBottom: "30px"
           }}
         />
 
-        <p style={{ marginTop: "30px", fontSize: "18px" }}>
+        {/* 문제 제목 및 링크 */}
+        <p style={{ marginTop: "30px", fontSize: "20px" }}>
           &nbsp;
           {todayProblemId ? (
             <a
@@ -152,9 +146,7 @@ function Dayquest({ userId, problemId }) {
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                color: "#ffffff",
-                fontWeight: "bold",
-                textDecoration: "underline",
+                color: "#ffffff", fontWeight: "bold", textDecoration: "underline"
               }}
             >
               {todayProblemTitle
@@ -166,120 +158,107 @@ function Dayquest({ userId, problemId }) {
           )}
         </p>
 
+        {/* 백준 사이트 바로가기 링크 */}
         <a
           href="https://www.acmicpc.net/problemset"
           target="_blank"
           style={{
-            display: "block",
-            marginTop: "20px",
-            textDecoration: "underline",
-            color: "#ffffff",
-            fontWeight: "bold",
+            display: "block", marginTop: "20px",
+            textDecoration: "underline", color: "#afefff", fontWeight: "bold"
           }}
         >
           사이트 바로가기
         </a>
 
 
-        {/* 두 개 박스 */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginTop: "40px",
-            gap: "20px",
-          }}
-        >
-          {/* 왼쪽 박스 - 클릭 시 동기화 */}
-<div
-  onClick={handleRefresh}
-  style={{
-    flex: "1 1 200px",
-    maxWidth: "280px",
-    height: "240px",
-    backgroundColor: "#2a3142",
-    border: "1px solid #00e5ff",
-    borderRadius: "12px",
-    boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
-    padding: "20px",
-    cursor: "pointer",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    boxSizing: "border-box",
-    color: "#e0f7fa",
-  }}
->
-  <img
-    src="/완료도장.png"
-    alt="도장"
-    style={{
-      width: "60%",
-      filter: hasSolvedToday ? "none" : "grayscale(100%)",
-      boxShadow: hasSolvedToday ? "0 0 15px 5px #ff5252" : "none", // ✅ 빨간 도장 효과
-      transition: "filter 0.3s ease, box-shadow 0.3s ease",
-      borderRadius: "8px",
-    }}
-  />
-  <p style={{ marginTop: "10px", fontWeight: "bold" }}>
-    {hasSolvedToday ? "🎉 오늘의 문제 완료 !" : " 문제 제출 후 클릭 ! "}
-  </p>
-</div>
-
-          {/* 오른쪽 박스 */}
-          <div
+        {/* 두 개 박스 - 도장, 차트 */}
+        <div style={{
+         display: "flex",
+         justifyContent: "center",
+        flexWrap: "wrap",
+          marginTop: "40px",
+          gap: "40px"
+        }}>
+         {/* 왼쪽 - 도장 (동기화 용도도) */}
+           <div
+            onClick={handleRefresh}
             style={{
-              flex: "1 1 200px",
-              maxWidth: "280px",
-              height: "240px",
-              backgroundColor: "#2a3142",
-              border: "1px solid #00e5ff",
-              borderRadius: "12px",
+              width: "300px",
+              height: "300px",
+              backgroundColor: "#1a1e2a",
+              border: "2px solid #00e5ff",
+              borderRadius: "16px",
               boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
               padding: "20px",
-              boxSizing: "border-box",
-              textAlign: "center",
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+             justifyContent: "center",
+             color: "#e0f7fa",
+             boxSizing: "border-box",
+              flex: "none",  
+            }}
+  >
+            <img
+              src="/완료도장.png"
+              alt="도장"
+              style={{
+                width: "50%",
+                marginTop:"20px",
+                filter: hasSolvedToday ? "none" : "grayscale(100%)",
+                boxShadow: hasSolvedToday ? "0 0 15px 5px #ff5252" : "none",
+                transition: "filter 0.3s ease, box-shadow 0.3s ease",
+                borderRadius: "8px",
+              }}
+            />
+            <p style={{ marginTop: "20px", fontWeight: "bold", textAlign: "center" }}>
+              {hasSolvedToday ? "오늘의 문제 풀기 완료 ! !" : "문제 제출 후 클릭 !"}
+            </p>
+          </div>
+
+          {/* 오른쪽 - 차트 */}
+          <div
+            style={{
+              width: "300px",
+              height: "300px",
+              backgroundColor: "#1a1e2a",
+              border: "2px solid #00e5ff",
+              borderRadius: "16px",
+              boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
+              padding: "10px",
               color: "#e0f7fa",
+              boxSizing: "border-box",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: "none",  // ✅ 고정
             }}
           >
-            <h3 style={{ margin: 0 }}>현재 학생들의 완료</h3>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                marginTop: "14px",
-              }}
-            >
-              <PieChart width={160} height={160}>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={30}
-                  outerRadius={65}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-              <p style={{ marginTop: "10px", fontSize: "14px" }}>
-                {solvedCount}명이 풀었습니다 <br /> (전체 {totalUsers}명 중)
-              </p>
-            </div>
+            <h3 style={{ marginTop:"15px", margin: 0, fontSize: "16px" }}>현재 학생들의 완료</h3>
+           <PieChart width={200} height={200}>
+          <Pie
+            data={chartData}
+            cx="50%"
+            cy="50%"
+            innerRadius={40}    
+            outerRadius={75}   
+            fill="#8884d8"
+            paddingAngle={5}
+            dataKey="value"
+          >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+            </PieChart>
+            <p style={{ fontSize: "13px", marginTop: "0px", textAlign: "center" }}>
+              {solvedCount}명이 풀었습니다<br />
+              (전체 {totalUsers}명 중)
+            </p>
           </div>
-        </div>
-
-
+        </div> 
       </div>
     </div>
   );

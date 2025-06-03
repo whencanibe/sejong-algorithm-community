@@ -96,8 +96,8 @@ export default function AttendanceAndCardAlbum() {
             src="/발자국.png"
             alt={`footprint-${i}`}
             style={{
-              width: "60px",
-              height: "60px",
+              width: "70px",
+              height: "70px",
               cursor: "default",
               transition: "0.2s",
               transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
