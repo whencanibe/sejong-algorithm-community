@@ -9,6 +9,8 @@ import axios from "axios";
 import AttendanceAndCardAlbum from "../components/Attendanceandcardalbum";
 import LoginWindow from '../components/LoginWindow';
 
+
+
 export default function Home() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);

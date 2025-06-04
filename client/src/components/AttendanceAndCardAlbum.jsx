@@ -6,7 +6,7 @@ export default function AttendanceAndCardAlbum() {
   const [footprints, setFootprints] = useState([]);
   const [cards, setCards] = useState([]);
   const [rewardGiven, setRewardGiven] = useState(() => {
-  return localStorage.getItem("rewardGiven") === "ture";
+  return localStorage.getItem("rewardGiven") === "true";
 });
 
   const [newCard, setNewCard] = useState(null);
