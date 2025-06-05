@@ -5,7 +5,10 @@ import CommentSection from "../pages/commentsection";
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 
-function PostDetail({ postId }) {
+
+
+
+function PostDetail({  }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
@@ -13,6 +16,8 @@ function PostDetail({ postId }) {
 
 
 
+console.log("📦 post:", post);
+console.log("📦 post.id:", post?.id);
   // 게시글 조회
   useEffect(() => {
     axios
@@ -28,8 +33,9 @@ function PostDetail({ postId }) {
       withCredentials: true,
     })
     .then((res) => {
-      const { id, name } = res.data; // ✨ 필요한 것만 꺼냄
-      setUserInfo({ id, name });     // ✅ 댓글 등 다른 컴포넌트에 넘길 값
+      console.log("✅ mypage 응답:", res.data); // ← 이거 추가
+      const { name } = res.data; // ✨ 필요한 것만 꺼냄
+      setUserInfo({ name });     // ✅ 댓글 등 다른 컴포넌트에 넘길 값
     })
     .catch((err) => {
       console.error("유저 정보 불러오기 실패:", err);
@@ -216,9 +222,10 @@ function PostDetail({ postId }) {
             }}
           />
 
-          {post && userInfo && (
-  <CommentSection postId={post.id} userInfo={userInfo} />
+          {post  && post.id && (
+  <CommentSection postId={post.id} />
 )}
+
 
 
           {/* 목록으로 */}

@@ -2,46 +2,43 @@
 import { useState,useEffect } from "react";
 import axios from "axios";
 
-function CommentSection({ postId, userInfo }) {
+function CommentSection({ postId,userInfo}) {
   const [comments, setComments] = useState([]);
   const [input, setInput] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
 
 
-  
+   console.log("🔥 CommentSection postId:", postId); 
+  console.log("🔥 최종 URL:", `http://localhost:4000/comments/${postId}`);
+
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const res = await axios.get(`http://localhost:4000/comments/${postId}`);
-        setComments(res.data); // [{ id, user: { name }, text }]
-      } catch (err) {
-        console.log("postId:", postId);
-        console.error("댓글 불러오기 실패:", err);
-      }
-    };
-    fetchComments();
-  }, [postId]);
+  const fetchComments = async () => {
+    try {
+      const res = await axios.get(`http://localhost:4000/comments/${postId}`);
+      setComments(res.data); // 이제 user.id, user.name, user.profileImage 다 있음!
+    } catch (err) {
+      console.error("댓글 불러오기 실패:", err);
+    }
+  };
+  fetchComments();
+}, [postId]);
 
-
-  
-  
-
-
-  
-  
   const handleAddComment = async () => {
   if (input.trim() === "") return;
 
-console.log("postId", postId);
-console.log("userId", userInfo.id);
+  console.log("postId", postId);
+console.log("text", input);
+
+
 
   try {
-    await axios.post(`http://localhost:4000/comments/${postId}`, {
-      userId: userInfo.id,
-      text: input,
-    }, {
-      withCredentials: true,
-    });
+   await axios.post(`http://localhost:4000/comments/${(postId)}`, {
+  text: input
+}, {
+  withCredentials: true,
+});
+
+
 
     // 최신 댓글 목록 다시 불러오기
     const res = await axios.get(`http://localhost:4000/comments/${postId}`);

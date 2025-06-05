@@ -16,6 +16,7 @@ export async function getCommentsByPostId(req, res, next) {
 
 export async function createComment(req, res, next) {
   try {
+    
     const postId = Number(req.params.postId);
     if (Number.isNaN(postId)) {
       return next(new AppError('잘못된 postId', 400));
