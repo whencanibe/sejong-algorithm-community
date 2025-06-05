@@ -2,27 +2,97 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 
+const CACHE_KEY = "myPage:userInfo";
+const CACHE_TTL = 1000 * 60 * 30;          // 30 분
+
+//브라우저 localStorage에 저장된 userInfo 불러오는 함수
+function loadCachedUserInfo() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { ts, data } = JSON.parse(raw);
+    if (Date.now() - ts < CACHE_TTL) return data;   // 30분 안지났으면 HIT
+  } catch (_) { }
+  return null;
+}
+//브라우저 localStorage에 저장시키는 함수
+function saveCachedUserInfo(data) {
+  localStorage.setItem(
+    CACHE_KEY,
+    JSON.stringify({ ts: Date.now(), data })
+  );
+}
+//브라우저 localStorage에 저장된 값 지우는 함수
+function clearCachedUserInfo() {
+  localStorage.removeItem(CACHE_KEY);
+}
+
+const toAbsolute = (url) =>
+  !url ? "/기본이미지.png"
+    : url.startsWith("http") ? url
+      : `http://localhost:4000${url}`;
+
 function MyPage() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
 
-  const [profileImg, setProfileImg] = useState('');
-  const [nickname, setNickname] = useState('');
+  //localStrage에 있으면 불러오고 아니면 0 이나 ''로 초기화
+  const [userInfo, setUserInfo] = useState(() => {
+    return loadCachedUserInfo() ?? {
+      baekjoonName: '',
+      name: '',
+      department: '',
+      enrollYear: '',
+      tier: '',
+      rank: 0,
+      rankInDepartment: 0,
+      streak: 0,
+      percentile: 0,
+      totalSolvedCount: 0,
+      profileImage: "",
+    };
+  });
+
+  // 2) userInfo에서 파생되는 뷰 전용 상태
+  const [profileImg, setProfileImg] = useState(() =>
+    toAbsolute(userInfo.profileImage)          // 캐시 기반 초기값
+  );
+  const [nickname, setNickname] = useState(() => userInfo.name);
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [nicknameError, setNicknameError] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
 
-  const [userInfo, setUserInfo] = useState({
-    baekjoonName: '',
-    name: '',
-    department: '',
-    enrollYear: '',
-    tier: '',
-    rank: 0,
-    rankInDepartment: 0,
-    streak: 0,
-    percentile: 0,
-    totalSolvedCount: 0,
-  });
+  const fetchUserInfo = async () => {
+    try {
+      // await axios.get("http://localhost:4000/info/api/basicprofile", {
+      //   withCredentials: true,
+      // });
+
+      const res = await axios.get(`http://localhost:4000/info/api/mypage`, {
+        withCredentials: true,
+      });
+
+      const defaultImg = "/기본이미지.png";
+      const imageUrl = res.data.profileImage
+        ? (res.data.profileImage.startsWith("http") ? res.data.profileImage : `http://localhost:4000${res.data.profileImage}`)
+        : defaultImg;
+
+      // 새로 합친 userInfo
+      const merged = { ...res.data, profileImage: imageUrl };
+      setProfileImg(imageUrl);
+      setUserInfo(merged);
+      setIsLoggedIn(true);
+      setNickname(merged.name);
+
+      //localStorage 갱신
+      saveCachedUserInfo(merged);
+    } catch (error) {
+      console.error("로그인 확인 실패:", error);
+      alert("로그인이 필요합니다.");
+      setIsLoggedIn(false);
+      clearCachedUserInfo(); // 캐시 삭제
+      navigate("/login");
+    }
+  };
 
   // 정보 상자 스타일
   const infoBoxStyle = {
@@ -35,9 +105,9 @@ function MyPage() {
     color: '#e0f7fa',
     textAlign: 'center',
     boxShadow: '0 0 12px rgba(0, 229, 255, 0.25)',
-    display: 'flex', 
-    flexDirection: 'column', 
-    justifyContent: 'space-between', 
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   };
 
   // 레이블 스타일
@@ -50,42 +120,19 @@ function MyPage() {
   // 구분선 스타일
   const separatorLineStyle = {
     borderBottom: '1px solid rgba(0, 229, 255, 0.4)',
-    width: '95%', 
+    width: '95%',
     margin: '8px auto',
   };
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        await axios.get("http://localhost:4000/info/api/basicprofile", {
-          withCredentials: true,
-        });
+    if (!loadCachedUserInfo()) fetchUserInfo(); // 캐시 없을때만 호출
+  }, [navigate]);   
 
-        const res = await axios.get(`http://localhost:4000/info/api/mypage`, {
-          withCredentials: true,
-        });
-
-        const defaultImg = "/기본이미지.png";
-        const imageUrl = res.data.profileImage
-          ? (res.data.profileImage.startsWith("http") ? res.data.profileImage : `http://localhost:4000${res.data.profileImage}`)
-          : defaultImg;
-
-        setProfileImg(imageUrl);
-        setUserInfo({
-          ...res.data,
-          profileImage: imageUrl,
-        });
-        setIsLoggedIn(true);
-        setNickname(res.data.name);
-      } catch (error) {
-        console.error("로그인 확인 실패:", error);
-        alert("로그인이 필요합니다.");
-        setIsLoggedIn(false);
-        navigate("/login");
-      }
-    };
-    fetchUserInfo();
-  }, []);
+  /* ---------- userInfo => 파생값 동기화 ---------- */
+  useEffect(() => {
+    setProfileImg(toAbsolute(userInfo.profileImage));
+    setNickname(userInfo.name);
+  }, [userInfo]);
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -104,10 +151,11 @@ function MyPage() {
 
       const uploadedUrl = `http://localhost:4000${res.data.url}`;
       setProfileImg(uploadedUrl);
-      setUserInfo((prev) => ({
-        ...prev,
-        profileImage: uploadedUrl,
-      }));
+      setUserInfo(prev => {
+        const next = { ...prev, profileImage: uploadedUrl };
+        saveCachedUserInfo(next);           //캐시에 추가
+        return next;
+      });
     } catch (err) {
       console.error("이미지 업로드 실패:", err);
     }
@@ -126,10 +174,11 @@ function MyPage() {
         { withCredentials: true }
       );
 
-      setUserInfo((prev) => ({
-        ...prev,
-        name: nickname,
-      }));
+      setUserInfo(prev => {
+        const next = { ...prev, name: nickname };
+        saveCachedUserInfo(next);           // 캐시에 추가
+        return next;
+      });
       setIsEditingNickname(false);
       setNicknameError(false);
     } catch (err) {
@@ -156,7 +205,7 @@ function MyPage() {
     color: 'black'
   };
 
-  if (!userInfo || !userInfo.baekjoonName) {
+  if (!userInfo.baekjoonName) {
     return <div style={{ padding: "40px" }}>로딩 중...</div>;
   }
 
@@ -169,8 +218,8 @@ function MyPage() {
           top: 0,
           left: 0,
           width: '100%',
-          backgroundColor: '#121826', 
-          color: '#b3e5fc', 
+          backgroundColor: '#121826',
+          color: '#b3e5fc',
           padding: '18px 40px',
           fontSize: '18px',
           fontWeight: 'bold',
@@ -178,8 +227,8 @@ function MyPage() {
           justifyContent: 'space-between',
           alignItems: 'center',
           boxSizing: 'border-box',
-          zIndex: 1000, 
-          boxShadow: '0 2px 10px #00e5ff55', 
+          zIndex: 1000,
+          boxShadow: '0 2px 10px #00e5ff55',
         }}
       >
         마이페이지
@@ -188,8 +237,8 @@ function MyPage() {
           style={{
             padding: '8px 16px',
             fontSize: '14px',
-            backgroundColor: '#afefff', 
-            color: '#0d1117', 
+            backgroundColor: '#afefff',
+            color: '#0d1117',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
@@ -209,7 +258,23 @@ function MyPage() {
         boxSizing: 'border-box'
       }}>
         <h1 style={{ marginBottom: '30px', textAlign: 'center', color: '#afefff' }}>⚙️ 내 프로필</h1>
-
+        <button
+          onClick={() => fetchUserInfo()}
+          style={{
+            padding: '8px 16px',
+            fontSize: '14px',
+            backgroundColor: '#afefff',
+            color: '#0d1117',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            boxShadow: '0 0 10px #00e5ff',
+            marginBottom: '7px'
+          }}
+        >
+          백준 정보 새로고침
+        </button>
         <div
           style={{
             border: '2px solid #00e5ff',
@@ -336,7 +401,7 @@ function MyPage() {
         </div>
 
         {/* 왼쪽 정렬 및 세로 겹침 없이 가로로만 겹치는 상자들 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '40px'}}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '40px' }}>
           {/* 1행: 학과, 학번 */}
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {[

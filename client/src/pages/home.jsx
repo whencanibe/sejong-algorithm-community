@@ -130,6 +130,7 @@ export default function Home() {
             <button onClick={async () => {
               try {
                 await axios.get("http://localhost:4000/user/logout", { withCredentials: true });
+                localStorage.removeItem("myPage:userInfo");
                 setIsLoggedIn(false);
                 setBasicInfo(null);
                 window.location.href = "/";
