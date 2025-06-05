@@ -108,6 +108,7 @@ export async function updateUserProfileImage(userId, imageUrl) {
 export async function getBasicUserInfo(userId) {
   const user = await userRepo.findUserById(userId);
   if (!user) throw new AppError("유저를 찾을 수 없습니다.", 404);
+  const defaultProfileImage = "/기본이미지.png"; 
 
   return {
     name: user.name,

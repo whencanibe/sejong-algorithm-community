@@ -15,3 +15,7 @@ export async function editComment(id, text) {
 export async function removeComment(id) {
   return await repo.remove(id);
 }
+
+export async function findCommentById(id) {
+  return await repo.findById(id);
+}
