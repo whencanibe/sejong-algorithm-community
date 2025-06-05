@@ -3,9 +3,11 @@ import React from "react";
 // MyProfile 컴포넌트 - 프로필 카드
 export default function MyProfile({ nickname, department, imgUrl }) {
 
-  // 이미지가 없을 경우를 대비해 Dicebear의 랜덤 아바타 URL을 기본값으로 설정
-  const defaultImg = `https://api.dicebear.com/9.x/bottts/svg?seed=Felix`;
-  const profileImg = imgUrl ? imgUrl : defaultImg;  
+  // 사용자가 사진 업로드를 안 하였을 경우 기본 이미지 제공 
+  // 등록한 사진의 상대 경로와 서버 주소를 붙여서 
+  const baseUrl = "http://localhost:4000"; 
+  const defaultImg = "/기본이미지.png";
+  const profileImg = imgUrl?.startsWith("http") ? imgUrl : `${baseUrl}${imgUrl}`;
 
   return (
     <div
@@ -27,7 +29,7 @@ export default function MyProfile({ nickname, department, imgUrl }) {
     >
       {/* 프로필 이미지 */}
       <img
-        src={imgUrl}                         
+        src={profileImg}                         
         alt="내 프로필 이미지"
         style={{
           width: "150px",                  

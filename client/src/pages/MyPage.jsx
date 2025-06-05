@@ -65,7 +65,7 @@ function MyPage() {
           withCredentials: true,
         });
 
-        const defaultImg = `https://api.dicebear.com/7.x/bottts/svg?seed=${Date.now()}`;
+        const defaultImg = "/기본이미지.png";
         const imageUrl = res.data.profileImage
           ? (res.data.profileImage.startsWith("http") ? res.data.profileImage : `http://localhost:4000${res.data.profileImage}`)
           : defaultImg;

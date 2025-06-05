@@ -41,6 +41,7 @@ export async function createComment(req, res, next) {
 export const updateComment = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
+
     if (Number.isNaN(id)) {
       throw new AppError('잘못된 commentId', 400);
     }
@@ -49,11 +50,16 @@ export const updateComment = async (req, res, next) => {
     if (!text) {
       throw new AppError('댓글 내용이 없습니다.', 400);
     }
-
-    const updated = await commentService.editComment(id, text);
-    if (!updated) {
+    const comment = await commentService.findCommentById(id);
+    if (!comment) {
       throw new AppError('댓글을 찾을 수 없습니다.', 404);
     }
+    //댓글 작성자와 로그인한 사용자가 같은지 확인 
+    const userId = req.session.user?.id;
+    if (comment.userId !== userId) {
+      throw new AppError('댓글 수정 권한이 없습니다.', 403);
+    }
+    const updated = await commentService.editComment(id, text);
 
     return res.json({ success: true, data: updated });
   } catch (err) {
@@ -63,16 +69,22 @@ export const updateComment = async (req, res, next) => {
 
 export const deleteComment = async (req, res, next) => {
   try {
-    const id = Number(req.params.id);
+    const id = Number(req.params.id);    
     if (Number.isNaN(id)) {
       throw new AppError('잘못된 commentId', 400);
     }
-
-    const deleted = await commentService.removeComment(id);
-    if (!deleted) {
+    const comment = await commentService.findCommentById(id);
+    if (!comment) {
       throw new AppError('댓글을 찾을 수 없습니다.', 404);
     }
 
+    //삭제하려는 댓글의 작성자와 로그인한 사용자의 id가 같은지 확인 
+    const userId = req.session.user?.id;
+    if (comment.userId !== userId) {
+      throw new AppError('댓글 삭제 권한이 없습니다.', 403);
+    }
+    const deleted = await commentService.removeComment(id);
+    
     return res.status(204).send();   // No Content
   } catch (err) {
     return next(err);

@@ -4,10 +4,15 @@ export async function findByPostId(postId) {
   return await prisma.comment.findMany({
     where: { postId },
     orderBy: { createdAt: 'asc' },
-    include: {
+    select: {
+      id: true,
+      text: true,
+      createdAt: true,
+      updatedAt: true,
+      userId: true, // 댓글 작성자id
       user: {
         select: {
-          name: true, // ✨ 유저 이름만 포함
+          name: true, // 댓글 작성자 이름
         },
       },
     },
@@ -34,6 +39,12 @@ export async function update(id, text) {
 
 export async function remove(id) {
   return await prisma.comment.delete({
+    where: { id },
+  });
+}
+
+export async function findById(id) {
+  return await prisma.comment.findUnique({
     where: { id },
   });
 }
