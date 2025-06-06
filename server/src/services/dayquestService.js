@@ -39,7 +39,7 @@ export async function getDayquestStatus(userId) {
 
 export function getDailyQuest() {
   const detail = getTodayProblemDetail();  
-  console.log('[daily] detail 도착:', detail); 
+
   if (!detail) {
     throw new AppError('문제 제목을 불러올 수 없음', 500);
   }

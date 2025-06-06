@@ -60,7 +60,7 @@ function MyPage() {
   const [nickname, setNickname] = useState(() => userInfo.name);
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [nicknameError, setNicknameError] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false); // 프로필 새로고침 버튼 관련
 
@@ -68,13 +68,15 @@ function MyPage() {
     if (refreshing) return;          // 중복 클릭 방지
     setRefreshing(true);             // 새로고침 시작
     try {
-      // await axios.get("http://localhost:4000/info/api/basicprofile", {
-      //   withCredentials: true,
-      // });
-
       const res = await axios.get(`http://localhost:4000/info/api/mypage`, {
         withCredentials: true,
+        validateStatus: s => s < 500 // 4xx 캐치로 안가도록
       });
+
+      // 사용자 로그인 안했으면
+      if (res.status === 401) {
+        throw new Error("unauthorized"); // 로그인 안한 사용자와 네트워크 오류를 분리하기 위함
+      }
 
       const defaultImg = "/기본이미지.png";
       const imageUrl = res.data.profileImage
@@ -85,17 +87,21 @@ function MyPage() {
       const merged = { ...res.data, profileImage: imageUrl };
       setProfileImg(imageUrl);
       setUserInfo(merged);
-      setIsLoggedIn(true);
+      //setIsLoggedIn(true);
       setNickname(merged.name);
 
       //localStorage 갱신
       saveCachedUserInfo(merged);
     } catch (error) {
-      console.error("로그인 확인 실패:", error);
-      alert("로그인이 필요합니다.");
-      setIsLoggedIn(false);
-      clearCachedUserInfo(); // 캐시 삭제
-      navigate("/login");
+      // 로그인 안했으면
+      if (error.response?.status === 401 || error.message === "unauthorized") {
+        clearCachedUserInfo();
+        navigate("/login", { replace: true });
+      } else { // 외부 API 호출 중 문제가 생겼다면
+        console.error("프로필 로드 실패:", error);
+        alert("외부 네트워크 오류입니다. 잠시 후에 다시 시도하세요.");
+      }
+
     } finally {
       setRefreshing(false); // 새로고침 종료
     }
@@ -132,8 +138,32 @@ function MyPage() {
   };
 
   useEffect(() => {
-    if (!loadCachedUserInfo()) fetchUserInfo(); // 캐시 없을때만 호출
+    (async () => {
+      try {
+        // 서버가 세션 보고 200 또는 401을 돌려주는 엔드포인트
+        await axios.get("http://localhost:4000/user/me", {
+          withCredentials: true,
+          validateStatus: s => s < 500            // 4xx도 catch 안 나게
+        }).then(res => {
+          if (res.status === 200) {
+            setIsLoggedIn(true);                  // 로그인 인정
+          } else {
+            throw new Error("unauthorized");
+          }
+        });
+      } catch {
+        // 세션 만료 → 캐시 파기 → 로그인 페이지로
+        clearCachedUserInfo();
+        alert("로그인이 필요합니다.");
+        navigate("/login", { replace: true });
+      }
+    })();
   }, [navigate]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    if (!loadCachedUserInfo()) fetchUserInfo(); // 캐시 없을때만 호출
+  }, [isLoggedIn]);
 
   /* ---------- userInfo => 파생값 동기화 ---------- */
   useEffect(() => {
