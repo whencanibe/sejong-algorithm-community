@@ -1,57 +1,45 @@
-
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
-function CommentSection({ postId,userInfo}) {
+function CommentSection({ postId, userInfo }) {
   const [comments, setComments] = useState([]);
   const [input, setInput] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
 
-
-   console.log("🔥 CommentSection postId:", postId); 
-  console.log("🔥 최종 URL:", `http://localhost:4000/comments/${postId}`);
-
   useEffect(() => {
-  const fetchComments = async () => {
+    // 📌 댓글 목록 불러오기
+    const fetchComments = async () => {
+      try {
+        const res = await axios.get(`http://localhost:4000/comments/${postId}`);
+        setComments(res.data);
+      } catch (err) {
+        console.error("댓글 불러오기 실패:", err);
+      }
+    };
+    fetchComments();
+  }, [postId]);
+
+  // 📌 댓글 추가
+  const handleAddComment = async () => {
+    if (input.trim() === "") return;
+
     try {
+      await axios.post(
+        `http://localhost:4000/comments/${postId}`,
+        { text: input },
+        { withCredentials: true }
+      );
+
       const res = await axios.get(`http://localhost:4000/comments/${postId}`);
-      setComments(res.data); // 이제 user.id, user.name, user.profileImage 다 있음!
+      setComments(res.data);
+      setInput("");
     } catch (err) {
-      console.error("댓글 불러오기 실패:", err);
+      console.error("댓글 저장 실패:", err.response?.data || err.message);
+      alert("댓글 저장 중 오류 발생!");
     }
   };
-  fetchComments();
-}, [postId]);
 
-  const handleAddComment = async () => {
-  if (input.trim() === "") return;
-
-  console.log("postId", postId);
-console.log("text", input);
-
-
-
-  try {
-   await axios.post(`http://localhost:4000/comments/${(postId)}`, {
-  text: input
-}, {
-  withCredentials: true,
-});
-
-
-
-    // 최신 댓글 목록 다시 불러오기
-    const res = await axios.get(`http://localhost:4000/comments/${postId}`);
-    setComments(res.data);
-    setInput("");
-  } catch (err) {
-    console.error("댓글 저장 실패:", err.response?.data || err.message);
-    alert("댓글 저장 중 오류 발생!");
-  }
-};
-
-
-
+  // 📌 댓글 수정 시작
   const handleEditStart = (id) => {
     setComments((prev) =>
       prev.map((c) => (c.id === id ? { ...c, isEditing: true } : c))
@@ -59,139 +47,126 @@ console.log("text", input);
     setActiveMenuId(null);
   };
 
+  // 📌 댓글 수정 제출
   const handleEditSubmit = async (id, newText) => {
-  try {
-    await axios.put(`http://localhost:4000/comments/${id}`, {
-      text: newText,
-    }, {
-      withCredentials: true,
-    });
+    try {
+      await axios.put(
+        `http://localhost:4000/comments/${id}`,
+        { text: newText },
+        { withCredentials: true }
+      );
 
-    // 업데이트 후 다시 불러오기
-    const res = await axios.get(`http://localhost:4000/comments/${postId}`);
-    setComments(res.data);
-  } catch (err) {
-    console.error("댓글 수정 실패:", err.response?.data || err.message);
-    alert("댓글 수정 중 오류 발생!");
-  }
-};
+      const res = await axios.get(`http://localhost:4000/comments/${postId}`);
+      setComments(res.data);
+    } catch (err) {
+      console.error("댓글 수정 실패:", err.response?.data || err.message);
+      alert("댓글 수정 중 오류 발생!");
+    }
+  };
 
+  // 📌 댓글 삭제
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/comments/${id}`, {
+        withCredentials: true,
+      });
 
- const handleDelete = async (id) => {
-  try {
-    await axios.delete(`http://localhost:4000/comments/${id}`, {
-      withCredentials: true,
-    });
+      const res = await axios.get(`http://localhost:4000/comments/${postId}`);
+      setComments(res.data);
+    } catch (err) {
+      console.error("댓글 삭제 실패:", err.response?.data || err.message);
+      alert("댓글 삭제 중 오류 발생!");
+    }
 
-    // 삭제 후 다시 불러오기
-    const res = await axios.get(`http://localhost:4000/comments/${postId}`);
-    setComments(res.data);
-  } catch (err) {
-    console.error("댓글 삭제 실패:", err.response?.data || err.message);
-    alert("댓글 삭제 중 오류 발생!");
-  }
-
-  setActiveMenuId(null);
-};
-
+    setActiveMenuId(null);
+  };
 
   return (
     <div>
-      <div
-        style={{
-          fontSize: "25px",
-          fontWeight: "bold",
-          marginBottom: "50px",
-          padding: "0 30px",
-           textAlign: "left", 
-        }}
-      >
+      {/* ✅ 헤더 */}
+      <div style={{
+        fontSize: "25px",
+        fontWeight: "bold",
+        marginBottom: "50px",
+        padding: "0 30px",
+        textAlign: "left",
+      }}>
         댓글
       </div>
 
+      {/* ✅ 댓글 리스트 */}
       <ul style={{ listStyle: "none", paddingLeft: 10 }}>
         {comments.map((c) => (
-          <li
-            key={c.id}
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              marginBottom: "16px",
-              maxWidth: "70%",
-              textAlign: "left",
-              padding: "0 30px",
-            }}
-          >
-            <div
-              style={{
-                width: "35px",
-                height: "35px",
-                borderRadius: "50%",
-                backgroundColor: "#ccc",
-                marginRight: "25px",
-                flexShrink: 0,
-              }}
-            ></div>
+          <li key={c.id} style={{
+            display: "flex",
+            alignItems: "flex-start",
+            marginBottom: "16px",
+            maxWidth: "70%",
+            textAlign: "left",
+            padding: "0 30px",
+          }}>
+            {/* 🔹 프로필 이미지 자리 */}
+            <div style={{
+              width: "35px",
+              height: "35px",
+              borderRadius: "50%",
+              backgroundColor: "#ccc",
+              marginRight: "25px",
+              flexShrink: 0,
+            }} />
 
+            {/* 🔹 댓글 본문 */}
             <div style={{ flex: 1 }}>
-              <div
-                style={{
+              <div style={{
+                fontWeight: "bold",
+                marginBottom: "8px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}>
+                {/* 🔸 유저 이름 */}
+                <span style={{
+                  border: "1px solid #00e5ff",
+                  padding: "4px 8px",
+                  borderRadius: "8px",
+                  color: "#00e5ff",
                   fontWeight: "bold",
-                  marginBottom: "8px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <span
-  style={{
-    border: "1px solid #00e5ff",   // 네온색 테두리
-    padding: "4px 8px",
-    borderRadius: "8px",
-    color: "#00e5ff",
-    fontWeight: "bold",
-    fontSize: "14px",
-    backgroundColor: "#0d1117", // 배경 어두운 톤
-  }}
->
-  {c.user?.name || "익명"}
-</span>
+                  fontSize: "14px",
+                  backgroundColor: "#0d1117",
+                }}>
+                  {c.user?.name || "익명"}
+                </span>
 
-
+                {/* 🔸 수정/삭제 메뉴 버튼 */}
                 <div style={{ position: "relative", marginLeft: "auto", marginRight: "10px" }}>
-                 {userInfo?.id === c.userId && (
-  <button
-    onClick={() =>
-      setActiveMenuId(activeMenuId === c.id ? null : c.id)
-    }
-    style={{
-      background: "none",
-      border: "none",
-      fontSize: "18px",
-      cursor: "pointer",
-      padding: "0 4px",
-      color: "#fff",
-    }}
-  >
-    ...
-  </button>
-)}
-
-
-
-                  {activeMenuId === c.id && (
-                    <div
+                  {(
+                    <button
+                      onClick={() => setActiveMenuId(activeMenuId === c.id ? null : c.id)}
                       style={{
-                        position: "absolute",
-                        right: 0,
-                        top: "100%",
-                        background: "#fff",
-                        border: "1px solid #ddd",
-                        borderRadius: "4px",
-                        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                        zIndex: 10,
+                        background: "none",
+                        border: "none",
+                        fontSize: "18px",
+                        cursor: "pointer",
+                        padding: "0 4px",
+                        color: "#fff",
                       }}
                     >
+                      ...
+                    </button>
+                  )}
+
+                  {/* 🔸 메뉴 열렸을 때 */}
+                  {activeMenuId === c.id && userInfo?.id === c.user?.id && (
+                    <div style={{
+                      position: "absolute",
+                      right: 0,
+                      top: "100%",
+                      background: "#fff",
+                      border: "1px solid #ddd",
+                      borderRadius: "4px",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                      zIndex: 10,
+                    }}>
                       <button
                         onClick={() => handleEditStart(c.id)}
                         style={{
@@ -226,14 +201,14 @@ console.log("text", input);
                 </div>
               </div>
 
+              {/* 🔹 댓글 텍스트 or 수정창 */}
               {c.isEditing ? (
                 <CommentEditor id={c.id} initial={c.text} onSubmit={handleEditSubmit} />
               ) : (
                 <>
                   <div style={{ lineHeight: "1.6", color: "#fff", fontSize: "15px" }}>
-  {c.text}
-</div>
-
+                    {c.text}
+                  </div>
                   {c.edited && (
                     <div style={{ fontSize: "12px", color: "#fff" }}>수정됨</div>
                   )}
@@ -244,6 +219,7 @@ console.log("text", input);
         ))}
       </ul>
 
+      {/* ✅ 댓글 입력창 */}
       <div style={{ marginBottom: "20px" }}>
         <input
           type="text"
@@ -277,6 +253,7 @@ console.log("text", input);
   );
 }
 
+// 🔧 수정 시 나오는 입력창
 function CommentEditor({ id, initial, onSubmit }) {
   const [editInput, setEditInput] = useState(initial);
 

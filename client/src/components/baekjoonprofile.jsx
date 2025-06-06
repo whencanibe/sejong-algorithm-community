@@ -33,7 +33,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
   return (
     <div
       style={{
-        width: "850px",
+        width: "700px",
         height: "300px",
         display: "flex",
         gap: "24px",
