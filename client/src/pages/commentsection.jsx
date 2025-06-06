@@ -7,7 +7,7 @@ function CommentSection({ postId, userInfo }) {
   const [activeMenuId, setActiveMenuId] = useState(null);
 
   useEffect(() => {
-    // 📌 댓글 목록 불러오기
+    //  댓글 목록 불러오기
     const fetchComments = async () => {
       try {
         const res = await axios.get(`http://localhost:4000/comments/${postId}`);
@@ -19,7 +19,7 @@ function CommentSection({ postId, userInfo }) {
     fetchComments();
   }, [postId]);
 
-  // 📌 댓글 추가
+  //  댓글 작성하기기
   const handleAddComment = async () => {
     if (input.trim() === "") return;
 
@@ -39,7 +39,7 @@ function CommentSection({ postId, userInfo }) {
     }
   };
 
-  // 📌 댓글 수정 시작
+  //  댓글 수정 하기기
   const handleEditStart = (id) => {
     setComments((prev) =>
       prev.map((c) => (c.id === id ? { ...c, isEditing: true } : c))
@@ -47,7 +47,7 @@ function CommentSection({ postId, userInfo }) {
     setActiveMenuId(null);
   };
 
-  // 📌 댓글 수정 제출
+  // 댓글 수정 제출
   const handleEditSubmit = async (id, newText) => {
     try {
       await axios.put(
@@ -64,7 +64,7 @@ function CommentSection({ postId, userInfo }) {
     }
   };
 
-  // 📌 댓글 삭제
+  // 댓글 삭제
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:4000/comments/${id}`, {
@@ -83,7 +83,7 @@ function CommentSection({ postId, userInfo }) {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // 줄바꿈 막기
+      e.preventDefault();
       handleAddComment();
     }
   };
@@ -91,7 +91,7 @@ function CommentSection({ postId, userInfo }) {
 
   return (
     <div>
-      {/* ✅ 헤더 */}
+      {/* 헤더 */}
       <div style={{
         fontSize: "25px",
         fontWeight: "bold",
@@ -102,7 +102,7 @@ function CommentSection({ postId, userInfo }) {
         댓글
       </div>
 
-      {/* ✅ 댓글 리스트 */}
+      {/*  댓글 리스트 */}
       <ul style={{ listStyle: "none", paddingLeft: 10, marginBottom:"50px", }}>
         {comments.map((c) => (
           <li key={c.id} style={{
@@ -114,7 +114,7 @@ function CommentSection({ postId, userInfo }) {
             padding: "0 30px",
           }}>
             
-            {/* 🔹 댓글 본문 */}
+            {/*  댓글 본문 */}
             <div style={{ flex: 1 }}>
               <div style={{
                 fontWeight: "bold",
@@ -123,7 +123,7 @@ function CommentSection({ postId, userInfo }) {
                 justifyContent: "space-between",
                 alignItems: "center",
               }}>
-                {/* 🔸 유저 이름 */}
+                {/*  유저 이름 */}
                 <span style={{
                   border: "1px solid #00e5ff",
                   padding: "4px 8px",
@@ -136,7 +136,7 @@ function CommentSection({ postId, userInfo }) {
                   {c.user?.name || "익명"}
                 </span>
 
-                {/* 🔸 수정/삭제 메뉴 버튼 */}
+                {/*  수정/삭제 메뉴 버튼 */}
                 <div style={{ position: "relative", marginLeft: "auto", marginRight: "10px" }}>
                   { userInfo?.id === c.user?.id &&(
                     <button
@@ -154,7 +154,7 @@ function CommentSection({ postId, userInfo }) {
                     </button>
                   )}
 
-                  {/* 🔸 메뉴 열렸을 때 */}
+                  {/*  메뉴 열렸을 때 */}
                   {activeMenuId === c.id && userInfo?.id === c.user?.id && (
                     <div style={{
                       position: "absolute",
@@ -201,7 +201,7 @@ function CommentSection({ postId, userInfo }) {
                 </div>
               </div>
 
-              {/* 🔹 댓글 텍스트 or 수정창 */}
+              {/*  댓글 텍스트 or 수정창 */}
               {c.isEditing ? (
                 <CommentEditor id={c.id} initial={c.text} onSubmit={handleEditSubmit} />
               ) : (
@@ -220,7 +220,7 @@ function CommentSection({ postId, userInfo }) {
         ))}
       </ul>
 
-      {/* ✅ 댓글 입력창 */}
+      {/*  댓글 입력창 */}
       <div style={{ marginBottom: "20px" }}>
         <input
           type="text"
@@ -258,14 +258,14 @@ function CommentSection({ postId, userInfo }) {
   );
 }
 
-// 🔧 수정 시 나오는 입력창
+//  수정 시 나오는 입력창
 function CommentEditor({ id, initial, onSubmit }) {
   const [editInput, setEditInput] = useState(initial);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      onSubmit(id, editInput); // ✅ 이 댓글만 수정 완료
+      onSubmit(id, editInput); //  이 댓글만 수정 완료
     }
   };
 

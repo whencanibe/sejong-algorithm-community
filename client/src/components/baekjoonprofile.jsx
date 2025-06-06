@@ -33,7 +33,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
   return (
     <div
       style={{
-        width: "700px",
+        width: "750px",
         height: "300px",
         display: "flex",
         gap: "24px",
@@ -94,7 +94,19 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
             boxShadow: "0 2px 6px rgba(63, 63, 255, 0.05)",
           }}
         >
-         그래프 영역
+         {handle && tier && ratingRank ? (
+    "그래프 영역"
+  ) : (
+    <img
+      src="/웰컴.png"
+      alt="Welcome"
+      style={{
+        maxWidth: "60%",
+       maxWidth: "60%",
+        objectFit: "contain",
+      }}
+    />
+  )}
         </div>
       </div>
     </div>

@@ -73,7 +73,7 @@ export default function Home() {
       });
   }, []); // 컴포넌트가 처음 마운트될 때 한 번만 실행
 
-  // `isLoggedIn` 상태 변경 시 백준 프로필 정보를 불러옴
+  /* // `isLoggedIn` 상태 변경 시 백준 프로필 정보를 불러옴
   useEffect(() => {
     if (!isLoggedIn) return; // 로그인 상태가 아니면 실행하지 않음
     const fetchBaekjoonProfile = async () => {
@@ -101,6 +101,7 @@ export default function Home() {
         console.error('오늘의 문제 불러오기 실패:', err); // 실패 시 에러 콘솔 출력
       });
   }, []); // 컴포넌트가 처음 마운트될 때 한 번만 실행
+*/
 
   // `isLoggedIn` 상태 변경 시 자유 게시판의 최신 게시글 3개를 불러옴
   useEffect(() => {
@@ -129,7 +130,13 @@ export default function Home() {
 
 
 
-  // 오늘의 문제가 로딩되지 않았으면 "로딩 중..." 표시
+
+  useEffect(() => {
+  setTodayProblem({
+    problemId: 1000,
+    title: "테스트 문제 - A + B"
+  });
+}, []);
   if (!todayProblem) return <div>로딩 중...</div>;
 
   // 메인 컴포넌트 렌더링
@@ -219,16 +226,37 @@ export default function Home() {
       {/* 출석 및 카드 앨범 섹션 */}
       <div style={{ display: "flex", gap: "20px", marginTop: "50px", paddingLeft: "40px" }}>
         <AttendanceAndCardAlbum />{/* 발자국 오른쪽에 우주 외계인 이미지 */}
-        <img
-            src="/public/배경/달.png" alt="moon"
-             style={{
-          position: "absolute", 
-            top: "180px",
-             left: "680px",
-            width: "100px",
-           height: "100px", 
-            }}
-           />
+        <div
+  style={{
+    position: "absolute",
+    top: "180px",
+    left: "680px",
+    width: "90px",
+    height: "90px",
+    borderRadius: "50%",
+    backgroundColor: "#0d1117", // 배경색이랑 동일하게
+    boxShadow: "0 0 30px 10px #ffeecc", // ✨ 황토빛 그림자 효과
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+     backgroundColor: "transparent", // 배경 제거
+  }}
+>
+  <img
+  src="/public/배경/달.png"
+  alt="moon"
+  style={{
+    width: "90px",
+    height: "90px",
+    borderRadius: "50%", // 둥글게 자르기
+    backgroundColor: "transparent",
+    filter: "drop-shadow(0 0 12px #ffdd99)",
+    boxShadow: "0 0 25px 4px #ffdd99", // 살짝 노란빛 외곽 테두리
+    transition: "filter 0.2s ease, box-shadow 0.3s ease",
+  }}
+/>
+
+    </div>
               <img
             src="/public/배경/우주인.png" 
             alt="floating-astronaut"
@@ -242,6 +270,20 @@ export default function Home() {
             filter: "drop-shadow(0 0 8px white)",
            }}
           />
+
+           <img
+            src="/public/배경/지구.png" 
+            alt="floating-astronaut"
+            style={{
+              position: "absolute",
+             top: "100px",
+              right: "100px",
+              width: "140px",
+              animation: "float-spin2 6s ease-in-out infinite",
+            zIndex: 1,
+            filter: "drop-shadow(0 0 6px white)",
+           }}
+          />
       </div>
 
       {/* 프로필 및 주요 정보 섹션 */}
@@ -252,17 +294,7 @@ export default function Home() {
             <BaekjoonProfile {...baekjoonProfile} />
           </div>
           {/* 내 프로필 또는 로그인 창 컴포넌트 (로그인 상태에 따라 다르게 표시) */}
-          {basicInfo ? (
-            <div onClick={() => navigate("/mypage")} style={{ cursor: "pointer" }}>
-              <MyProfile
-                nickname={basicInfo.name}
-                department={basicInfo.department}
-                imgUrl={basicInfo.profileImage}
-              />
-            </div>
-          ) : (
-            <LoginWindow onLoginSuccess={(userInfo) => { setUserInfo(userInfo); setIsLoggedIn(true); }} />
-          )}
+          <LoginWindow />
         </div>
 
         {/* 퀘스트, 게시판, 카드 앨범 섹션 */}
@@ -333,5 +365,6 @@ export default function Home() {
         </div>
       )}
     </div>
+
   );
 }
