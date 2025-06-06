@@ -81,6 +81,14 @@ function CommentSection({ postId, userInfo }) {
     setActiveMenuId(null);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // 줄바꿈 막기
+      handleAddComment();
+    }
+  };
+
+
   return (
     <div>
       {/* ✅ 헤더 */}
@@ -95,7 +103,7 @@ function CommentSection({ postId, userInfo }) {
       </div>
 
       {/* ✅ 댓글 리스트 */}
-      <ul style={{ listStyle: "none", paddingLeft: 10 }}>
+      <ul style={{ listStyle: "none", paddingLeft: 10, marginBottom:"50px", }}>
         {comments.map((c) => (
           <li key={c.id} style={{
             display: "flex",
@@ -105,16 +113,7 @@ function CommentSection({ postId, userInfo }) {
             textAlign: "left",
             padding: "0 30px",
           }}>
-            {/* 🔹 프로필 이미지 자리 */}
-            <div style={{
-              width: "35px",
-              height: "35px",
-              borderRadius: "50%",
-              backgroundColor: "#ccc",
-              marginRight: "25px",
-              flexShrink: 0,
-            }} />
-
+            
             {/* 🔹 댓글 본문 */}
             <div style={{ flex: 1 }}>
               <div style={{
@@ -139,7 +138,7 @@ function CommentSection({ postId, userInfo }) {
 
                 {/* 🔸 수정/삭제 메뉴 버튼 */}
                 <div style={{ position: "relative", marginLeft: "auto", marginRight: "10px" }}>
-                  {(
+                  { userInfo?.id === c.user?.id &&(
                     <button
                       onClick={() => setActiveMenuId(activeMenuId === c.id ? null : c.id)}
                       style={{
@@ -166,6 +165,7 @@ function CommentSection({ postId, userInfo }) {
                       borderRadius: "4px",
                       boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                       zIndex: 10,
+                      minWidth: "50px", 
                     }}>
                       <button
                         onClick={() => handleEditStart(c.id)}
@@ -207,6 +207,7 @@ function CommentSection({ postId, userInfo }) {
               ) : (
                 <>
                   <div style={{ lineHeight: "1.6", color: "#fff", fontSize: "15px" }}>
+                    
                     {c.text}
                   </div>
                   {c.edited && (
@@ -224,6 +225,7 @@ function CommentSection({ postId, userInfo }) {
         <input
           type="text"
           value={input}
+          onKeyDown={handleKeyDown}
           onChange={(e) => setInput(e.target.value)}
           placeholder="댓글을 입력하세요"
           style={{
@@ -237,13 +239,16 @@ function CommentSection({ postId, userInfo }) {
         <button
           onClick={handleAddComment}
           style={{
-            padding: "8px 16px",
-            backgroundColor: "#2b2d42",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            marginBottom: "50px",
+            padding: '10px 20px',
+            fontSize: '14px',
+            backgroundColor: '#afefff',
+            color: 'black',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            boxShadow: "0 0 6px #00e5ff", 
+            marginLeft:"20px",
+            fontWeight: "bold",
           }}
         >
           댓글 쓰기
@@ -257,10 +262,18 @@ function CommentSection({ postId, userInfo }) {
 function CommentEditor({ id, initial, onSubmit }) {
   const [editInput, setEditInput] = useState(initial);
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      onSubmit(id, editInput); // ✅ 이 댓글만 수정 완료
+    }
+  };
+
   return (
     <div style={{ marginTop: "8px" }}>
       <input
         value={editInput}
+        onKeyDown={handleKeyDown} 
         onChange={(e) => setEditInput(e.target.value)}
         style={{
           padding: "6px",
@@ -273,13 +286,17 @@ function CommentEditor({ id, initial, onSubmit }) {
       <button
         onClick={() => onSubmit(id, editInput)}
         style={{
-          padding: "6px 12px",
-          backgroundColor: "#2b2d42",
-          color: "white",
-          border: "none",
-          borderRadius: "3px",
-          cursor: "pointer",
-        }}
+            padding: '10px 20px',
+            fontSize: '14px',
+            backgroundColor: '#afefff',
+            color: 'black',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            boxShadow: "0 0 6px #00e5ff", 
+            marginLeft:"20px",
+            fontWeight: "bold",
+          }}
       >
         수정 완료
       </button>

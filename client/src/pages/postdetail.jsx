@@ -233,14 +233,16 @@ console.log("📦 post.id:", post?.id);
             <button
               onClick={() => navigate("/community")}
               style={{
-                padding: "10px 16px",
-                backgroundColor: "#3a3f58",
-                color: "#fff",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
+            padding: '10px 20px',
+            fontSize: '16px',
+            backgroundColor: '#afefff',
+            color: 'black',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: "bold",
+          }}
+        >
               목록으로 돌아가기
             </button>
           </div>
