@@ -243,9 +243,13 @@ function MyPage() {
   };
 
   if (!userInfo.baekjoonName) {
-    return <div style={{ padding: "40px" }}>로딩 중...</div>;
-  }
-
+  return (
+    <div className="loading-screen">
+      <span className="loader" />
+      &nbsp;로딩 중...
+    </div>
+  );
+}
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
       {/* 고정 헤더 */}
@@ -295,6 +299,7 @@ function MyPage() {
         boxSizing: 'border-box'
       }}>
         <h1 style={{ marginBottom: '30px', textAlign: 'center', color: '#afefff' }}>⚙️ 내 프로필</h1>
+        
         <button
           onClick={() => fetchUserInfo()}
           disabled={refreshing}
