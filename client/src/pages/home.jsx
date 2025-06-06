@@ -9,11 +9,29 @@ import axios from "axios";
 import AttendanceAndCardAlbum from "../components/Attendanceandcardalbum";
 import LoginWindow from '../components/LoginWindow';
 
+const CACHE_KEY = "home:todayProblem";
+// 서버에서 매일 문제 바꾸는 시간에 맞추기 위해 utc 시간 계산
+const todayUTC = () => new Date().toISOString().split("T")[0];  // "2025-06-06"
+
+const loadCachedProblem = () => {
+  const raw = localStorage.getItem(CACHE_KEY);
+  if (!raw) return null;
+  const { date, data } = JSON.parse(raw);
+  return date === todayUTC() ? data : null;   // 날짜 다르면 MISS
+};
+
+const saveCachedProblem = (data) =>
+  localStorage.setItem(
+    CACHE_KEY,
+    JSON.stringify({ date: todayUTC(), data })
+  );
+
+
 export default function Home() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [todayProblem, setTodayProblem] = useState(null);
+  const [todayProblem, setTodayProblem] = useState(() => loadCachedProblem()); // 캐시 불러와서 초기화
   const [posts, setPosts] = useState([]);
   const [footprints, setFootprints] = useState(() => {
     const saved = localStorage.getItem("footprints");
@@ -72,14 +90,19 @@ export default function Home() {
   }, [isLoggedIn]);
 
   useEffect(() => {
-    axios.get('http://localhost:4000/dayquest/problem', { withCredentials: true })
+    if (todayProblem) return; // 캐시에 문제 정보 있으면 API 호출 안함
+
+    axios.get("http://localhost:4000/dayquest/problem", { withCredentials: true })
       .then(res => {
-        const { todayProblemId, todayProblemTitle } = res.data;
-        setTodayProblem({ problemId: todayProblemId, title: todayProblemTitle });
+        const data = {
+          problemId: res.data.todayProblemId,
+          title: res.data.todayProblemTitle,
+        };
+        setTodayProblem(data);
+        saveCachedProblem(data);        // 캐시에 오늘 버전으로 저장
       })
-      .catch(err => {
-        console.error('오늘의 문제 불러오기 실패:', err);
-      });
+      .catch(err => console.error("오늘의 문제 불러오기 실패:", err));
+
   }, []);
 
   useEffect(() => {
