@@ -1,0 +1,11 @@
+/* 아주 단순한 CSS 스피너 */
+.loader{
+  width:12px;height:12px;
+  border:2px solid #0d1117;
+  border-top-color:#00e5ff;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:6px;
+  animation:spin 0.7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}

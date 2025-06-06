@@ -130,7 +130,7 @@ export default function Home() {
             <button onClick={async () => {
               try {
                 await axios.get("http://localhost:4000/user/logout", { withCredentials: true });
-                localStorage.removeItem("myPage:userInfo");
+                localStorage.removeItem("myPage:userInfo"); // 로그아웃 하면 userInfo 캐시 지우기
                 setIsLoggedIn(false);
                 setBasicInfo(null);
                 window.location.href = "/";

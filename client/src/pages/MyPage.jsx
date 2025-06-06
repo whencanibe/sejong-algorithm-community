@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import './MyPage.css';
 
 const CACHE_KEY = "myPage:userInfo";
 const CACHE_TTL = 1000 * 60 * 30;          // 30 분
@@ -61,7 +62,11 @@ function MyPage() {
   const [nicknameError, setNicknameError] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
+  const [refreshing, setRefreshing] = useState(false); // 프로필 새로고침 버튼 관련
+
   const fetchUserInfo = async () => {
+    if (refreshing) return;          // 중복 클릭 방지
+    setRefreshing(true);             // 새로고침 시작
     try {
       // await axios.get("http://localhost:4000/info/api/basicprofile", {
       //   withCredentials: true,
@@ -91,6 +96,8 @@ function MyPage() {
       setIsLoggedIn(false);
       clearCachedUserInfo(); // 캐시 삭제
       navigate("/login");
+    } finally {
+      setRefreshing(false); // 새로고침 종료
     }
   };
 
@@ -126,7 +133,7 @@ function MyPage() {
 
   useEffect(() => {
     if (!loadCachedUserInfo()) fetchUserInfo(); // 캐시 없을때만 호출
-  }, [navigate]);   
+  }, [navigate]);
 
   /* ---------- userInfo => 파생값 동기화 ---------- */
   useEffect(() => {
@@ -260,6 +267,7 @@ function MyPage() {
         <h1 style={{ marginBottom: '30px', textAlign: 'center', color: '#afefff' }}>⚙️ 내 프로필</h1>
         <button
           onClick={() => fetchUserInfo()}
+          disabled={refreshing}
           style={{
             padding: '8px 16px',
             fontSize: '14px',
@@ -270,10 +278,17 @@ function MyPage() {
             cursor: 'pointer',
             fontWeight: 'bold',
             boxShadow: '0 0 10px #00e5ff',
-            marginBottom: '7px'
+            marginBottom: '7px',
+            opacity: refreshing ? 0.6 : 1
           }}
         >
-          백준 정보 새로고침
+          {refreshing ? (
+            <>
+              <span className="loader" /> 새로고침 중...
+            </>
+          ) : (
+            "프로필 정보 새로고침"
+          )}
         </button>
         <div
           style={{
