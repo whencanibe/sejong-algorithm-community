@@ -60,7 +60,7 @@ export async function getProblemDetail(problemId) {
     const url = 'https://solved.ac/api/v3/problem/show'; // ex ) ?problemId=2759
     try {
         const response = await axios.get(url, {
-            params: { problemId }, timeout: 7000
+            params: { problemId }, timeout: 20000
         })
 
         let title = response.data.titleKo;
