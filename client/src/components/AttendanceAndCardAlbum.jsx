@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CardAlbum from "./CardAlbum"; // 카드 보관함 컴포넌트
 
-export default function AttendanceAndCardAlbum() {
+export default function AttendanceAndCardAlbum( isLoggedIn ) {
   //  상태 정의
   const [footprints, setFootprints] = useState([]); // 출석 발자국 상태
   const [cards, setCards] = useState([]);           // 소유 카드 목록
@@ -16,6 +16,10 @@ export default function AttendanceAndCardAlbum() {
   const [showCardModal, setShowCardModal] = useState(false); // 카드 모달 표시 여부
 
   const [consecutiveDays, setConsecutiveDays] = useState(0);
+
+  
+
+
 
 useEffect(() => {
   axios.get("http://localhost:4000/info/api/mypage", { withCredentials: true })
@@ -60,7 +64,7 @@ useEffect(() => {
 
   //  도장 7개 찍었을 때 카드 보상 자동 지급
   useEffect(() => {
-    const stampCount = 7; // 테스트용: 도장 7개 있다고 가정
+    const stampCount = 6; // 테스트용: 도장 7개 있다고 가정
 
     // 실사용 시엔 이걸 사용해야 함
     // const stampCount = footprints.filter(f => f).length;

@@ -16,7 +16,7 @@ export default function MyProfile({ nickname, department, imgUrl }) {
         border: "2px solid #00e5ff",          
         padding: "24px",                     
         borderRadius: "14px",                 
-        width: "350px",                       
+        width: "250px",                       
         backgroundColor: "#1a1e2a",           
         color: "#e0f7fa",                     
         display: "flex",                      

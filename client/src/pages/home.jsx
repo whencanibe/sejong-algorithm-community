@@ -12,12 +12,13 @@ import LoginWindow from '../components/LoginWindow'; // 로그인 창 컴포넌�
 export default function Home() {
   // `useNavigate` 훅을 사용하여 페이지 이동 기능을 활성화
   const navigate = useNavigate();
-
+  
   // 상태(State) 변수 정의
   const [userInfo, setUserInfo] = useState(null); // 사용자 정보
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 (true: 로그인, false: 로그아웃)
   const [todayProblem, setTodayProblem] = useState(null); // 오늘의 문제 정보
   const [posts, setPosts] = useState([]); // 자유 게시판 게시글 목록 (미리보기에 사용)
+
 
   // `footprints` 상태: 7일간의 출석 여부를 저장하며, 로컬 스토리지에서 불러오거나 초기화
   const [footprints, setFootprints] = useState(() => {
@@ -39,17 +40,34 @@ export default function Home() {
   const [showCardModal, setShowCardModal] = useState(false); // 새 카드 획득 모달 표시 여부
   const [newCard, setNewCard] = useState(null); // 새로 획득한 카드 정보
   const [basicInfo, setBasicInfo] = useState(null); // 사용자의 기본 프로필 정보 (닉네임, 학과, 프로필 이미지 등)
+const [globalRanking, setGlobalRanking] = useState([]);
 
   // `baekjoonProfile` 상태: 백준 프로필 정보 (아이디, 티어, 랭킹, 상위 백분율)
   const [baekjoonProfile, setBaekjoonProfile] = useState({
     handle: '',
     tier: null,
     ratingRank: null,
-    rankpercentile: null,
+    nickname: name,
+    rankingData: globalRanking
   });
 
   // ---
 
+
+  const [deptRanking, setDeptRanking] = useState([]);
+  useEffect(() => {
+  if (!isLoggedIn) return;
+
+  axios.get("http://localhost:4000/info/api/globalranking", {
+    withCredentials: true
+  })
+  .then((res) => {
+    setDeptRanking(res.data);
+  })
+  .catch((err) => {
+    console.error("글로벌 랭킹 불러오기 실패:", err);
+  });
+}, [isLoggedIn]);
 
   // `isLoggedIn` 상태 변경 시 사용자의 카드 목록을 불러옴
   useEffect(() => {
@@ -73,21 +91,39 @@ export default function Home() {
       });
   }, []); // 컴포넌트가 처음 마운트될 때 한 번만 실행
 
-   // `isLoggedIn` 상태 변경 시 백준 프로필 정보를 불러옴
   useEffect(() => {
-    if (!isLoggedIn) return; // 로그인 상태가 아니면 실행하지 않음
-    const fetchBaekjoonProfile = async () => {
-      try {
-        const res = await axios.get('http://localhost:4000/info/api/mypage', { withCredentials: true }); // 백준 프로필 정보 요청
-        const { baekjoonName, tier, rankpercentile, rank } = res.data;
-        // 백준 프로필 정보 상태 업데이트
-        setBaekjoonProfile({ handle: baekjoonName, tier, ratingRank: rank, rankpercentile });
-      } catch (err) {
-        console.error('백준 정보 불러오기 실패:', err); // 실패 시 에러 콘솔 출력
-      }
-    };
-    fetchBaekjoonProfile(); // 백준 프로필 정보 불러오는 함수 호출
-  }, [isLoggedIn]); // `isLoggedIn`이 변경될 때마다 실행
+  if (!isLoggedIn) return;
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.get('http://localhost:4000/info/api/mypage', {
+        withCredentials: true,
+      });
+
+      const { baekjoonName, tier, rank, name } = res.data; // ✅ name 추가
+
+      const rankRes = await axios.get('http://localhost:4000/info/api/globalranking', {
+        withCredentials: true,
+      });
+
+      const globalRanking = rankRes.data;
+
+      setBaekjoonProfile({
+        handle: baekjoonName,
+        tier,
+        ratingRank: rank,
+        nickname: name,              // ✅ nickname에 name 할당
+        rankingData: globalRanking
+      });
+
+    } catch (err) {
+      console.error('백준 정보 불러오기 실패:', err);
+    }
+  };
+
+  fetchData();
+}, [isLoggedIn]);
+
 
   // 컴포넌트 마운트 시 오늘의 문제 정보를 불러옴
   useEffect(() => {
@@ -110,7 +146,6 @@ export default function Home() {
       .catch(err => console.error("게시글 불러오기 실패:", err)); // 실패 시 에러 콘솔 출력
   }, [isLoggedIn]); // `isLoggedIn`이 변경될 때마다 실행
 
-  // ---
 
   // 네비게이션 버튼 스타일 정의
   const navBtnStyle = {
@@ -227,7 +262,7 @@ export default function Home() {
             style={{
             position: "absolute",
             top: "100px",
-            right: "500px",
+            right: "450px",
             width: "140px",
             animation: "float-spin2 6s ease-in-out infinite",
             zIndex: 0,
@@ -252,12 +287,22 @@ export default function Home() {
   
       </div>
 
+     
+
       {/* 프로필 및 주요 정보 섹션 */}
       <div style={{ padding: "40px", marginTop: "30px" }}>
         <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "40px" }}>
           {/* 백준 프로필 컴포넌트 (클릭 시 랭킹 페이지로 이동) */}
           <div onClick={() => navigate("/ranking")} style={{ cursor: "pointer" }}>
-            <BaekjoonProfile {...baekjoonProfile} />
+             <BaekjoonProfile
+  handle={baekjoonProfile.handle}
+  tier={baekjoonProfile.tier}
+  ratingRank={baekjoonProfile.ratingRank}
+  nickname={baekjoonProfile.nickname} 
+  rankingData={deptRanking} 
+/>
+
+
           </div>
            {/* 내 프로필 또는 로그인 창 컴포넌트 (로그인 상태에 따라 다르게 표시) */}
           {basicInfo ? (

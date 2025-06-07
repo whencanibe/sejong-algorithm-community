@@ -7,7 +7,7 @@ export default function FreeBoardPreview({ posts, isLoggedIn }) {
   return (
     <div
       style={{
-        width: "330px",
+        width: "360px",
         height: "250px",
         border: "2px solid #00e5ff", 
         borderRadius: "16px", 
