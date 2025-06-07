@@ -11,28 +11,13 @@ function Ranking() {
 
   // 로그인 확인
   useEffect(() => {
-      (async () => {
-        try {
-          // 서버가 세션 보고 200 또는 401을 돌려주는 엔드포인트
-          await axios.get("http://localhost:4000/user/me", {
-            withCredentials: true,
-            validateStatus: s => s < 500            // 4xx도 catch 안 나게
-          }).then(res => {
-            if (res.status === 200) {
-              setIsLoggedIn(true);                  // 로그인 인정
-            } else {
-              throw new Error("unauthorized");
-            }
-          });
-        } catch {
-          // 세션 만료 → 캐시 파기 → 로그인 페이지로
-          clearCachedUserInfo();
-          alert("로그인이 필요합니다.");
-          navigate("/login", { replace: true });
-        }
-      })();
-    }, [navigate]);
-
+    axios.get("http://localhost:4000/info/api/basicprofile", { withCredentials: true })
+      .then(() => setIsLoggedIn(true))
+      .catch(() => {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+      });
+  }, []);
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#0d1117', color: '#e0f7fa' }}>
       {/* 고정 헤더 */}
