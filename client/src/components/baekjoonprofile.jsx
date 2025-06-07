@@ -33,7 +33,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
   return (
     <div
       style={{
-        width: "850px",
+        width: "750px",
         height: "300px",
         display: "flex",
         gap: "24px",
@@ -42,7 +42,9 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
         borderRadius: "12px",
         border: "2px solid #00e5ff",
         boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
-        color: "#e0f7fa"
+        color: "#e0f7fa",
+        zIndex: 10,
+        position: 'relative' ,
       }}
     >
       {/* 왼쪽: 티어 이미지 */}
@@ -94,7 +96,19 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
             boxShadow: "0 2px 6px rgba(63, 63, 255, 0.05)",
           }}
         >
-         그래프 영역
+         {handle && tier && ratingRank ? (
+    "그래프 영역"
+  ) : (
+    <img
+      src="/웰컴.png"
+      alt="Welcome"
+      style={{
+        maxWidth: "60%",
+       maxWidth: "60%",
+        objectFit: "contain",
+      }}
+    />
+  )}
         </div>
       </div>
     </div>

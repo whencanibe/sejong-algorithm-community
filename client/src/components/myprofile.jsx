@@ -16,7 +16,7 @@ export default function MyProfile({ nickname, department, imgUrl }) {
         border: "2px solid #00e5ff",          
         padding: "24px",                     
         borderRadius: "14px",                 
-        width: "400px",                       
+        width: "350px",                       
         backgroundColor: "#1a1e2a",           
         color: "#e0f7fa",                     
         display: "flex",                      
@@ -25,6 +25,7 @@ export default function MyProfile({ nickname, department, imgUrl }) {
         justifyContent: "center",
         textAlign: "center",
         boxShadow: "0 0 18px rgba(0, 229, 255, 0.3)",  
+        
       }}
     >
       {/* 프로필 이미지 */}
@@ -32,17 +33,18 @@ export default function MyProfile({ nickname, department, imgUrl }) {
         src={profileImg}                         
         alt="내 프로필 이미지"
         style={{
-          width: "150px",                  
-          height: "150px",
+          width: "170px",                  
+          height: "170px",
           borderRadius: "50%",             
           marginBottom: "16px",             
           backgroundColor: "#1a1e2a", 
-          border: '1px solid #ccc',        
+          border: '1px solid #ccc',  
+          objectFit: 'cover'      
         }}
       />
 
       {/* 닉네임 표시 */}
-      <h3 style={{ fontSize: "20px", color: "#afefff", marginBottom: "8px" }}>
+      <h3 style={{ fontSize: "20px", color: "#afefff", marginBottom: "5px" }}>
         닉네임: {nickname}
       </h3>
 
