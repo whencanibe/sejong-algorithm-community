@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell } from "recharts";
 import "../App.css"; // 공통 CSS
-
+import StarField from "../components/StarField";
 const COLORS = ["#00C49F", "#FF8042"]; // 차트 색상
 
 function Dayquest({ userId, problemId }) {
@@ -85,30 +85,7 @@ function Dayquest({ userId, problemId }) {
   return (
     <div>
       {/* 랜덤 배치된 배경 별 이미지들 */}
-
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "843px", left: "427px", width: "25px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "843px", left: "427px", width: "25px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "782px", left: "309px", width: "26px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "955px", left: "1575px", width: "25px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "585px", left: "1419px", width: "28px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "145px", left: "355px", width: "34px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "508px", left: "1062px", width: "37px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "457px", left: "880px", width: "21px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "266px", left: "1372px", width: "20px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "362px", left: "640px", width: "20px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "1000px", left: "388px", width: "27px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "764px", left: "1475px", width: "36px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "205px", left: "1449px", width: "27px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "29px", left: "1362px", width: "24px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "781px", left: "1177px", width: "26px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "800px", left: "115px", width: "21px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "701px", left: "291px", width: "39px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "403px", left: "1039px", width: "20px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "336px", left: "1260px", width: "37px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "181px", left: "273px", width: "25px", zIndex: 0 }} alt="star" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "500px", left: "243px", width: "39px", zIndex: 0 }} alt="star" />
-
-
+      <StarField />
       <div>
         {/* 상단 고정 헤더 영역 */}
         <header style={{
@@ -218,7 +195,9 @@ function Dayquest({ userId, problemId }) {
           {/*  도장 + 차트 박스 그룹 */}
           <div style={{
             display: "flex", justifyContent: "center", flexWrap: "wrap",
-            marginTop: "40px", gap: "40px"
+            marginTop: "40px", gap: "40px",
+            zIndex: 10,
+        position: 'relative',
           }}>
 
             {/*  도장 박스 */}

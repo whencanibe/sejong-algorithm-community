@@ -7,7 +7,7 @@ export default function CardAlbum({ cards }) {
   return (
     <div
       style={{
-        width: "320px",
+        width: "290px",
         height: "250px",
         border: "2px solid #00e5ff",
         borderRadius: "16px",

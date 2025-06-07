@@ -30,8 +30,8 @@ if (isLoggedIn === null) return <div>로딩 중...</div>;
           top: 0,
           left: 0,
           width: '100%',
-          backgroundColor: '#121826',
-          color: '#b3e5fc',
+          backgroundColor: "#0d1117", 
+          color: "#afefff", 
           padding: '18px 40px',
           fontSize: '18px',
           fontWeight: 'bold',
@@ -40,7 +40,9 @@ if (isLoggedIn === null) return <div>로딩 중...</div>;
           alignItems: 'center',
           boxSizing: 'border-box',
           zIndex: 1000,
-          boxShadow: '0 2px 10px #00e5ff55',
+          borderBottom: "1px solid #00e5ff", 
+          boxShadow: "0 2px 8px rgba(0, 229, 255, 0.15)",
+          animation: "neonFlicker 1.5s infinite alternate", 
         }}
       >
         랭킹 페이지

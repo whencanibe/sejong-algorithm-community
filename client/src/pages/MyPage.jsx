@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-
+import StarField from "../components/StarField";
 function MyPage() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(null);
@@ -161,7 +161,8 @@ function MyPage() {
   }
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: 'Arial, sans-serif', maxHeight: '100%', overflowX: 'hidden' }}>
+      <StarField />
       {/* 고정 헤더 */}
       <header
         style={{
@@ -169,8 +170,8 @@ function MyPage() {
           top: 0,
           left: 0,
           width: '100%',
-          backgroundColor: '#121826', 
-          color: '#b3e5fc', 
+          backgroundColor: "#0d1117", 
+          color: "#afefff", 
           padding: '18px 40px',
           fontSize: '18px',
           fontWeight: 'bold',
@@ -179,7 +180,9 @@ function MyPage() {
           alignItems: 'center',
           boxSizing: 'border-box',
           zIndex: 1000, 
-          boxShadow: '0 2px 10px #00e5ff55', 
+          borderBottom: "1px solid #00e5ff", 
+          boxShadow: "0 2px 8px rgba(0, 229, 255, 0.15)",
+          animation: "neonFlicker 1.5s infinite alternate", 
         }}
       >
         마이페이지
