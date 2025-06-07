@@ -1,5 +1,6 @@
 import React from "react";
 
+
 // MyProfile 컴포넌트 - 프로필 카드
 export default function MyProfile({ nickname, department, imgUrl }) {
 
@@ -11,12 +12,13 @@ export default function MyProfile({ nickname, department, imgUrl }) {
 
   return (
     <div
+
       style={{
         height: "300px",                     
         border: "2px solid #00e5ff",          
         padding: "24px",                     
         borderRadius: "14px",                 
-        width: "350px",                       
+        width: "250px",                       
         backgroundColor: "#1a1e2a",           
         color: "#e0f7fa",                     
         display: "flex",                      
@@ -25,9 +27,12 @@ export default function MyProfile({ nickname, department, imgUrl }) {
         justifyContent: "center",
         textAlign: "center",
         boxShadow: "0 0 18px rgba(0, 229, 255, 0.3)",  
+         zIndex: 10,
+        position: 'relative',
         
       }}
     >
+      
       {/* 프로필 이미지 */}
       <img
         src={profileImg}                         
