@@ -6,25 +6,6 @@ import * as service from '../services/userInfoService.js';
 import { updateNickname } from '../services/userInfoService.js'; // ✅ 꼭 필요
 import { syncSingleUser } from "../jobs/syncSolvedListJob.js";
 
-export async function getUserInfoCtrl(req, res, next) {
-  try {
-    const userId = Number(req.params.id);
-    const userInfo = await getUserInfo(userId);
-    res.status(200).json(userInfo);
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function getPercentilesForUserCtrl(req, res, next) {
-  try {
-    const userId = Number(req.params.id);
-    const percentiles = await getPercentilesForUser(userId);
-    res.status(200).json(percentiles);
-  } catch (error) {
-    next(error);
-  }
-}
 
 export async function getUserInfoSessionCtrl(req, res, next) {
   try {
@@ -143,16 +124,6 @@ export async function changeNickname(req, res, next) {
   } catch (err) {
     next(err);
   }
-}
-
-export async function refreshSolvedInfoCtrl(req, res, next) {
-    try {
-        const userId = Number(req.params.id);
-        await syncSingleUser(userId);             // Solved.ac <-> DB 
-        res.status(200).json({ ok: true });
-    } catch (error) {
-        next(error);
-    }
 }
 
 export async function refreshSolvedInfoSessionCtrl(req, res, next) {

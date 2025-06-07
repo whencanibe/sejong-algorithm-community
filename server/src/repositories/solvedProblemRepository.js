@@ -1,5 +1,14 @@
 import prisma from "../models/prisma.js";
 
+/**
+ * 사용자가 푼 문제를 데이터베이스에 저장합니다.
+ * 이미 푼 기록이 있는지는 이 함수 외부에서 별도로 체크해야 합니다.
+ *
+ * @param {Object} params - 파라미터 객체
+ * @param {number} params.userId - 사용자 ID
+ * @param {number} params.problemId - 문제 ID
+ * @returns {Promise<{userId: number, problemId: number}>} - 저장된 정보
+ */
 export async function saveSolvedProblem({userId, problemId}) {
     return await prisma.solvedproblem.create({
         data: {userId, problemId},
@@ -24,6 +33,13 @@ export async function saveSolvedProblemsBulk(userId, solvedList) {
   });
 }
 
+/**
+ * 주어진 problemId에 해당하는 푼 문제(solvedproblem) 레코드를 조회합니다.
+ * 유저 - 문제 중복 없이 저장하는 구조
+ *
+ * @param {number} problemId - 문제 ID
+ * @returns {Promise<Object|null>} - 해당 문제 풀이 정보 또는 없을 경우 null
+ */
 export async function findSolvedProblemByProblemId(problemId) {
     return await prisma.solvedproblem.findUnique({
         where: { problemId }
@@ -59,6 +75,13 @@ export async function hasUserSolvedProblem(userId, problemId) {
   return !!record;
 }
 
+/**
+ * 주어진 사용자 ID에 대해 특정 날짜 이후로 푼 문제들의 날짜 목록을 조회합니다.
+ *
+ * @param {number} userId - 사용자 고유 ID
+ * @param {Date} fromDate - 기준 날짜 (이 날짜 이후부터 조회됨, 포함)
+ * @returns {Promise<{ solvedAt: Date }[]>} - 푼 날짜들이 담긴 객체 배열
+ */
 export async function getSolvedDatesSince(userId, fromDate) {
   return await prisma.solvedProblem.findMany({
     where: {

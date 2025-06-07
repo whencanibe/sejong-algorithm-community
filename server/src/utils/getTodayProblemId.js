@@ -14,6 +14,7 @@ const DAILY_PROBLEM_IDS = [
   11025, 11024, 11023, 11022, 11021, 11020, 11019, 11018, 11017, 11016
 ]; //원하는 문제 추가 가능
 
+// 문제 ID에 대응하는 제목 매핑 객체
 export const PROBLEM_TITLE_MAP = {
   1005: "ACM Craft",
   1021: "회전하는 큐",
@@ -126,6 +127,15 @@ export const PROBLEM_TITLE_MAP = {
   15686: "치킨 배달",
 };
 
+/**
+ * 오늘 날짜를 기준으로 해시를 계산해, DAILY_PROBLEM_IDS 중 하나를 선택합니다.
+ * 이로써 매일 하나의 고정된 문제를 동일하게 추천할 수 있습니다.
+ *
+ * @returns {{
+ *   todayProblemId: number,
+ *   todayProblemTitle: string
+ * }} 오늘의 문제 ID와 제목
+ */
 export function getTodayProblemDetail() {
   const today = new Date().toISOString().split('T')[0];
   const hash = [...today].reduce((acc, c) => acc + c.charCodeAt(0), 0);

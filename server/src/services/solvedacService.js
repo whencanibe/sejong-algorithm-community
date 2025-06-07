@@ -1,11 +1,13 @@
 import axios from 'axios'
 
+//사용자가 푼 문제리스트 외부 API인 solved ac api 사용하여 가져오는 함수
 export async function getSolvedProblemIds(baekjoonName) {
     let pageNum = 1;
     const url = `https://solved.ac/api/v3/search/problem`;
     const solvedProblemIds = [];
 
     try {
+        // 한 페이지당 50개의 문제가 있으므로 끝 페이지까지 가면서 문제 번호들 불러와서 저장하기
         while (true) {
             const response = await axios.get(url, {
                 params: { query: `solved_by:${baekjoonName}`, page: pageNum },
@@ -22,9 +24,9 @@ export async function getSolvedProblemIds(baekjoonName) {
         }
 
         return {
-            user: baekjoonName,
-            count: solvedProblemIds.length,
-            problemIds: solvedProblemIds,
+            user: baekjoonName, // 백준 이름
+            count: solvedProblemIds.length, // 총 푼 문제수
+            problemIds: solvedProblemIds, // 푼 문제 리스트
 
         };
     } catch (err) {//axios 에러 발생 시 실행될 catch
@@ -33,17 +35,13 @@ export async function getSolvedProblemIds(baekjoonName) {
     }
 }
 
+//사용자의 백준 랭킹과 티어를 외부 API인 solved ac api 사용하여 가져오는 함수
 export async function getRankandTier(baekjoonName) {
     const url = 'https://solved.ac/api/v3/user/show' //?handle=백준이름
 
     try {
         const response = await axios.get(url, {
             params: { handle: baekjoonName },
-            // headers: {
-            //     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
-            //     'Cookie': 'cf_clearance=0OU0bubRYSExbw7TkokLQ0JfRaeuecr19qHA34JBaP0-1749233246-1.2.1.1-G9RXDQt.0SWVYGiSFCEAgi3n1a2x7DCAq6rE2UyiJkPKkfXIWD3h7yzdJbPjqHlH0iiuT9i4Z.4wEz7vJQQgWO2hwerK4fOIfDOZh6qscfO4yCOrTY63t.LYjWxb5L4IPPW20lcSfPKZ206bbXGG6gWlBz9H1fEfsdm38SsdNtgs4J68ADugI_z3tbqUSK9PSz9Azp1fDaDjpMu7Uwb8pHms.ErWJLTz.4xEYBOxtnh_M_7bnWU8bCcZ_aBRxEI4rWtPBfAnB1KIfYHjCwZTZ18jRL1OUppRxYZx5pAcWlov7vgSB4w5NE4vj14ibIXvZtN65yOX.jRvNXAlmKd8XMNQkdOihEW875_fAqOzItb6qZEgFySVqO3tTr6zoIxW',
-            //     'Accept': 'application/json'
-            // }
         })
         let rank = response.data.rank;
         let tier = response.data.tier;
@@ -61,6 +59,7 @@ export async function getRankandTier(baekjoonName) {
 
 }
 
+// 문제 번호를 이용하여 그 문제에 대한 세부 정보를 가져오는 함수. 외부 API인 solved ac api 호출.
 export async function getProblemDetail(problemId) {
     const url = 'https://solved.ac/api/v3/problem/show'; // ex ) ?problemId=2759
     try {

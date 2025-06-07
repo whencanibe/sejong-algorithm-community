@@ -129,7 +129,7 @@ export async function getPercentile(userId) {
   return Math.round((rank / total) * 100);
 }
 
-export async function getPercentileInDepartement(userId) {
+export async function getPercentileInDepartment(userId) {
   // 사용자 전공 알아오기
   const user = await prisma.user.findUnique({
     where: { id: userId },

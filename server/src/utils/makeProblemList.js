@@ -18,6 +18,7 @@ const DAILY_PROBLEM_IDS = [
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
+// 문제 이름들 가져와서 콘솔에 출력하는 함수 - 따로 사용하려고
 async function fetchTitles() {
   const result = {};
   for (let i = 0; i < DAILY_PROBLEM_IDS.length; i++) {
