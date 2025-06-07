@@ -96,6 +96,19 @@ html, body {
   }
 }
 
+@keyframes float-spin2 {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(+20px) rotate(10deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+
 
 
 
@@ -128,4 +141,49 @@ html, body {
 /* global.css 또는 App.css 등 공통 CSS에 추가 */
 .custom-codemirror .cm-editor {
   text-align: left !important;
+}
+
+@keyframes flyInFromRight {
+  0% {
+    left: 100%;
+    top: 40%;
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    left: -50%; /* 어디까지 날아올지 조정 가능 */
+    top: 30%;
+    opacity: 1;
+  }
+}
+
+@keyframes floatY {
+  0% { transform: translateY(5px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(10px); }
+}
+
+
+@keyframes buttonFlyIn {
+  0% {
+    left: 80%;
+    top: 45%;
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    left: 30%;
+    top: 45%;
+    opacity: 1;
+  }
+}
+
+@keyframes buttonFloat {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }  /* 덜 흔들리게 */
+  100% { transform: translateY(0px); }
 }

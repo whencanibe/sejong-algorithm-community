@@ -138,7 +138,9 @@ sorted.forEach((u, i) => {
           justifyContent: 'center',
           boxShadow: '0 0 6px rgba(0,0,0,0.1)',
           marginTop: '10px',
-          marginLeft: '30px'
+          marginLeft: '30px',
+          zIndex: 10,
+          position: 'relative' ,
         }}>
           <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#1e293b' }}>
             <span style={{ color: '#3b82f6' }}>{userInfo?.name}</span>님의 백준 티어: {userInfo?.department} 학생 중 {rankInfo.rank}등
@@ -315,6 +317,8 @@ sorted.forEach((u, i) => {
           boxSizing: 'border-box',
           alignSelf: 'flex-start',
           marginTop: '50px',
+          position: 'relative' ,
+          zIndex: 10,
         }}
       >
         <h3 style={{

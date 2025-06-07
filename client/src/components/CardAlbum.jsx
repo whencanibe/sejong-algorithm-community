@@ -21,6 +21,8 @@ export default function CardAlbum({ cards }) {
         marginTop: "50px",
         marginLeft:"20px",
         boxShadow: "0 0 18px rgba(0, 229, 255, 0.3)",
+         zIndex: 10,
+        position: 'relative' ,
       }}
     >
       {/* 카드첩 제목 */}

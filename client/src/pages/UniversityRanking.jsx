@@ -123,7 +123,10 @@ function UniversityRanking() {
           justifyContent: 'center',
           boxShadow: '0 0 6px rgba(0,0,0,0.1)',
           marginTop: '10px',
-          marginLeft: '30px'
+          marginLeft: '30px',
+          position: 'relative',
+          zIndex: 10, 
+
         }}>
           <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#1e293b' }}>
              <span style={{ color: '#00e5ff' }}>{userInfo?.name}</span>님의 백준 티어: 세종대 학생 {rankInfo.total}명 중 {rankInfo.rank}등
@@ -300,6 +303,8 @@ function UniversityRanking() {
           boxSizing: 'border-box',
           alignSelf: 'flex-start',
           marginTop: '50px',
+          zIndex: 10,
+          position: 'relative' 
         }}
       >
         <h3 style={{
