@@ -6,7 +6,6 @@ import * as solvedProblemRepo from '../repositories/solvedProblemRepository.js';
 import { stringifyTier } from '../utils/stringifyTier.js';
 import { AppError } from '../errors/AppError.js';
 import { ExternalError } from '../errors/ExternalError.js';
-import { ensureSnapshotForUser } from '../services/snapshotService.js';
 
 export function startSyncSolvedList() {
     cron.schedule('0 15 * * *', syncAllUsers, { timezone: 'UTC' }); // 한국 시간 0시에 user 정보 동기화
@@ -28,7 +27,6 @@ export async function syncAllUsers() {
             const solvedList = await solvedacService.getSolvedProblemIds(user.baekjoonName);
             await solvedProblemRepo.saveSolvedProblemsBulk(user.id, solvedList.problemIds);
 
-            await ensureSnapshotForUser(updatedUser);
         } catch (error) {
             if (error.isAxiosError) {
                 // axios 에러면 응답코드 체크
@@ -58,7 +56,6 @@ export async function syncSingleUser(userId) {
         const solvedList = await solvedacService.getSolvedProblemIds(user.baekjoonName);
         await solvedProblemRepo.saveSolvedProblemsBulk(user.id, solvedList.problemIds);
 
-        await ensureSnapshotForUser(updatedUser);  //이번주 기준 푼 문제 계산 위해 현재 문제 개수 db에 저장
     } catch (error) {
         if (error.isAxiosError) {
             // axios 에러면 응답코드 체크

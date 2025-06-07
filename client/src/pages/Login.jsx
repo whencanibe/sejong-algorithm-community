@@ -19,6 +19,8 @@ export default function Login() {
         credentials: 'include',
       });
 
+      localStorage.removeItem("myPage:userInfo"); // 다른 계정으로 로그인 하는 상황을 위해 기존 캐시 삭제
+      
       const data = await res.json();
       console.log("서버 응답:", data);
 

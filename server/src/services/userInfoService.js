@@ -1,6 +1,5 @@
 import prisma from '../models/prisma.js';
 import * as userRepo from "../repositories/userRepository.js";
-import * as weeklyRankRepo from "../repositories/weeklyRankRepository.js";
 import * as solvedProblemRepo from "../repositories/solvedProblemRepository.js";
 import { getRankandTier } from "./solvedacService.js";
 import { startOfWeek, differenceInCalendarDays } from 'date-fns';

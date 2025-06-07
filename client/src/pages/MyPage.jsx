@@ -100,6 +100,7 @@ function MyPage() {
       } else { // 외부 API 호출 중 문제가 생겼다면
         console.error("프로필 로드 실패:", error);
         alert("외부 네트워크 오류입니다. 잠시 후에 다시 시도하세요.");
+        navigate("/", { replace: true });
       }
 
     } finally {
@@ -137,6 +138,7 @@ function MyPage() {
     margin: '8px auto',
   };
 
+  // 로그인 여부 먼저 확인
   useEffect(() => {
     (async () => {
       try {

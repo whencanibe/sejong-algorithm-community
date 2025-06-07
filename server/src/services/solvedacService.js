@@ -25,7 +25,7 @@ export async function getSolvedProblemIds(baekjoonName) {
             user: baekjoonName,
             count: solvedProblemIds.length,
             problemIds: solvedProblemIds,
-            
+
         };
     } catch (err) {//axios 에러 발생 시 실행될 catch
         console.error('API 요청 실패:', err.message);
@@ -38,7 +38,12 @@ export async function getRankandTier(baekjoonName) {
 
     try {
         const response = await axios.get(url, {
-            params: { handle: baekjoonName }
+            params: { handle: baekjoonName },
+            // headers: {
+            //     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+            //     'Cookie': 'cf_clearance=0OU0bubRYSExbw7TkokLQ0JfRaeuecr19qHA34JBaP0-1749233246-1.2.1.1-G9RXDQt.0SWVYGiSFCEAgi3n1a2x7DCAq6rE2UyiJkPKkfXIWD3h7yzdJbPjqHlH0iiuT9i4Z.4wEz7vJQQgWO2hwerK4fOIfDOZh6qscfO4yCOrTY63t.LYjWxb5L4IPPW20lcSfPKZ206bbXGG6gWlBz9H1fEfsdm38SsdNtgs4J68ADugI_z3tbqUSK9PSz9Azp1fDaDjpMu7Uwb8pHms.ErWJLTz.4xEYBOxtnh_M_7bnWU8bCcZ_aBRxEI4rWtPBfAnB1KIfYHjCwZTZ18jRL1OUppRxYZx5pAcWlov7vgSB4w5NE4vj14ibIXvZtN65yOX.jRvNXAlmKd8XMNQkdOihEW875_fAqOzItb6qZEgFySVqO3tTr6zoIxW',
+            //     'Accept': 'application/json'
+            // }
         })
         let rank = response.data.rank;
         let tier = response.data.tier;

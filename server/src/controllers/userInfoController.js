@@ -4,6 +4,8 @@ import { AppError } from "../errors/AppError.js";
 import { normalizeBigInt } from "../utils/nomalizeBigint.js";
 import * as service from '../services/userInfoService.js';
 import { updateNickname } from '../services/userInfoService.js'; // ✅ 꼭 필요
+import { syncSingleUser } from "../jobs/syncSolvedListJob.js";
+
 export async function getUserInfoCtrl(req, res, next) {
   try {
     const userId = Number(req.params.id);
@@ -141,4 +143,24 @@ export async function changeNickname(req, res, next) {
   } catch (err) {
     next(err);
   }
+}
+
+export async function refreshSolvedInfoCtrl(req, res, next) {
+    try {
+        const userId = Number(req.params.id);
+        await syncSingleUser(userId);             // Solved.ac <-> DB 
+        res.status(200).json({ ok: true });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function refreshSolvedInfoSessionCtrl(req, res, next) {
+    try {
+        const userId = Number(req.session?.user?.id);
+        await syncSingleUser(userId);             // Solved.ac <-> DB 
+        res.status(200).json({ ok: true });
+    } catch (error) {
+        next(error);
+    }
 }
