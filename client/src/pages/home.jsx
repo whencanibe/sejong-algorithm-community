@@ -34,7 +34,7 @@ export default function Home() {
     handle: '',
     tier: null,
     ratingRank: null,
-    rankpercentile: null,
+    percentile: null,
   });
 
   useEffect(() => {
@@ -62,8 +62,8 @@ export default function Home() {
     const fetchBaekjoonProfile = async () => {
       try {
         const res = await axios.get('http://localhost:4000/info/api/mypage', { withCredentials: true });
-        const { baekjoonName, tier, rankpercentile, rank } = res.data;
-        setBaekjoonProfile({ handle: baekjoonName, tier, ratingRank: rank, rankpercentile });
+        const { baekjoonName, tier, percentile, rank } = res.data;
+        setBaekjoonProfile({ handle: baekjoonName, tier, ratingRank: rank, percentile });
       } catch (err) {
         console.error('백준 정보 불러오기 실패:', err);
       }

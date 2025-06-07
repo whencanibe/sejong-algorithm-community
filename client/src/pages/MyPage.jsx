@@ -2,31 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import './MyPage.css';
-
-const CACHE_KEY = "myPage:userInfo";
-const CACHE_TTL = 1000 * 60 * 30;          // 30 분
-
-//브라우저 localStorage에 저장된 userInfo 불러오는 함수
-function loadCachedUserInfo() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const { ts, data } = JSON.parse(raw);
-    if (Date.now() - ts < CACHE_TTL) return data;   // 30분 안지났으면 HIT
-  } catch (_) { }
-  return null;
-}
-//브라우저 localStorage에 저장시키는 함수
-function saveCachedUserInfo(data) {
-  localStorage.setItem(
-    CACHE_KEY,
-    JSON.stringify({ ts: Date.now(), data })
-  );
-}
-//브라우저 localStorage에 저장된 값 지우는 함수
-function clearCachedUserInfo() {
-  localStorage.removeItem(CACHE_KEY);
-}
+import { loadCachedUserInfo, saveCachedUserInfo, clearCachedUserInfo } from '../utils/userInfoCache.js';
 
 const toAbsolute = (url) =>
   !url ? "/기본이미지.png"
