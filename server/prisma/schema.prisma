@@ -19,7 +19,7 @@ model User {
   tier         String?
   solvedNum    Int?
   createdAt    DateTime @default(now())
-  profileImage  String?
+  profileImage  String? @default("https://api.dicebear.com/7.x/bottts/svg?seed=default")
 
   solvedProblems SolvedProblem[]
   posts   Post[]  // 사용자가 작성한 게시글 목록
