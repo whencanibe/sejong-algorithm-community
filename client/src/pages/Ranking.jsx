@@ -6,20 +6,32 @@ import DepartmentRanking from './DepartmentRanking';
 
 function Ranking() {
   const [activeTab, setActiveTab] = useState('university');
-  const [isLoggedIn, setIsLoggedIn] = useState(null); // null = 아직 확인 안됨
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   // 로그인 확인
   useEffect(() => {
-    axios.get("http://localhost:4000/info/api/basicprofile", { withCredentials: true })
-      .then(() => setIsLoggedIn(true))
-      .catch(() => {
-        alert("로그인이 필요합니다.");
-        navigate("/login");
-      });
-  }, []);
-
-if (isLoggedIn === null) return <div>로딩 중...</div>;
+      (async () => {
+        try {
+          // 서버가 세션 보고 200 또는 401을 돌려주는 엔드포인트
+          await axios.get("http://localhost:4000/user/me", {
+            withCredentials: true,
+            validateStatus: s => s < 500            // 4xx도 catch 안 나게
+          }).then(res => {
+            if (res.status === 200) {
+              setIsLoggedIn(true);                  // 로그인 인정
+            } else {
+              throw new Error("unauthorized");
+            }
+          });
+        } catch {
+          // 세션 만료 → 캐시 파기 → 로그인 페이지로
+          clearCachedUserInfo();
+          alert("로그인이 필요합니다.");
+          navigate("/login", { replace: true });
+        }
+      })();
+    }, [navigate]);
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#0d1117', color: '#e0f7fa' }}>

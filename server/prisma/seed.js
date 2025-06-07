@@ -10,7 +10,7 @@ async function main() {
   const year = () => String(19 + Math.floor(Math.random() * 5)); // 19~23
   const names = ['오냐', '치팅', '했서', '소혀', '테스트1', '테스트2', '테스트3', '테스트4'];
   const baekjoonNames = ['muzavicoder', '04select', 'choipr', 'shl3088','cowlgh2', 'gi2570', 'hahava', 'wsw3998'];
-  // 4명 계정 임의 생성
+  // 8명 계정 임의 생성
   for (let i = 0; i < 8; i++) {
     const email = `testuser${i}@example.com`;
     await prisma.user.upsert({
@@ -78,60 +78,6 @@ async function main() {
       create: card,
     });
   }
-
-  const weekStart = startOfWeek(new Date(), { weekStartOn: 0 });
-  const users = await prisma.user.findMany();
-
-  for (const user of users) {
-    let solvedNum = Math.floor(Math.random() * 30) + 1;
-
-    await prisma.weeklyRank.upsert({
-      where: {
-        // @@unique([weekStart, userId, department]) 복합 키 사용
-        weekStart_userId_department: {
-          weekStart,
-          userId: user.id,
-          department: user.department,
-        },
-      },
-      update: {
-        solvedThisWeek: {
-          set: solvedNum,
-        },
-      },                    // 이미 있으면 그대로 두기
-      create: {
-        weekStart,
-        userId: user.id,
-        department: user.department,
-        solvedThisWeek: solvedNum, // 1~30 문제 랜덤
-      },
-    });
-
-    await prisma.weeklyRank.upsert({
-      where: {
-        // @@unique([weekStart, userId, department]) 복합 키 사용
-        weekStart_userId_department: {
-          weekStart,
-          userId: user.id,
-          department: 'ALL',
-        },
-      },
-      update: {
-        solvedThisWeek: {
-          set: solvedNum,
-        },
-      },                    // 이미 있으면 그대로 두기
-      create: {
-        weekStart,
-        userId: user.id,
-        department: 'ALL',
-        solvedThisWeek: solvedNum, // 1~30 문제 랜덤
-      },
-    });
-
-  }
-
-  console.log('WeeklyRank 데이터 삽입 완료!');
 
 }
 

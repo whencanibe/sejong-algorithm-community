@@ -1,6 +1,5 @@
 import prisma from '../models/prisma.js';
 import * as userRepo from "../repositories/userRepository.js";
-import * as weeklyRankRepo from "../repositories/weeklyRankRepository.js";
 import * as solvedProblemRepo from "../repositories/solvedProblemRepository.js";
 import { getRankandTier } from "./solvedacService.js";
 import { startOfWeek, differenceInCalendarDays } from 'date-fns';
@@ -10,15 +9,27 @@ import { findUserById } from '../repositories/userRepository.js';
 import { AppError } from "../errors/AppError.js";
 import { ExternalError } from "../errors/ExternalError.js";
 
+/**
+ * 주어진 사용자 ID에 대한 상세 정보를 반환하는 함수
+ * - 사용자 정보 조회
+ * - solved.ac에서 티어 및 푼 문제 수 조회
+ * - 학교 내 랭킹, 학과 랭킹, 연속 풀이일, 백분위 계산 등 포함
+ *
+ * @param {number} userId - 사용자 고유 ID
+ * @returns {Promise<Object>} 사용자 상세 정보 객체
+ */
 export async function getUserInfo(userId) {
   let user;
   try {
+    // 사용자 정보 조회
     user = await userRepo.findUserById(userId);
-  } catch (err) {                         // Prisma 오류 세분화
+  } catch (err) {                        
+    // Prisma 관련 오류를 식별해 세분화 처리
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       throw new AppError('DB 조회 오류', 500, { cause: err });
     }
-    throw err;                            // 모르는 오류는 그대로
+    // 알 수 없는 오류는 그대로 throw
+    throw err;                            
   }
   
   if (!user) {
@@ -27,23 +38,28 @@ export async function getUserInfo(userId) {
 
   let rankInfo;
   try {
+    // 외부 API를 통해 랭킹, 티어 정보 조회
     rankInfo = await getRankandTier(user.baekjoonName);
   } catch (err) {
     throw new ExternalError('Solved.ac API 호출 실패', 10);
   }
 
-  const enrollYear = user.studentId.slice(0, 2); // 학번 년도 예) 24
+  //학번에서 입학년도 추출 (예: "24011776" -> "24")
+  const enrollYear = user.studentId.slice(0, 2);
+
+  // 티어 정보 문자열로 변환
   const tier = stringifyTier(rankInfo.tier);
 
+  // 총 푼 문제 수
   const totalSolvedCount = rankInfo.solvedCount;
 
-  //병렬 처리 - 하나라도 실패하면 에러
+  //병렬로 유저 정보 조회 (모두 성공해야 함 => 아니면 에러)
   const [
-    rank,
-    rankInDepartment,
-    solvedDates,
-    streak,
-    percentile
+    rank, // 전체 사용자 중 순위
+    rankInDepartment, // 학과 내 순위
+    solvedDates, // 문제를 푼 날짜 배열
+    streak, // 연속 풀이일 수
+    percentile // 상위 백분위
   ] = await Promise.all([
     userRepo.getRankByUserId(userId),
     userRepo.getRankInDepartmentByUserId(userId),
@@ -67,12 +83,20 @@ export async function getUserInfo(userId) {
   };
 }
 
+/**
+ * 사용자 ID를 기반으로 전체 사용자 중 퍼센트와
+ * 소속 학과 내 퍼센트를 병렬로 조회합니다.
+ *
+ * @param {number} userId - 사용자 고유 ID
+ * @returns {Promise<{percentileInTotal: number, percentileInDepartment: number}>}
+ *          - 전체 중 상위 퍼센트와 학과 내 퍼센트
+ */
 export async function getPercentilesForUser(userId) {
 
   try {
     const [percentileInTotal, percentileInDepartment] = await Promise.all([
       userRepo.getPercentile(userId),
-      userRepo.getPercentileInDepartement(userId)
+      userRepo.getPercentileInDepartment(userId)
     ]);
 
     return {
@@ -117,10 +141,23 @@ export async function getBasicUserInfo(userId) {
   };
 }
 
+/**
+ * 전체 사용자 중 상위 랭킹 정보를 조회합니다.
+ *
+ * @param {number} limit - 가져올 랭킹 수 (예: 상위 10명)
+ * @returns {Promise<Array>} - 랭킹 사용자 목록
+ */
 export async function getGlobalRankingServ(limit) {
   return await userRepo.getGlobalRanking(limit);
 }
 
+/**
+ * 특정 학과(dept) 내 상위 랭킹 정보를 조회합니다.
+ *
+ * @param {string} dept - 학과 이름
+ * @param {number} limit - 가져올 랭킹 수 (예: 상위 10명)
+ * @returns {Promise<Array>} - 학과 랭킹 사용자 목록
+ */
 export async function getDepartmentRankingServ(dept, limit) {
   return await userRepo.getDepartmentRanking(dept,limit);
 }

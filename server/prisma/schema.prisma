@@ -19,39 +19,13 @@ model User {
   tier         String?
   solvedNum    Int?
   createdAt    DateTime @default(now())
-  profileImage  String?
+  profileImage  String? @default("https://api.dicebear.com/7.x/bottts/svg?seed=default")
 
   solvedProblems SolvedProblem[]
-  snapshots      SolveSnapshot[]
-  weeklyRanks    WeeklyRank[]
   posts   Post[]  // 사용자가 작성한 게시글 목록
   comments       Comment[] //사용자 댓글
   questSolves  QuestSolve[]
   userCards UserCard[] //사용자 카드
-}
-
-model SolveSnapshot {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  solvedCount Int
-  snapedAt    DateTime
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@index([snapedAt])
-}
-
-model WeeklyRank {
-  id             Int      @id @default(autoincrement())
-  weekStart      DateTime
-  department     String
-  userId         Int
-  solvedThisWeek Int
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@unique([weekStart, userId, department])
-  @@index([weekStart, department])
 }
 
 model SolvedProblem {

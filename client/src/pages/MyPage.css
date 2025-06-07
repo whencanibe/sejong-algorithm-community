@@ -1,0 +1,23 @@
+/* 화면 전체를 덮는 로딩용 래퍼 */
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;            /* ← 세로 100 % */
+  min-width: 100vw;
+  background: #121826;          /* 평소 배경색과 맞추기 */
+  color: #e0f7fa;               /* 평소 글자색 */
+  font-family: Arial, sans-serif;
+}
+
+/* 아주 단순한 CSS 스피너 */
+.loader{
+  width:12px;height:12px;
+  border:2px solid #0d1117;
+  border-top-color:#00e5ff;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:6px;
+  animation:spin 0.7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
