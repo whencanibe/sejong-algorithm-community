@@ -101,6 +101,7 @@ useEffect(() => {
     <div style={{ display: "flex", gap: "40px", margin: "80px 40px" }}>
        
        {/* 연속 출석 텍스트 */}
+       {!isLoggedIn && (
   <div style={{
     position: "absolute",
     top: "120px",
@@ -112,8 +113,9 @@ useEffect(() => {
     
   }}>
     연속 {consecutiveDays}일차 출석 성공 !!
+    
   </div>
-      
+       )}
       {/*  발자국 UI */}
       <div style={{ display: "flex", gap: "20px" }}>
         {footprints.map((filled, i) => (

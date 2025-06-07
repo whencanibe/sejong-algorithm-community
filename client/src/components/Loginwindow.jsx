@@ -27,12 +27,12 @@ export default function LoginWindow() {
     >
       {/* 우주선 애니메이션 */}
       <img
-        src="/우주선.png"
+        src="/배경/우주선.png"
         alt="spaceship"
         style={{
           position: 'absolute',
           top: '30%',
-          width: '150px',
+          width: '120px',
           animation: 'flyInFromRight 8s ease-out forwards, floatY 2s ease-in-out infinite',
           zIndex: 2,
           

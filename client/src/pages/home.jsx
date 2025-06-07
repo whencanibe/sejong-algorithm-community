@@ -8,6 +8,8 @@ import CardAlbum from "../components/CardAlbum"; // 카드 앨범 컴포넌트 �
 import axios from "axios"; // HTTP 요청 라이브러리 axios 임포트
 import AttendanceAndCardAlbum from "../components/Attendanceandcardalbum"; // 출석 및 카드 앨범 컴포넌트 임포트
 import LoginWindow from '../components/LoginWindow'; // 로그인 창 컴포넌트 임포트
+import StarField from "../components/StarField";
+
 
 export default function Home() {
   // `useNavigate` 훅을 사용하여 페이지 이동 기능을 활성화
@@ -171,33 +173,13 @@ const [globalRanking, setGlobalRanking] = useState([]);
   return (
     <div style={{ backgroundColor: "#0d1117", color: "#e0f7fa", minHeight: "100vh" }}>
       {/* ⭐ 배경 별 이미지들 */}
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "60px", left: "20px", width: "40px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "120px", left: "80vw", width: "32px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "30vh", left: "30vw", width: "28px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "90vh", left: "90vw", width: "22px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "15vh", left: "5vw", width: "30px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "45vh", left: "85vw", width: "25px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "88vh", left: "15vw", width: "22px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "92vh", left: "35vw", width: "25px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "95vh", left: "50vw", width: "28px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "98vh", left: "65vw", width: "24px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "99vh", left: "85vw", width: "30px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "5vh", left: "10vw", width: "26px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "12vh", left: "45vw", width: "30px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "20vh", left: "70vw", width: "24px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "33vh", left: "10vw", width: "22px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "40vh", left: "60vw", width: "28px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "55vh", left: "20vw", width: "26px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "68vh", left: "50vw", width: "25px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "75vh", left: "80vw", width: "29px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "82vh", left: "25vw", width: "21px", zIndex: 0 }} alt="star1" />
-      <img src="/public/배경/star1.png" className="twinkle" style={{ position: "absolute", top: "93vh", left: "40vw", width: "23px", zIndex: 0 }} alt="star1" />
+       <StarField />
 
 
       {/* 헤더 섹션 */}
       <header style={{
         width: "100%",
-        backgroundColor: "#121826",
+        backgroundColor: "#0d1117", 
         color: "#b3e5fc",
         padding: "18px 40px",
         fontSize: "18px",
@@ -209,7 +191,9 @@ const [globalRanking, setGlobalRanking] = useState([]);
         top: 0,
         left: 0,
         zIndex: 1000,
-        boxShadow: "0 2px 10px #00e5ff55"
+        borderBottom: "1px solid #00e5ff", 
+          boxShadow: "0 2px 8px rgba(0, 229, 255, 0.15)",
+          animation: "neonFlicker 1.5s infinite alternate", 
       }}>
         {/* 로고 */}
         <div style={{ fontSize: "22px", textShadow: "0 0 8px #00e5ff" }}>SEJONG-Universe</div>

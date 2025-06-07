@@ -89,7 +89,6 @@ export default function Login() {
           홈으로
         </button>
       </header>
-
       <div
         style={{
           width: '90vw',
