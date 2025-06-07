@@ -57,8 +57,8 @@ export default function LoginWindow() {
           zIndex: 1,
         }}
       >
-        <h3 style={{ fontSize: "18px", color: "#3f3fff", marginBottom: "16px" }}>
-          로그인 필요
+        <h3 style={{ fontSize: "18px", color: "#e0f7fa", marginBottom: "16px" }}>
+          로그인이 필요합니다 !!
         </h3>
 
         {/* 로그인 버튼은 3초 후에 등장 + 애니메이션 */}

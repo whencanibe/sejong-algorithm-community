@@ -73,6 +73,21 @@ if (isLoggedIn === null) return <div>로딩 중...</div>;
           marginRight: 'auto',
         }}
       >
+
+         <img
+            src="/public/배경/천왕성.png" 
+            alt="floating-astronaut"
+            style={{
+            position: "absolute",
+            top: "100px",
+            right: "100px",
+            width: "140px",
+            animation: "float-spin2 6s ease-in-out infinite",
+            zIndex: 1,
+            filter: "drop-shadow(0 0 6px white)",
+            }}
+         />
+
         {/* 탭 버튼 */}
         <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
           <button

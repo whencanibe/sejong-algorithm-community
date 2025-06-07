@@ -15,6 +15,22 @@ export default function AttendanceAndCardAlbum() {
   const [newCard, setNewCard] = useState(null);     // 새로 받은 카드 정보
   const [showCardModal, setShowCardModal] = useState(false); // 카드 모달 표시 여부
 
+  const [consecutiveDays, setConsecutiveDays] = useState(0);
+
+useEffect(() => {
+  axios.get("http://localhost:4000/info/api/mypage", { withCredentials: true })
+    .then(res => {
+      if (res.data?.streak != null) {
+        console.log("✅ 연속 출석 일수 streak 값:", res.data.streak);
+        setConsecutiveDays(res.data.streak);
+      }
+    })
+    .catch(err => {
+      console.error("연속 출석 정보 불러오기 실패:", err);
+    });
+}, []);
+
+
   //  출석 정보(발자국) 불러오기
   useEffect(() => {
     axios.get("http://localhost:4000/info/api/footprints", { withCredentials: true })
@@ -78,19 +94,36 @@ export default function AttendanceAndCardAlbum() {
   const closeCardModal = () => setShowCardModal(false);
 
   return (
-    <div style={{ display: "flex", gap: "40px", margin: "60px 40px" }}>
+    <div style={{ display: "flex", gap: "40px", margin: "80px 40px" }}>
+       
+       {/* 연속 출석 텍스트 */}
+  <div style={{
+    position: "absolute",
+    top: "120px",
+    fontSize: "20px",
+    fontWeight: "bold",
+    color: "#00e5ff",
+    textShadow: "0 0 4px #00e5ff",
+    zIndex: 5,
+    
+  }}>
+    연속 {consecutiveDays}일차 출석 성공 !!
+  </div>
+      
       {/*  발자국 UI */}
-      <div style={{ display: "flex", gap: "10px" }}>
+      <div style={{ display: "flex", gap: "20px" }}>
         {footprints.map((filled, i) => (
           <img
             key={i}
             src="/발자국.png"
             alt={`footprint-${i}`}
             style={{
-              width: "70px",
-              height: "70px",
+              width: "80px",
+              height: "80px",
               cursor: "default",
               transition: "0.2s",
+              zIndex: 10,
+              position: 'relative' ,
               transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
               filter: filled
                 ? "brightness(1.2) drop-shadow(0 0 8px #4dabf7)"  // 도장 찍힌 발자국

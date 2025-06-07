@@ -201,12 +201,28 @@ function MyPage() {
         </button>
       </header>
 
+       <img
+            src="/public/배경/해왕성.png" 
+            alt="floating-astronaut"
+            style={{
+            position: "absolute",
+            top: "100px",
+            right: "100px",
+            width: "140px",
+            animation: "float-spin2 6s ease-in-out infinite",
+            zIndex: 0,
+           filter: "drop-shadow(0 0 6px white)",
+          }}
+        />
+
       {/* 본문 */}
       <div style={{
         maxWidth: '1000px',
         margin: '0 auto',
         padding: '40px 5vw 40px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+         zIndex: 10,
+        position: 'relative' ,
       }}>
         <h1 style={{ marginBottom: '30px', textAlign: 'center', color: '#afefff' }}>⚙️ 내 프로필</h1>
 

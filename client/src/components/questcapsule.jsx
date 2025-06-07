@@ -75,6 +75,8 @@ export default function QuestCapsule({ problem }) {
         position: "relative",
         boxSizing: "border-box",
         color: "#e0f7fa",
+         zIndex: 10,
+        position: 'relative' ,
       }}
     >
       {/* 🧪 캡슐 이미지 + 문제 박스 영역 */}

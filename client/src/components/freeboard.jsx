@@ -7,7 +7,7 @@ export default function FreeBoardPreview({ posts, isLoggedIn }) {
   return (
     <div
       style={{
-        width: "300px",
+        width: "330px",
         height: "250px",
         border: "2px solid #00e5ff", 
         borderRadius: "16px", 
@@ -21,8 +21,13 @@ export default function FreeBoardPreview({ posts, isLoggedIn }) {
         justifyContent: "space-between",
         marginTop: "50px",
         marginLeft: "15px",
+         zIndex: 10,
+        position: 'relative' ,
       }}
+
+      
     >
+
       {/* 제목 영역 + 글쓰기 버튼 */}
       <div
         style={{

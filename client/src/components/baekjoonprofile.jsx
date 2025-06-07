@@ -42,7 +42,9 @@ export default function BaekjoonProfile({ handle, tier, ratingRank }) {
         borderRadius: "12px",
         border: "2px solid #00e5ff",
         boxShadow: "0 0 12px rgba(0, 229, 255, 0.25)",
-        color: "#e0f7fa"
+        color: "#e0f7fa",
+        zIndex: 10,
+        position: 'relative' ,
       }}
     >
       {/* 왼쪽: 티어 이미지 */}
