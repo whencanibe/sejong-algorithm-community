@@ -2,39 +2,40 @@ import { AppError } from "../errors/AppError.js";
 import prisma from "../models/prisma.js";
 import { Prisma } from '@prisma/client';
 
+//회원가입 
 export async function createUser({ email, hashedPassword, name, baekjoonName, department, studentId }, tx = prisma) {
   return tx.user.create({
     data: { email, password: hashedPassword, name, baekjoonName, department, studentId }, // db에 저장할 값
     select: { id: true, email: true, name: true, department: true, studentId: true } // 응답에 반환될 값 선택
   })
 }
-
+// ID로 사용자 조회
 export async function findUserById(id, tx = prisma) {
   if (id == null) throw new AppError('userId가 없습니다', 400);
   return await tx.user.findUnique({
     where: { id }
   })
 }
-
+// 이메일로 사용자 조회 (로그인 시 사용)
 export const findUserByEmail = async (email, tx = prisma) => {
   return await tx.user.findUnique({
     where: { email }
   });
 }
 
-//unique key or prime key 가 아니라면 findUnique 사용 x => findFirst
+// 이름으로 사용자 검색 (중복 가능 → findFirst 사용)
 export const findUserByName = async (name, tx = prisma) => {
   return await tx.user.findFirst({
     where: { name }
   });
 }
-
+// 백준 아이디로 사용자 검색
 export const findUserByBaekjoonName = async (baekjoonName, tx = prisma) => {
   return await tx.user.findFirst({
     where: { baekjoonName }
   });
 }
-
+// 학번으로 사용자 검색
 export const findUserByStudentId = async (studentId, tx = prisma) => {
   return await tx.user.findFirst({
     where: { studentId }
@@ -82,7 +83,7 @@ export async function findAllUsers(filter = {}) {
     orderBy: { rank: 'asc' }      // 랭킹 순으로 정렬
   });
 }
-
+// 전체 사용자 중 나의 순위 구하기
 export async function getRankByUserId(id) {
   const me = await prisma.user.findUnique({
     where: { id },
@@ -99,7 +100,7 @@ export async function getRankByUserId(id) {
 
   return count + 1;
 }
-
+// 같은 전공 내 나의 순위 구하기
 export async function getRankInDepartmentByUserId(id) {
   const me = await prisma.user.findUnique({
     where: { id },
@@ -117,7 +118,7 @@ export async function getRankInDepartmentByUserId(id) {
 
   return count + 1;
 }
-
+// 전체 사용자 대비 백분위 계산
 export async function getPercentile(userId) {
   const [rank, total] = await Promise.all([
     getRankByUserId(userId),
@@ -128,7 +129,7 @@ export async function getPercentile(userId) {
 
   return Math.round((rank / total) * 100);
 }
-
+// 학과 내 백분위 계산
 export async function getPercentileInDepartment(userId) {
   // 사용자 전공 알아오기
   const user = await prisma.user.findUnique({
@@ -150,18 +151,18 @@ export async function getPercentileInDepartment(userId) {
 
   return Math.round((rank / total) * 100);
 }
-
+// 전체 사용자 수 반환
 export async function getNumberOfUsers() {
   return await prisma.user.count();
 }
-
+// 프로필 이미지 업데이트
 export async function updateUserProfileImage(userId, imageUrl) {
   return await prisma.user.update({
     where: { id: userId },
     data: { profileImage: imageUrl },
   });
 }
-
+// 사용자 삭제
 export async function deleteUserById(userId) {
   return await prisma.user.delete({
     where: { id: userId },

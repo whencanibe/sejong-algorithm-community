@@ -5,10 +5,13 @@ import { saveQuestSolve } from '../repositories/questSolveRepository.js';
 import { kstMidnight } from '../utils/utcTodayMidnight.js';
 import { AppError } from '../errors/AppError.js';
 
+//오늘의 퀘스트 진행 상태 조회 
+//총 사용자 수, 오늘 문제를 푼 인원 수, 내가 오늘 풀었는지 여부를 반환
+//내가 풀었다면 퀘스트 완료 기록 저장
 export async function getDayquestStatus(userId) {
-  const detail = getTodayProblemDetail();  
+  const detail = getTodayProblemDetail();  // 오늘의 문제 ID, 제목 추출
 
-  const totalUsers = await prisma.user.count();
+  const totalUsers = await prisma.user.count(); // 전체 유저 수
 
   const solvedCount = await prisma.solvedProblem.count({
     where: {
@@ -22,7 +25,7 @@ export async function getDayquestStatus(userId) {
       problemId: detail.todayProblemId,
     },
   });
-
+  // 오늘 문제를 이미 풀었으면 퀘스트 완료 테이블에 저장
   if(!!hasSolvedToday){
     const date = kstMidnight();
     await saveQuestSolve({userId, date, problemId:detail.todayProblemId});
