@@ -43,8 +43,6 @@ function WritePost() {
       return;
     }
 
-    console.log("✅ 보내는 데이터", { title, content, code });
-
     try {
       await axios.post('http://localhost:4000/posts', {
         title,

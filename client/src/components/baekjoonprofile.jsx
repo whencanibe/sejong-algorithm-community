@@ -4,29 +4,31 @@ import {
   ResponsiveContainer, Cell
 } from "recharts";
 
+// 백준 프로필 컴포넌트
 export default function BaekjoonProfile({ handle, tier, ratingRank, rankingData, nickname }) {
 
-  // 티어 이미지 경로 변환 함수
+  //  티어 문자열을 티어 이미지 경로로 변환하는 함수
   const convertTierToImagePath = (tierString) => {
-    if (!tierString) return '/등급/default.png';
+    if (!tierString) return '/등급/default.png'; // tier 정보가 없으면 기본 이미지
 
     const parts = tierString.split(" ");
-    if (parts.length !== 2) return '/등급/default.png';
+    if (parts.length !== 2) return '/등급/default.png'; // 예: "Gold I" → ["Gold", "I"]
 
-    const korTier = parts[0];
-    const roman = parts[1];
+    const korTier = parts[0]; // Gold, Silver 등
+    const roman = parts[1];   // I, II 등
 
-    const romanToNumber = {
-      I: 1, II: 2, III: 3, IV: 4, V: 5,
-    };
-
+    const romanToNumber = { I: 1, II: 2, III: 3, IV: 4, V: 5 }; // 로마 숫자 매핑
     const level = romanToNumber[roman];
-    if (!level) return '/등급/default.png';
 
-    return `/등급/${korTier}${level}.png`;
+    if (!level) return '/등급/default.png'; // 예외 처리
+
+    return `/등급/${korTier}${level}.png`; // 예: "/등급/Gold1.png"
   };
 
+  // 티어 이미지 경로 계산
   const tierImgPath = convertTierToImagePath(tier);
+
+  // 랭킹 그래프용 데이터 정리
   const data = Array.isArray(rankingData)
     ? rankingData.map(user => ({
         name: user.name,
@@ -53,26 +55,27 @@ export default function BaekjoonProfile({ handle, tier, ratingRank, rankingData,
         overflow: "hidden",
       }}
     >
-      {/* 배경 이미지 */}
+
+      {/* 로그인 전일 때 웰컴 이미지 배경 */}
       {!handle && (
-      <img
-        src="/웰컴.png"
-        alt="welcome"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: 10,
-          
-        }}
-      />
+        <img
+          src="/웰컴.png"
+          alt="welcome"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            zIndex: 10,
+          }}
+        />
       )}
 
-      {/* 콘텐츠 영역 */}
+      {/* 내용 섹션 */}
       <div style={{ display: "flex", flex: 1, zIndex: 1 }}>
+        
         {/* 왼쪽: 티어 이미지 */}
         <div
           style={{
@@ -85,7 +88,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank, rankingData,
           <img src={tierImgPath} alt="백준 티어" style={{ width: "100px", height: "100px" }} />
         </div>
 
-        {/* 오른쪽: 닉네임 및 그래프 */}
+        {/* 오른쪽: 유저 정보 + 랭킹 그래프 */}
         <div
           style={{
             flex: 1,
@@ -94,7 +97,8 @@ export default function BaekjoonProfile({ handle, tier, ratingRank, rankingData,
             justifyContent: "flex-start",
           }}
         >
-          {/* 닉네임/랭크 정보 */}
+
+          {/* 닉네임, 티어, 랭킹 표시 */}
           <div style={{ marginBottom: "8px" }}>
             <h3 style={{ margin: 0, fontSize: "20px", color: "#afefff" }}>
               백준ID: <span style={{ color: "#00e5ff" }}>{handle}</span>
@@ -104,7 +108,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank, rankingData,
             </p>
           </div>
 
-          {/* 막대 그래프 */}
+          {/* 랭킹 그래프 */}
           <div
             style={{
               flex: 1,
@@ -123,6 +127,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank, rankingData,
             }}
           >
             {data.length > 0 ? (
+              // 그래프 그리기 (가로 막대 차트)
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart
                   data={data}
@@ -143,7 +148,7 @@ export default function BaekjoonProfile({ handle, tier, ratingRank, rankingData,
                       return (
                         <Cell
                           key={`cell-${index}`}
-                          fill={isMe ? "#00e5ff" : "#e0f7fa"}
+                          fill={isMe ? "#00e5ff" : "#e0f7fa"} // 본인만 파란색
                         />
                       );
                     })}
@@ -151,7 +156,8 @@ export default function BaekjoonProfile({ handle, tier, ratingRank, rankingData,
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <p style={{ color: "#ccc" }}>데이터 없음</p>
+              // 데이터 없을 때
+              <p style={{ color: "#ccc" }}>그래프 영역</p>
             )}
           </div>
         </div>
