@@ -7,7 +7,7 @@ export async function getCommentsByPostId(req, res, next) {
     if (Number.isNaN(postId)) {
       return next(new AppError('잘못된 postId', 400));
     }
-    const comments = await commentService.getComments(postId);
+    const comments = await commentService.getComments(postId);  //서비스 호출
     res.json(comments);
   } catch (error) {
     next(error);

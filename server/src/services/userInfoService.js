@@ -129,6 +129,13 @@ export async function updateUserProfileImage(userId, imageUrl) {
 
 }
 
+/**
+ * 사용자의 기본 정보(이름, 학과, 프로필 이미지)를 조회합니다.
+ * 
+ * @param {number} userId - 조회할 사용자 ID
+ * @returns {Object} 사용자 기본 정보 객체 { name, department, profileImage }
+ * @throws {AppError} 유저가 존재하지 않을 경우 404 에러 발생
+ */
 export async function getBasicUserInfo(userId) {
   const user = await userRepo.findUserById(userId);
   if (!user) throw new AppError("유저를 찾을 수 없습니다.", 404);
@@ -168,7 +175,7 @@ export async function updateNickname(userId, newName) {
     where: { name: newName },
   });
 
-  // 그런 다음 존재 여부를 판단해야 함
+  // 존재 여부를 판단
   if (existing && existing.id !== userId) {
     throw new AppError('이미 존재닉입니다.', 400);
   }
