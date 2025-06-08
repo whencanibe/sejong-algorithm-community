@@ -24,7 +24,6 @@ function Community() {
       try {
         // 로그인 확인되면 게시글 목록 불러오기
         const res = await axios.get("http://localhost:4000/posts");
-        console.log("✅ 받아온 게시글:", res.data);
         setPosts(res.data);
       } catch (err) {
         console.error("❌ 게시글 불러오기 실패:", err);
@@ -53,22 +52,21 @@ function Community() {
 
         
       >
+      <img
+        src="/public/배경/화성.png" 
+        alt="floating-astronaut"
+        style={{
+          position: "absolute",
+          top: "100px",
+          right: "100px",
+          width: "140px",
+          animation: "float-spin2 6s ease-in-out infinite",
+          zIndex: 0,
+          filter: "drop-shadow(0 0 6px white)",
+        }}
+      />
 
-        <img
-            src="/public/배경/화성.png" 
-            alt="floating-astronaut"
-            style={{
-            position: "absolute",
-            top: "100px",
-            right: "100px",
-            width: "140px",
-            animation: "float-spin2 6s ease-in-out infinite",
-            zIndex: 0,
-           filter: "drop-shadow(0 0 6px white)",
-          }}
-        />
-
-        {/* 상단 고정 헤더 (자유게시판 + 홈으로 버튼) */}
+      {/* 상단 고정 헤더 (자유게시판 + 홈으로 버튼) */}
         <header style={{
           position: "fixed",
           top: 0, left: 0,
@@ -101,7 +99,7 @@ function Community() {
           }}>홈으로</button>
         </header>
 
-        {/* 글쓰기 버튼 (우측 상단) */}
+      {/* 글쓰기 버튼 (우측 상단) */}
         <div style={{ textAlign: 'right', padding: '20px 40px',zIndex: 10, position: 'relative'  }}>
           <button
             onClick={() => navigate('/community/writepost')}
@@ -119,7 +117,7 @@ function Community() {
           </button>
         </div>
 
-        {/* 게시글 목록 테이블 */}
+      {/* 게시글 목록 테이블 */}
         <div style={{ padding: '0 40px', zIndex: 10, position: 'relative' }}>
           <table
             style={{

@@ -1,12 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import CommentSection from "../pages/commentsection"; 
+import CommentSection from "../pages/commentsection";
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 
 function PostDetail() {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);         // 게시글 데이터
   const [userInfo, setUserInfo] = useState(null); // 로그인한 사용자 정보
@@ -206,7 +206,7 @@ function PostDetail() {
             </div>
           )}
 
-          {}
+          { }
           <hr
             style={{
               border: "none",

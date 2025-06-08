@@ -1,3 +1,4 @@
+// 기본 모듈 및 리차트, axios, 라우터 임포트
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,6 +12,7 @@ import {
   CartesianGrid, ReferenceDot, ResponsiveContainer
 } from "recharts";
 
+// 창 크기 추적 커스텀 훅
 function useWindowSize() {
   const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
   useEffect(() => {
@@ -25,19 +27,22 @@ function useWindowSize() {
 
 function UniversityRanking() {
   const navigate = useNavigate();
-  const [windowWidth] = useWindowSize();
-  const [userInfo, setUserInfo] = useState(null);
-  const [deptRanking, setDeptRanking] = useState([]);
-  const [percentile, setPercentile] = useState(0);
-  const [rankInfo, setRankInfo] = useState({ rank: 0, total: 0 });
+  const [windowWidth] = useWindowSize(); // 반응형을 위한 창 너비 추적
+  const [userInfo, setUserInfo] = useState(null); // 내 정보
+  const [deptRanking, setDeptRanking] = useState([]); // 전체 랭킹 데이터
+  const [percentile, setPercentile] = useState(0); // 내 퍼센트 정보
+  const [rankInfo, setRankInfo] = useState({ rank: 0, total: 0 }); // 내 등수 및 전체 인원 수
 
+  // 사용자 정보 및 전체 랭킹 불러오기
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 세션 갱신
         await axios.post(`http://localhost:4000/info/api/refresh`, {}, {
           withCredentials: true,
         });
 
+        // 내 프로필 정보
         const userRes = await axios.get(`http://localhost:4000/info/api/mypage`, {
           withCredentials: true,
         });
@@ -45,12 +50,14 @@ function UniversityRanking() {
         setUserInfo(userData);
         setPercentile(userData.percentile ?? 0);
 
+        // 전체 인원 수 불러오기 (내 순위 표시용)
         const statusRes = await axios.get(`http://localhost:4000/dayquest/status`, {
-        withCredentials: true,
+          withCredentials: true,
         });
         const { totalUsers } = statusRes.data;
         setRankInfo({ rank: userData.rank ?? 0, total: totalUsers });
-        
+
+        // 전체 풀이 수 랭킹 불러오기
         const rankingRes = await fetch(`http://localhost:4000/info/api/globalranking`, {
           credentials: 'include',
         });
@@ -63,22 +70,23 @@ function UniversityRanking() {
     fetchData();
   }, [navigate]);
 
+  // 로딩 화면
   if (!userInfo) {
     return <div style={{ padding: "40px", fontSize: "18px" }}>로딩 중...</div>;
   }
 
+  // 데이터 변환
   const data = deptRanking.map((u) => ({
     name: u.name,
     solved: u.solvedNum,
   }));
-
   const sortedData = [...data].sort((a, b) => b.solved - a.solved);
   const myName = userInfo?.name ?? '';
   const rank = userInfo?.rank ?? 0;
   const total = userInfo?.total ?? 0;
   const myData = sortedData.find((d) => d.name === myName);
 
-  // 정규분포용 데이터
+  // 정규분포용 좌표 계산
   const myX = 100 - percentile;
   const myY = Math.exp(-((myX - 50) ** 2) / (2 * 15 ** 2));
 
@@ -125,11 +133,10 @@ function UniversityRanking() {
           marginTop: '10px',
           marginLeft: '30px',
           position: 'relative',
-          zIndex: 10, 
-
+          zIndex: 10,
         }}>
           <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#1e293b' }}>
-             <span style={{ color: '#00e5ff' }}>{userInfo?.name}</span>님의 백준 티어: 세종대 학생 {rankInfo.total}명 중 {rankInfo.rank}등
+            <span style={{ color: '#00e5ff' }}>{userInfo?.name}</span>님의 백준 티어: 세종대 학생 {rankInfo.total}명 중 {rankInfo.rank}등
           </div>
           <div style={{
             height: '18px',
@@ -201,7 +208,7 @@ function UniversityRanking() {
           </ResponsiveContainer>
         </div>
 
-        {/* 학과별 풀이 수 랭킹 */}
+        {/* 전체 풀이 수 수직 바 그래프 */}
         <div style={{ width: '100%', height: sortedData.length * 60, marginTop: '40px' }}>
           <h2 style={{ textAlign: 'center' }}>(세종대) 백준 문제 풀이 수 랭킹</h2>
           <BContainer key={windowWidth} width="100%" height="100%">
@@ -304,7 +311,7 @@ function UniversityRanking() {
           alignSelf: 'flex-start',
           marginTop: '50px',
           zIndex: 10,
-          position: 'relative' 
+          position: 'relative'
         }}
       >
         <h3 style={{

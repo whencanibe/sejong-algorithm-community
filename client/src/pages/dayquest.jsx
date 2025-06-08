@@ -141,20 +141,20 @@ function Dayquest({ userId, problemId }) {
               marginBottom: "30px"
             }}
           />
-
+          {/*  배경 지구 이미지 */}
            <img
-                      src="/public/배경/지구.png" 
-                      alt="floating-astronaut"
-                      style={{
-                        position: "absolute",
-                       top: "100px",
-                        right: "100px",
-                        width: "140px",
-                        animation: "float-spin2 6s ease-in-out infinite",
-                      zIndex: 1,
-                      filter: "drop-shadow(0 0 6px white)",
-                     }}
-                    />
+              src="/public/배경/지구.png" 
+              alt="floating-astronaut"
+              style={{
+                position: "absolute",
+                top: "100px",
+                right: "100px",
+                width: "140px",
+                animation: "float-spin2 6s ease-in-out infinite",
+                zIndex: 1,
+                filter: "drop-shadow(0 0 6px white)",
+             }}
+            />
 
           {/*  문제 링크 텍스트 */}
           <p style={{ marginTop: "30px", fontSize: "20px" }}>

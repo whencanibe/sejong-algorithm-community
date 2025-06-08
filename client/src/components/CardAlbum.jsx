@@ -1,13 +1,11 @@
 import React from "react";
 
 export default function CardAlbum({ cards }) {
-  //콘솔 확인용
-  console.log("카드첩에 받은 카드 목록:", cards);
 
   return (
     <div
       style={{
-        width: "290px",
+        width: "300px",
         height: "250px",
         border: "2px solid #00e5ff",
         borderRadius: "16px",

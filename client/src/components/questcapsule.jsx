@@ -1,13 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
 
-// 💡 Daily Quest 문제 캡슐과 연결된 문제 박스 컴포넌트
+// Daily Quest 문제 캡슐과 연결된 문제 박스 컴포넌트
 export default function QuestCapsule({ problem }) {
   const boxRef = useRef(null);                // 문제 박스 위치 참조
   const [lines, setLines] = useState(null);   // 캡슐과 박스를 잇는 선 좌표
 
   if (!problem) return null; // 문제 정보 없으면 아무것도 렌더링하지 않음
 
-  // 🔁 윈도우 리사이즈 또는 최초 렌더링 시 선 위치 계산
+  // 윈도우 최초 렌더링 시 선 위치 계산
   useEffect(() => {
     const capsuleX = 160;   // 캡슐 중심 X좌표
     const capsuleY1 = 110;  // 위쪽 선 시작 Y좌표
@@ -79,7 +79,7 @@ export default function QuestCapsule({ problem }) {
         position: 'relative' ,
       }}
     >
-      {/* 🧪 캡슐 이미지 + 문제 박스 영역 */}
+      {/*  캡슐 이미지 + 문제 박스 영역 */}
       <div
         style={{
           display: "flex",
@@ -133,7 +133,7 @@ export default function QuestCapsule({ problem }) {
         </div>
       </div>
 
-      {/* 🔗 SVG로 선 그리기 */}
+      {/*  SVG로 선 그리기 */}
       {lines && (
         <svg
           width="100%"
