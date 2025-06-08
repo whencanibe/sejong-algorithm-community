@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const [form, setForm] = useState({ email: '', password: '' });
-  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: '', password: '' }); // 입력 폼 상태
+  const navigate = useNavigate(); // 페이지 이동 함수
 
+  // 입력값 변경 시 상태 업데이트
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // 로그인 폼 제출 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -16,22 +18,23 @@ export default function Login() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
-        credentials: 'include',
+        credentials: 'include', // 세션 쿠키 포함
       });
 
-      localStorage.removeItem("myPage:userInfo"); // 다른 계정으로 로그인 하는 상황을 위해 기존 캐시 삭제
-      
+      localStorage.removeItem("myPage:userInfo"); // 기존 캐시 삭제 (다른 계정 대비)
+
       const data = await res.json();
       console.log("서버 응답:", data);
 
       if (data.success) {
+        // 세션 유효성 확인
         const sessionCheck = await fetch('http://localhost:4000/user/me', {
           credentials: 'include'
         });
 
         if (sessionCheck.status === 200) {
           console.log("세션 확인 완료, 홈으로 이동");
-          navigate('/');
+          navigate('/'); // 홈으로 이동
         } else {
           alert("세션 설정에 실패했습니다.");
         }
@@ -56,6 +59,7 @@ export default function Login() {
         paddingTop: '80px',
         boxSizing: 'border-box'
     }}>
+      {/* 상단 헤더 */}
       <header style={{
         position: 'fixed',
         top: 0,
@@ -75,7 +79,7 @@ export default function Login() {
       }}>
         로그인
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/')} // 홈으로 이동 버튼
           style={{
             padding: '8px 16px',
             fontSize: '14px',
@@ -91,6 +95,8 @@ export default function Login() {
           홈으로
         </button>
       </header>
+
+      {/* 로그인 폼 컨테이너 */}
       <div
         style={{
           width: '90vw',
@@ -106,12 +112,14 @@ export default function Login() {
         }}
       >
         <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#afefff' }}>로그인</h2>
+
+        {/* 로그인 입력 폼 */}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {[{ label: '이메일', name: 'email' }, { label: '비밀번호', name: 'password' }].map(({ label, name }) => (
             <div key={name}>
               <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold', color: '#b3e5fc' }}>{label}</label>
               <input
-                type={name === 'password' ? 'password' : 'text'}
+                type={name === 'password' ? 'password' : 'text'} // 비밀번호는 숨김 처리
                 name={name}
                 value={form[name]}
                 onChange={handleChange}
@@ -128,6 +136,7 @@ export default function Login() {
             </div>
           ))}
 
+          {/* 로그인 버튼 */}
           <button
             type="submit"
             style={{
@@ -148,6 +157,7 @@ export default function Login() {
           </button>
         </form>
 
+        {/* 회원가입 이동 */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px', fontSize: '14px', color: '#b3e5fc' }}>
           <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={() => navigate('/signup')}>회원가입</span>
         </div>

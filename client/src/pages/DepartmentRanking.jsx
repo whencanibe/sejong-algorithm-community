@@ -11,6 +11,7 @@ import {
   CartesianGrid, ReferenceDot, ResponsiveContainer
 } from "recharts";
 
+// 브라우저 창 크기 추적용 커스텀 훅
 function useWindowSize() {
   const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
   useEffect(() => {
@@ -24,54 +25,59 @@ function useWindowSize() {
 }
 
 function DepartmentRanking() {
-  const navigate = useNavigate();
-  const [windowWidth] = useWindowSize();
-  const [userInfo, setUserInfo] = useState(null);
-  const [studentRanking, setStudentRanking] = useState([]);
-  const [percentile, setPercentile] = useState(0);
-  const [rankInfo, setRankInfo] = useState({ rank: 0, total: 0 });
+  const navigate = useNavigate(); // 페이지 이동용 hook
+  const [windowWidth] = useWindowSize(); // 창 너비 추적
+  const [userInfo, setUserInfo] = useState(null); // 로그인한 사용자 정보
+  const [studentRanking, setStudentRanking] = useState([]); // 학과별 랭킹 정보
+  const [percentile, setPercentile] = useState(0); // 학과 내 상위 퍼센트
+  const [rankInfo, setRankInfo] = useState({ rank: 0, total: 0 }); // 순위 및 총 인원 수
 
+  // 데이터 불러오기
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 백준 정보 갱신 요청
         await axios.post(`http://localhost:4000/info/api/refresh`, {}, {
           withCredentials: true,
         });
 
+        // 사용자 정보 조회
         const userRes = await axios.get(`http://localhost:4000/info/api/mypage`, {
           withCredentials: true,
         });
         const userData = userRes.data;
         setUserInfo(userData);
-        setRankInfo({ rank: userData.rankInDepartment ?? 0});
+        setRankInfo({ rank: userData.rankInDepartment ?? 0 });
 
+        // 학과 내 상위 백분위 조회
         const percentileRes = await axios.get(`http://localhost:4000/info/api/percentile`, {
           withCredentials: true,
         });
         const { percentileInDepartment } = percentileRes.data;
         setPercentile(percentileInDepartment ?? 0);
 
+        // 학과별 랭킹 리스트 불러오기
         const studentRankingRes = await axios.get(
           `http://localhost:4000/info/api/studentranking/${userData.department}`,
           { withCredentials: true }
         );
         setStudentRanking(studentRankingRes.data);
 
-        // 학과 랭킹 정렬 및 내 순위 계산
-const sorted = [...studentRankingRes.data].sort((a, b) => b.solvedNum - a.solvedNum);
-const myRank = sorted.findIndex(u => u.name === userData.name) + 1;
+        // 학과 랭킹 정렬 및 사용자 순위 계산
+        const sorted = [...studentRankingRes.data].sort((a, b) => b.solvedNum - a.solvedNum);
+        const myRank = sorted.findIndex(u => u.name === userData.name) + 1;
 
-setRankInfo({
-  rank: myRank,
-  total: sorted.length
-});
+        setRankInfo({
+          rank: myRank,
+          total: sorted.length
+        });
 
-// 콘솔로 확인
-console.log("✅ [학과 랭킹 정렬 결과]");
-sorted.forEach((u, i) => {
-  const marker = u.name === userData.name ? "← 나" : "";
-  console.log(`${i + 1}등 - ${u.name}: ${u.solvedThisWeek}개 ${marker}`);
-});
+        // 콘솔로 결과 출력
+        console.log("✅ [학과 랭킹 정렬 결과]");
+        sorted.forEach((u, i) => {
+          const marker = u.name === userData.name ? "← 나" : "";
+          console.log(`${i + 1}등 - ${u.name}: ${u.solvedThisWeek}개 ${marker}`);
+        });
 
       } catch (err) {
         console.error("데이터 불러오기 실패:", err);
@@ -84,6 +90,7 @@ sorted.forEach((u, i) => {
     return <div style={{ padding: "40px", fontSize: "18px" }}>로딩 중...</div>;
   }
 
+  // 시각화를 위한 데이터 구성
   const data = studentRanking.map((user) => ({
     name: user.name,
     solved: user.solvedNum,
@@ -93,10 +100,9 @@ sorted.forEach((u, i) => {
   const myName = userInfo?.name ?? '';
   const myData = sortedData.find((d) => d.name === myName);
 
-  // 정규분포용 데이터
+  // 정규분포 곡선 데이터 생성
   const myX = 100 - percentile;
   const myY = Math.exp(-((myX - 50) ** 2) / (2 * 15 ** 2));
-
   const curveData = Array.from({ length: 100 }, (_, i) => {
     const x = i;
     const y = Math.exp(-((x - 50) ** 2) / (2 * 15 ** 2));
@@ -115,7 +121,7 @@ sorted.forEach((u, i) => {
       boxSizing: 'border-box',
       color: '#e0f7fa',
     }}>
-      {/* 왼쪽 그래프 영역 */}
+      {/* 왼쪽: 그래프 전체 영역 */}
       <div
         style={{
           flex: '1 1 700px',
@@ -126,7 +132,7 @@ sorted.forEach((u, i) => {
           gap: '40px'
         }}
       >
-        {/* 상위 퍼센트 시각화 바 */}
+        {/* 퍼센트 막대 시각화 */}
         <div style={{
           width: '90%',
           height: '50px',
@@ -164,7 +170,7 @@ sorted.forEach((u, i) => {
           </div>
         </div>
 
-        {/* 정규분포 그래프 */}
+        {/* 정규분포 곡선 차트 */}
         <div style={{ width: '100%', height: '200px' }}>
           <h2 style={{ textAlign: 'center', marginTop: 0 }}>(학과) 백준 티어 랭킹</h2>
           <ResponsiveContainer key={windowWidth} width="100%" height="100%">
@@ -215,7 +221,7 @@ sorted.forEach((u, i) => {
           </ResponsiveContainer>
         </div>
 
-        {/* 학과 내 학생별 풀이 수 랭킹 */}
+        {/* 세로 바 학과 랭킹 차트 */}
         <div style={{ width: '100%', height: sortedData.length * 70, marginTop: '40px' }}>
           <h2 style={{ textAlign: 'center' }}>학과 내 문제 풀이 수 랭킹</h2>
           <BContainer key={windowWidth} width="100%" height="100%">
@@ -303,7 +309,7 @@ sorted.forEach((u, i) => {
         </div>
       </div>
 
-      {/* 내 정보 카드 */}
+      {/* 오른쪽: 내 정보 카드 박스 */}
       <div
         style={{
           flex: '0 0 300px',
