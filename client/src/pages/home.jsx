@@ -49,6 +49,7 @@ const [globalRanking, setGlobalRanking] = useState([]);
     handle: '',
     tier: null,
     ratingRank: null,
+    percentile: null,
     nickname: name,
     rankingData: globalRanking
   });
@@ -207,10 +208,11 @@ const [globalRanking, setGlobalRanking] = useState([]);
           {isLoggedIn ? (
             <button onClick={async () => {
               try {
-                await axios.get("http://localhost:4000/user/logout", { withCredentials: true }); // 로그아웃 요청
-                setIsLoggedIn(false); // 로그인 상태 false로 변경
-                setBasicInfo(null); // 기본 정보 초기화
-                window.location.href = "/"; // 홈으로 리디렉션
+                await axios.get("http://localhost:4000/user/logout", { withCredentials: true });
+                localStorage.removeItem("myPage:userInfo"); // 로그아웃 하면 userInfo 캐시 지우기
+                setIsLoggedIn(false);
+                setBasicInfo(null);
+                window.location.href = "/";
               } catch (err) {
                 console.error("로그아웃 실패:", err); // 로그아웃 실패 시 에러 콘솔 출력
               }

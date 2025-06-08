@@ -9,6 +9,14 @@ const toUtcKey = d =>
   (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10); //타입이 날짜이면 그대로 쓰고 아니면 날짜로 변환 후, 문자열로 변환
 
 
+/**
+ * 사용자의 최근 1주일 간의 문제 풀이 기록을 0 또는 1로 표시한 배열로 반환합니다.
+ * - 각 원소는 하루를 나타내며, 해당 날짜에 문제를 풀었으면 1, 아니면 0입니다.
+ * - 기준은 오늘을 포함한 이번 주(일요일 시작)입니다.
+ *
+ * @param {number|string} userId - 사용자 고유 ID
+ * @returns {Promise<number[]>} - 풀이 여부 배열 (예: [0, 1, 1, 0, 1, 0, 0])
+ */
 export async function buildFootprints(userId) {
   if (!userId || Number.isNaN(Number(userId))) {
     throw new AppError('잘못된 userId 입니다.', 400);
@@ -37,7 +45,14 @@ export async function buildFootprints(userId) {
   return result;
 }
 
-
+/**
+ * 주어진 사용자의 연속 문제 풀이 일수를 계산합니다.
+ * - 기준은 오늘 KST 자정부터 어제로 거슬러 올라가며 연속된 풀이 일 수입니다.
+ * - 최근 100일 이내 데이터만 조회하며, 오늘과 어제 모두 미풀이 시 streak는 0입니다.
+ *
+ * @param {number|string} userId - 사용자 고유 ID
+ * @returns {Promise<number>} - 연속 풀이 일 수
+ */
 export async function getStreak(userId) {
   if (!userId || Number.isNaN(Number(userId))) {
     throw new AppError('잘못된 userId 입니다.', 400);

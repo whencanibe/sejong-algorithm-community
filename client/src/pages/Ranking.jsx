@@ -6,7 +6,7 @@ import DepartmentRanking from './DepartmentRanking';
 
 function Ranking() {
   const [activeTab, setActiveTab] = useState('university');
-  const [isLoggedIn, setIsLoggedIn] = useState(null); // null = 아직 확인 안됨
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   // 로그인 확인
@@ -18,9 +18,6 @@ function Ranking() {
         navigate("/login");
       });
   }, []);
-
-if (isLoggedIn === null) return <div>로딩 중...</div>;
-
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#0d1117', color: '#e0f7fa' }}>
       {/* 고정 헤더 */}

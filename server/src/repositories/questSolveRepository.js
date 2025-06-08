@@ -3,7 +3,7 @@ import prisma from '../models/prisma.js';
 // 단일 퀘스트 해결 저장
 export async function saveQuestSolve({ userId, date, problemId, solvedAt = new Date() }) {
   return await prisma.questSolve.upsert({
-    where: {                                       // 복합 PK
+    where: {                                       // 복합 Primary Ket
       userId_date_problemId: { userId, date, problemId }
     },
     update: {},                                    // 이미 있으면 무시

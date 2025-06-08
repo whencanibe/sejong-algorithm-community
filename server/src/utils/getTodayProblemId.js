@@ -13,11 +13,138 @@ const DAILY_PROBLEM_IDS = [
   11035, 11034, 11033, 11032, 11031, 11030, 11029, 11028, 11027, 11026,
   11025, 11024, 11023, 11022, 11021, 11020, 11019, 11018, 11017, 11016
 ]; //원하는 문제 추가 가능
+
+// 문제 ID에 대응하는 제목 매핑 객체
+export const PROBLEM_TITLE_MAP = {
+  1005: "ACM Craft",
+  1021: "회전하는 큐",
+  1158: "요세푸스 문제",
+  1406: "에디터",
+  1759: "암호 만들기",
+  1874: "스택 수열",
+  1920: "수 찾기",
+  1932: "정수 삼각형",
+  1940: "주몽",
+  1966: "프린터 큐",
+  2164: "카드2",
+  2239: "스도쿠",
+  2293: "동전 1",
+  2294: "동전 2",
+  2346: "풍선 터뜨리기",
+  2580: "스도쿠",
+  3190: "뱀",
+  5397: "키로거",
+  5430: "AC",
+  6603: "로또",
+  9012: "괄호",
+  9251: "LCS",
+  9252: "LCS 2",
+  9663: "N-Queen",
+  10816: "숫자 카드 2",
+  10828: "스택",
+  10845: "큐",
+  10866: "덱",
+  10971: "외판원 순회 2",
+  10972: "다음 순열",
+  10973: "이전 순열",
+  10974: "모든 순열",
+  11016: "Fall 2005: Summer on the Beach",
+  11017: "Spring 2006: Midterm Elections",
+  11018: "Fall 2006: 100 Years of Engineering",
+  11019: "Spring 2007: Final Exams",
+  11020: "Fall 2007: The Programming Contest Programming Contest",
+  11021: "A+B - 7",
+  11022: "A+B - 8",
+  11023: "더하기 3",
+  11024: "더하기 4",
+  11025: "요세푸스 문제 3",
+  11026: "BIẾN ĐỔI CẶP SỐ",
+  11027: "교환",
+  11028: "UỐN VUÔNG",
+  11029: "ĐỘI MŨ",
+  11030: "SUPER HATS",
+  11031: "GIẢI THƯỞNG",
+  11032: "ĐƯỜNG RỒNG",
+  11033: "TÁO CHUỐI",
+  11034: "캥거루 세마리2",
+  11035: "SÀNG",
+  11036: "ĐẾM",
+  11037: "중복 없는 수",
+  11038: "Entrance Examination",
+  11039: "Short Phrase",
+  11040: "ICPC Calculator",
+  11041: "500-yen Saving",
+  11042: "Deadlock Detection",
+  11043: "Bridge Construction Planning",
+  11044: "Complex Paper Folding",
+  11045: "Development of Small Flying Robots",
+  11046: "팰린드롬??",
+  11047: "동전 0",
+  11048: "이동하기",
+  11049: "행렬 곱셈 순서",
+  11050: "이항 계수 1",
+  11051: "이항 계수 2",
+  11052: "카드 구매하기",
+  11053: "가장 긴 증가하는 부분 수열",
+  11054: "가장 긴 바이토닉 부분 수열",
+  11055: "가장 큰 증가하는 부분 수열",
+  11057: "오르막 수",
+  11066: "파일 합치기",
+  11286: "절댓값 힙",
+  11728: "배열 합치기",
+  11866: "요세푸스 문제 0",
+  12865: "평범한 배낭",
+  14502: "연구소",
+  14503: "로봇 청소기",
+  14888: "연산자 끼워넣기",
+  14889: "스타트와 링크",
+  14891: "톱니바퀴",
+  15649: "N과 M (1)",
+  15650: "N과 M (2)",
+  15651: "N과 M (3)",
+  15652: "N과 M (4)",
+  15654: "N과 M (5)",
+  15655: "N과 M (6)",
+  15656: "N과 M (7)",
+  15657: "N과 M (8)",
+  15658: "연산자 끼워넣기 (2)",
+  15659: "연산자 끼워넣기 (3)",
+  15660: "테트로미노 (2)",
+  15661: "링크와 스타트",
+  15662: "톱니바퀴 (2)",
+  15663: "N과 M (9)",
+  15664: "N과 M (10)",
+  15665: "N과 M (11)",
+  15666: "N과 M (12)",
+  15667: "2018 연세대학교 프로그래밍 경진대회",
+  15668: "방 번호",
+  15669: "나무 위의 입자",
+  15670: "도로 공사",
+  15671: "오델로",
+  15672: "시공스톤",
+  15673: "헤븐스 키친 2",
+  15683: "감시",
+  15686: "치킨 배달",
+};
+
+/**
+ * 오늘 날짜를 기준으로 해시를 계산해, DAILY_PROBLEM_IDS 중 하나를 선택합니다.
+ * 이로써 매일 하나의 고정된 문제를 동일하게 추천할 수 있습니다.
+ *
+ * @returns {{
+ *   todayProblemId: number,
+ *   todayProblemTitle: string
+ * }} 오늘의 문제 ID와 제목
+ */
+export function getTodayProblemDetail() {
+  const today = new Date().toISOString().split('T')[0];
+  const hash = [...today].reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const index = hash % DAILY_PROBLEM_IDS.length;
+
+  const todayProblemId = DAILY_PROBLEM_IDS[index];
   
-  export function getTodayProblemId() {
-    const today = new Date().toISOString().split('T')[0];
-    const hash = [...today].reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    const index = hash % DAILY_PROBLEM_IDS.length;
-  
-    return DAILY_PROBLEM_IDS[index];
-  }
+  return {
+    todayProblemId,
+    todayProblemTitle: PROBLEM_TITLE_MAP[todayProblemId]
+  };
+}
