@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './MyPage.css';
 import { loadCachedUserInfo, saveCachedUserInfo, clearCachedUserInfo } from '../utils/userInfoCache.js';
 
+// 상대 경로를 절대 경로로 변환 (없으면 기본 이미지)
 const toAbsolute = (url) =>
   !url ? "/기본이미지.png"
     : url.startsWith("http") ? url
@@ -30,17 +31,18 @@ function MyPage() {
     };
   });
 
-  // 2) userInfo에서 파생되는 뷰 전용 상태
+  // userInfo에서 파생되는 뷰 전용 상태
   const [profileImg, setProfileImg] = useState(() =>
     toAbsolute(userInfo.profileImage)          // 캐시 기반 초기값
   );
   const [nickname, setNickname] = useState(() => userInfo.name);
-  const [isEditingNickname, setIsEditingNickname] = useState(false);
-  const [nicknameError, setNicknameError] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isEditingNickname, setIsEditingNickname] = useState(false); // 닉네임 수정 모드 여부
+  const [nicknameError, setNicknameError] = useState(false); // 닉네임 오류 여부
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 여부
 
   const [refreshing, setRefreshing] = useState(false); // 프로필 새로고침 버튼 관련
 
+  // 사용자 정보 새로 불러오기 함수
   const fetchUserInfo = async () => {
     if (refreshing) return;          // 중복 클릭 방지
     setRefreshing(true);             // 새로고침 시작
@@ -64,7 +66,6 @@ function MyPage() {
       const merged = { ...res.data, profileImage: imageUrl };
       setProfileImg(imageUrl);
       setUserInfo(merged);
-      //setIsLoggedIn(true);
       setNickname(merged.name);
 
       //localStorage 갱신
@@ -77,7 +78,7 @@ function MyPage() {
       } else { // 외부 API 호출 중 문제가 생겼다면
         console.error("프로필 로드 실패:", error);
         alert("외부 네트워크 오류입니다. 잠시 후에 다시 시도하세요.");
-        navigate("/", { replace: true });
+        navigate("/", { replace: true }); // 홈으로 이동
       }
 
     } finally {
@@ -138,7 +139,8 @@ function MyPage() {
       }
     })();
   }, [navigate]);
-
+  
+  // 로그인 확인된 후에만 사용자 정보 불러오기
   useEffect(() => {
     if (!isLoggedIn) return;
     if (!loadCachedUserInfo()) fetchUserInfo(); // 캐시 없을때만 호출
@@ -150,6 +152,7 @@ function MyPage() {
     setNickname(userInfo.name);
   }, [userInfo]);
 
+    // 프로필 이미지 변경
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -177,6 +180,7 @@ function MyPage() {
     }
   };
 
+  // 닉네임 저장 처리
   const handleNicknameSave = async () => {
     if (!nickname.trim()) {
       setNicknameError(true);
@@ -220,15 +224,18 @@ function MyPage() {
     boxSizing: 'border-box',
     color: 'black'
   };
-
+  
+  // 백준 이름 없을 경우 로딩 중 화면
   if (!userInfo.baekjoonName) {
-  return (
-    <div className="loading-screen">
-      <span className="loader" />
-      &nbsp;로딩 중...
-    </div>
-  );
-}
+    return (
+      <div className="loading-screen">
+        <span className="loader" />
+        &nbsp;로딩 중...
+      </div>
+    );
+  }
+  
+  // 본문 렌더링
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', maxHeight: '100%', overflowX: 'hidden' }}>
       <StarField />
