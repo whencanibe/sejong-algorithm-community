@@ -114,6 +114,7 @@
   animation: float-spin 3s ease-in-out infinite;
   z-index: 1;
   filter: drop-shadow(0 0 8px white);
+   transform: rotate(-20deg);
 }
 
 /* 메인 본문 */
