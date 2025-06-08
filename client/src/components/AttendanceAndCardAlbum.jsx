@@ -2,85 +2,64 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CardAlbum from "./CardAlbum"; // 카드 보관함 컴포넌트
 
-export default function AttendanceAndCardAlbum( isLoggedIn ) {
-  //  상태 정의
-  const [footprints, setFootprints] = useState([]); // 출석 발자국 상태
-  const [cards, setCards] = useState([]);           // 소유 카드 목록
-
+export default function AttendanceAndCardAlbum({ isLoggedIn = false  }) {
+  // 발자국(출석 상태), 카드 목록 등 주요 상태 정의
+  const [footprints, setFootprints] = useState([]);
+  const [cards, setCards] = useState([]);
   const [rewardGiven, setRewardGiven] = useState(() => {
-    // 카드 보상 여부를 localStorage에서 초기화
     return localStorage.getItem("rewardGiven") === "true";
   });
-
-  const [newCard, setNewCard] = useState(null);     // 새로 받은 카드 정보
-  const [showCardModal, setShowCardModal] = useState(false); // 카드 모달 표시 여부
-
+  const [newCard, setNewCard] = useState(null);
+  const [showCardModal, setShowCardModal] = useState(false);
   const [consecutiveDays, setConsecutiveDays] = useState(0);
 
-  
+  // 유저 streak(연속 출석 일수) 정보 불러오기
+  useEffect(() => {
+    axios.get("http://localhost:4000/info/api/mypage", { withCredentials: true })
+      .then(res => {
+        if (res.data?.streak != null) {
+          console.log("✅ streak 값:", res.data.streak);
+          setConsecutiveDays(res.data.streak);
+        }
+      })
+      .catch(err => {
+        console.error("연속 출석 정보 불러오기 실패:", err);
+      });
+  }, []);
 
-
-
-useEffect(() => {
-  axios.get("http://localhost:4000/info/api/mypage", { withCredentials: true })
-    .then(res => {
-      if (res.data?.streak != null) {
-        console.log("✅ 연속 출석 일수 streak 값:", res.data.streak);
-        setConsecutiveDays(res.data.streak);
-      }
-    })
-    .catch(err => {
-      console.error("연속 출석 정보 불러오기 실패:", err);
-    });
-}, []);
-
-
-  //  출석 정보(발자국) 불러오기
+  // 발자국(출석 기록) 불러오기
   useEffect(() => {
     axios.get("http://localhost:4000/info/api/footprints", { withCredentials: true })
       .then(res => {
         const data = res.data;
-        console.log("서버 응답 데이터:", data);
+        console.log("서버 응답:", data);
 
-        if (Array.isArray(data)) {
-          setFootprints(data);
-        } else if (Array.isArray(data.footprints)) {
-          setFootprints(data.footprints);
-        } else {
-          console.error("응답 데이터 형식이 올바르지 않습니다:", data);
-        }
+        if (Array.isArray(data)) setFootprints(data);
+        else if (Array.isArray(data.footprints)) setFootprints(data.footprints);
+        else console.error("올바르지 않은 응답 형식:", data);
       })
       .catch(err => {
         console.error("발자국 불러오기 실패:", err);
       });
   }, []);
 
-  //  유저 카드 목록 불러오기
+  // 유저가 소유한 카드 목록 불러오기
   useEffect(() => {
     axios.get("http://localhost:4000/card/me", { withCredentials: true })
       .then(res => setCards(res.data))
       .catch(err => console.error("카드 불러오기 실패:", err));
   }, []);
 
-  //  도장 7개 찍었을 때 카드 보상 자동 지급
+  // 도장 7개 찍었을 때 카드 자동 지급 로직
   useEffect(() => {
-    const stampCount = 6; // 테스트용: 도장 7개 있다고 가정
-
-    // 실사용 시엔 이걸 사용해야 함
-    // const stampCount = footprints.filter(f => f).length;
+    const stampCount = footprints.filter(f => f).length;
 
     if (stampCount === 7 && !rewardGiven) {
-      axios.post("http://localhost:4000/card/reward", {
-        stampCount: 7,
-      }, {
-        withCredentials: true,
-      })
+      axios.post("http://localhost:4000/card/reward", { stampCount: 7 }, { withCredentials: true })
         .then(res => {
           if (!res.data.card) return;
 
           const newCard = res.data.card;
-
-          // 카드 상태 업데이트 및 모달 표시
           setCards(prev => [newCard, ...prev]);
           setNewCard(newCard);
           setShowCardModal(true);
@@ -94,52 +73,54 @@ useEffect(() => {
     }
   }, [footprints, rewardGiven]);
 
+ const displayedFootprints = !isLoggedIn ? Array(7).fill(true) : footprints;
+
+
   // 카드 모달 닫기
   const closeCardModal = () => setShowCardModal(false);
 
   return (
     <div style={{ display: "flex", gap: "40px", margin: "80px 40px" }}>
-       
-       {/* 연속 출석 텍스트 */}
-       {!isLoggedIn && (
-  <div style={{
-    position: "absolute",
-    top: "120px",
-    fontSize: "20px",
-    fontWeight: "bold",
-    color: "#00e5ff",
-    textShadow: "0 0 4px #00e5ff",
-    zIndex: 5,
-    
-  }}>
-    연속 {consecutiveDays}일차 출석 성공 !!
-    
-  </div>
-       )}
-      {/*  발자국 UI */}
-      <div style={{ display: "flex", gap: "20px" }}>
-        {footprints.map((filled, i) => (
-          <img
-            key={i}
-            src="/발자국.png"
-            alt={`footprint-${i}`}
-            style={{
-              width: "80px",
-              height: "80px",
-              cursor: "default",
-              transition: "0.2s",
-              zIndex: 10,
-              position: 'relative' ,
-              transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
-              filter: filled
-                ? "brightness(1.2) drop-shadow(0 0 8px #4dabf7)"  // 도장 찍힌 발자국
-                : "grayscale(70%) opacity(0.8)",                  // 안 찍힌 발자국
-            }}
-          />
-        ))}
+      
+      {/* 로그인 상태일 때만 연속 출석 텍스트 표시 */}
+      {isLoggedIn &&  (
+        <div className="attendance-streak">
+          연속 {consecutiveDays}일차 출석 성공 !!
+        </div>
+      )}
+
+      {/*  발자국 이미지 + 요일 텍스트 */}
+      <div style={{ display: "flex", gap: "20px", marginLeft :"-30px" }}>
+        {displayedFootprints.map((filled, i) => {
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
+  return (
+    <div key={i} style={{ textAlign: "center" }}>
+      <img
+        src="/발자국.png"
+        alt={`footprint-${i}`}
+        style={{
+          width: "80px",
+          height: "80px",
+          cursor: "default",
+          transition: "0.2s",
+          zIndex: 10,
+          position: "relative",
+          transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
+          filter: filled
+            ? "brightness(1.2) drop-shadow(0 0 8px #4dabf7)"
+            : "grayscale(70%) opacity(0.8)",
+        }}
+      />
+      <div style={{ marginTop: "5px", fontSize: "18px", color: "#00e5ff" }}>
+        {days[i]}
+      </div>
+    </div>
+  );
+})}
+
       </div>
 
-      {/*  새 카드 모달 */}
+      {/*  카드 보상 모달 */}
       {showCardModal && newCard && (
         <div
           style={{
@@ -167,7 +148,7 @@ useEffect(() => {
               animation: "neon-flicker 1.5s infinite alternate",
             }}
           >
-            {/* ✕ 닫기 버튼 */}
+            {/* x 닫기 버튼 */}
             <button
               onClick={closeCardModal}
               style={{
@@ -190,6 +171,7 @@ useEffect(() => {
               ✕
             </button>
 
+            {/* 카드 정보 */}
             <h2 style={{ color: "#00e5ff", marginBottom: "12px" }}>
               새로운 카드 획득!
             </h2>
