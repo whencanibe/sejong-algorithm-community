@@ -110,6 +110,21 @@ html, body {
 
 
 
+@keyframes neonFlicker1 {
+  0% {
+    opacity: 1;
+    text-shadow: 0 0 6px #00e5ff, 0 0 12px #00e5ff;
+  }
+  50% {
+    opacity: 0.7;
+    text-shadow: 0 0 3px #00e5ff;
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 6px #00e5ff, 0 0 12px #00e5ff;
+  }
+}
+
 
 
 .alien {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CardAlbum from "./CardAlbum"; // 카드 보관함 컴포넌트
 
-export default function AttendanceAndCardAlbum( isLoggedIn ) {
+export default function AttendanceAndCardAlbum({ isLoggedIn } ) {
   //  상태 정의
   const [footprints, setFootprints] = useState([]); // 출석 발자국 상태
   const [cards, setCards] = useState([]);           // 소유 카드 목록
@@ -64,10 +64,10 @@ useEffect(() => {
 
   //  도장 7개 찍었을 때 카드 보상 자동 지급
   useEffect(() => {
-    const stampCount = 6; // 테스트용: 도장 7개 있다고 가정
+    //const stampCount = 7; // 테스트용: 도장 7개 있다고 가정
 
     // 실사용 시엔 이걸 사용해야 함
-    // const stampCount = footprints.filter(f => f).length;
+     const stampCount = footprints.filter(f => f).length;
 
     if (stampCount === 7 && !rewardGiven) {
       axios.post("http://localhost:4000/card/reward", {
@@ -106,9 +106,10 @@ useEffect(() => {
     position: "absolute",
     top: "120px",
     fontSize: "20px",
-    fontWeight: "bold",
-    color: "#00e5ff",
-    textShadow: "0 0 4px #00e5ff",
+    fontWeight: "700",
+    color: "#b3e5fc",
+    textShadow: "0 0 6px rgba(0, 229, 255, 0.6)",
+    animation: "neonFlicker1 3s infinite alternate",
     zIndex: 5,
     
   }}>
@@ -116,28 +117,35 @@ useEffect(() => {
     
   </div>
        )}
-      {/*  발자국 UI */}
-      <div style={{ display: "flex", gap: "20px" }}>
-        {footprints.map((filled, i) => (
-          <img
-            key={i}
-            src="/발자국.png"
-            alt={`footprint-${i}`}
-            style={{
-              width: "80px",
-              height: "80px",
-              cursor: "default",
-              transition: "0.2s",
-              zIndex: 10,
-              position: 'relative' ,
-              transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
-              filter: filled
-                ? "brightness(1.2) drop-shadow(0 0 8px #4dabf7)"  // 도장 찍힌 발자국
-                : "grayscale(70%) opacity(0.8)",                  // 안 찍힌 발자국
-            }}
-          />
-        ))}
+     {/* 발자국 + 요일 텍스트 */}
+<div style={{ display: "flex", gap: "20px" }}>
+  {footprints.map((filled, i) => {
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    return (
+      <div key={i} style={{ textAlign: "center" }}>
+        <img
+          src="/발자국.png"
+          alt={`footprint-${i}`}
+          style={{
+            width: "80px",
+            height: "80px",
+            cursor: "default",
+            transition: "0.2s",
+            zIndex: 10,
+            position: "relative",
+            transform: `rotate(${i % 2 === 0 ? "-270deg" : "120deg"}) scaleX(${i % 2 === 0 ? 1 : -1})`,
+            filter: filled
+              ? "brightness(1.2) drop-shadow(0 0 8px #4dabf7)"
+              : "grayscale(70%) opacity(0.8)",
+          }}
+        />
+        <div style={{ marginTop: "6px", fontSize: "18px", color: "#00e5ff" }}>
+          {days[i]}
+        </div>
       </div>
+    );
+  })}
+</div>
 
       {/*  새 카드 모달 */}
       {showCardModal && newCard && (
