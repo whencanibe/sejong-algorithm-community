@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// 학과(전공) 목록
 const departments = [
   "AI로봇학과",
   "AI연계융합전공",
@@ -87,6 +88,7 @@ const departments = [
   "회화과"
 ];
 
+// 입력 필드 정의
 const fields = [
   { label: '이메일', name: 'email', type: 'email' },
   { label: '비밀번호', name: 'password', type: 'password' },
@@ -105,12 +107,14 @@ export default function Signup() {
     department: '',
   });
 
-  const navigate = useNavigate();
-
+  const navigate = useNavigate(); // 페이지 이동 함수
+  
+  // 입력값 변경 핸들러
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+  
+  // 회원가입 제출 요청
   const handleSubmit = async () => {
     try {
       const response = await fetch('http://localhost:4000/user/signup', {
@@ -119,14 +123,14 @@ export default function Signup() {
               'Content-Type': 'application/json',
           },
           body: JSON.stringify(form),
-          credentials: 'include'
+          credentials: 'include'  // 세션 쿠키 포함
       });
 
       const data = await response.json();
 
       if (response.status === 201) {
           alert(data.message || '회원가입이 성공적으로 완료되었습니다!');
-          navigate('/login');
+          navigate('/login'); // 로그인 페이지로 이동
       } else {
           alert(`회원가입 실패: ${data.error || '알 수 없는 오류'}`);
       }
@@ -148,6 +152,7 @@ export default function Signup() {
         paddingTop: '80px',
         boxSizing: 'border-box'
     }}>
+      {/* 상단 고정 헤더 */}
       <header style={{
         position: 'fixed',
         top: 0,
@@ -183,7 +188,8 @@ export default function Signup() {
           홈으로
         </button>
       </header>
-
+      
+      {/* 회원가입 폼 컨테이너 */}
       <div 
         style={{ 
           width: '90vw', 
@@ -199,6 +205,8 @@ export default function Signup() {
         }}
       >
         <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#afefff' }}>회원가입</h2>
+        
+        {/* 기본 입력 필드 */}
         {fields.map(({ label, name, type }) => (
           <div key={name} style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold', color: '#b3e5fc' }}>{label}</label>
@@ -220,7 +228,8 @@ export default function Signup() {
             />
           </div>
         ))}
-
+        
+        {/* 학과(전공) 선택 드롭다운 */}
         <div style={{ marginBottom: '16px' }}>
           <label style={{ display: 'block', marginBottom: '6px', fontWeight: 'bold', color: '#b3e5fc' }}>학과전공</label>
           <select
@@ -243,7 +252,8 @@ export default function Signup() {
             ))}
           </select>
         </div>
-
+        
+        {/* 가입하기 버튼 */}
         <button
           onClick={handleSubmit}
           style={{

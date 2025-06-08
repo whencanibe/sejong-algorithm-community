@@ -5,19 +5,20 @@ import UniversityRanking from './UniversityRanking';
 import DepartmentRanking from './DepartmentRanking';
 
 function Ranking() {
-  const [activeTab, setActiveTab] = useState('university');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [activeTab, setActiveTab] = useState('university'); // 현재 선택된 탭 상태
+  const [isLoggedIn, setIsLoggedIn] = useState(false);       // 로그인 여부
   const navigate = useNavigate();
 
   // 로그인 확인
   useEffect(() => {
     axios.get("http://localhost:4000/info/api/basicprofile", { withCredentials: true })
-      .then(() => setIsLoggedIn(true))
+      .then(() => setIsLoggedIn(true)) // 세션이 유효하면 로그인 인정
       .catch(() => {
-        alert("로그인이 필요합니다.");
-        navigate("/login");
+        alert("로그인이 필요합니다."); // 세션 만료 또는 비로그인 시 알림
+        navigate("/login");            // 로그인 페이지로 이동
       });
   }, []);
+
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#0d1117', color: '#e0f7fa' }}>
       {/* 고정 헤더 */}
@@ -44,7 +45,7 @@ function Ranking() {
       >
         랭킹 페이지
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/')} // 홈으로 이동 버튼
           style={{
             padding: '8px 16px',
             fontSize: '14px',
@@ -64,7 +65,7 @@ function Ranking() {
       {/* 본문 */}
       <main
         style={{
-          marginTop: '70px',
+          marginTop: '70px', // 헤더 공간 확보
           padding: '0 40px 40px',
           boxSizing: 'border-box',
           maxWidth: '1200px',
@@ -73,10 +74,11 @@ function Ranking() {
         }}
       >
 
-         <img
-            src="/public/배경/천왕성.png" 
-            alt="floating-astronaut"
-            style={{
+        {/* 배경 이미지: 천왕성 */}
+        <img
+          src="/public/배경/천왕성.png" 
+          alt="floating-astronaut"
+          style={{
             position: "absolute",
             top: "100px",
             right: "100px",
@@ -84,13 +86,13 @@ function Ranking() {
             animation: "float-spin2 6s ease-in-out infinite",
             zIndex: 1,
             filter: "drop-shadow(0 0 6px white)",
-            }}
-         />
+          }}
+        />
 
-        {/* 탭 버튼 */}
+        {/* 탭 버튼 영역 */}
         <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
           <button
-            onClick={() => setActiveTab('university')}
+            onClick={() => setActiveTab('university')} // 세종대학교 전체 탭
             style={{
               padding: '10px 20px',
               backgroundColor: activeTab === 'university' ? '#00e5ff' : '#1e293b',
@@ -105,7 +107,7 @@ function Ranking() {
             세종대학교
           </button>
           <button
-            onClick={() => setActiveTab('department')}
+            onClick={() => setActiveTab('department')} // 학과별 탭
             style={{
               padding: '10px 20px',
               backgroundColor: activeTab === 'department' ? '#00e5ff' : '#1e293b',
@@ -121,7 +123,7 @@ function Ranking() {
           </button>
         </div>
 
-        {/* 탭 내용 */}
+        {/* 탭에 따라 컴포넌트 렌더링 */}
         <div style={{ width: '100%' }}>
           {activeTab === 'university' ? <UniversityRanking /> : <DepartmentRanking />}
         </div>
