@@ -83,6 +83,10 @@ export default function Home() {
 
     const fetchData = async () => {
       try {
+        // 세션 갱신
+        await axios.post(`http://localhost:4000/info/api/refresh`, {}, {
+          withCredentials: true,
+        });
         const res = await axios.get('http://localhost:4000/info/api/mypage', { withCredentials: true });
         const { baekjoonName, tier, rank, name } = res.data;
 
