@@ -1,3 +1,4 @@
+// 외부 API 호출하는 로직을 테스트 하기위한 파일로 실제 서비스에는 사용되지 않음.
 import { Router } from 'express';
 import { getSolvedProblemIdsCtrl, getRankCtrl } from '../controllers/solvedacApiController.js';
 const router = Router();

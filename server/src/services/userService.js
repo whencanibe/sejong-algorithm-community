@@ -22,6 +22,7 @@ export async function signupService({ email, password, name, baekjoonName, depar
   try {
     user = await prisma.$transaction(async (tx) => {
       const existsEmail = await findUserByEmail(email, tx);
+      console.log(existsEmail);
       if (existsEmail) throw new AppError('중복 이메일입니다', 409);
 
       const existsName = await findUserByName(name, tx);
@@ -40,7 +41,7 @@ export async function signupService({ email, password, name, baekjoonName, depar
       }, tx);
     });
 
-    await syncSingleUser(user.id);
+    //await syncSingleUser(user.id);
 
     return user;
   } catch (error) {
