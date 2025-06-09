@@ -242,7 +242,7 @@ export default function Home() {
           </div>
 
           {/* 카드 앨범 */}
-          <div className="album-container" onClick={() => navigate("/cardalbum")}>
+          <div className="album-container">
             <CardAlbum cards={cards} />
           </div>
         </div>
