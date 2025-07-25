@@ -1,6 +1,6 @@
 // prisma/seed.js
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import { startOfWeek } from 'date-fns';
 
 const prisma = new PrismaClient();

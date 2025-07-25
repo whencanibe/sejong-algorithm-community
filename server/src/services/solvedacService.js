@@ -1,9 +1,11 @@
 import axios from 'axios'
 
+const SOLVEDAC_URL_BASE = "https://solved.ac/api/v3";
+
 //사용자가 푼 문제리스트 외부 API인 solved ac api 사용하여 가져오는 함수
 export async function getSolvedProblemIds(baekjoonName) {
     let pageNum = 1;
-    const url = `https://solved.ac/api/v3/search/problem`;
+    const url = SOLVEDAC_URL_BASE + `/search/problem`;
     const solvedProblemIds = [];
 
     try {
@@ -37,7 +39,7 @@ export async function getSolvedProblemIds(baekjoonName) {
 
 //사용자의 백준 랭킹과 티어를 외부 API인 solved ac api 사용하여 가져오는 함수
 export async function getRankandTier(baekjoonName) {
-    const url = 'https://solved.ac/api/v3/user/show' //?handle=백준이름
+    const url = SOLVEDAC_URL_BASE + '/user/show' //?handle=백준이름
 
     try {
         const response = await axios.get(url, {
@@ -61,7 +63,7 @@ export async function getRankandTier(baekjoonName) {
 
 // 문제 번호를 이용하여 그 문제에 대한 세부 정보를 가져오는 함수. 외부 API인 solved ac api 호출.
 export async function getProblemDetail(problemId) {
-    const url = 'https://solved.ac/api/v3/problem/show'; // ex ) ?problemId=2759
+    const url = SOLVEDAC_URL_BASE + '/problem/show'; // ex ) ?problemId=2759
     try {
         const response = await axios.get(url, {
             params: { problemId }, timeout: 20000

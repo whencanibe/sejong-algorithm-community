@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import prisma from "../models/prisma.js";
 import { createUser, deleteUserById, findUserByBaekjoonName, findUserByEmail, findUserById, findUserByName, findUserByStudentId } from '../repositories/userRepository.js';
 
