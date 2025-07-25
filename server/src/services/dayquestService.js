@@ -26,7 +26,7 @@ export async function getDayquestStatus(userId) {
     },
   });
   // 오늘 문제를 이미 풀었으면 퀘스트 완료 테이블에 저장
-  if(!!hasSolvedToday){
+  if(hasSolvedToday){
     const date = kstMidnight();
     await saveQuestSolve({userId, date, problemId:detail.todayProblemId});
   }

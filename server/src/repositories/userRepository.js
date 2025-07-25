@@ -1,5 +1,5 @@
-import { AppError } from "../errors/AppError.js";
-import prisma from "../models/prisma.js";
+import { AppError } from '../errors/AppError.js';
+import prisma from '../models/prisma.js';
 import { Prisma } from '@prisma/client';
 
 //회원가입 
@@ -7,40 +7,40 @@ export async function createUser({ email, hashedPassword, name, baekjoonName, de
   return tx.user.create({
     data: { email, password: hashedPassword, name, baekjoonName, department, studentId }, // db에 저장할 값
     select: { id: true, email: true, name: true, department: true, studentId: true } // 응답에 반환될 값 선택
-  })
+  });
 }
 // ID로 사용자 조회
 export async function findUserById(id, tx = prisma) {
   if (id == null) throw new AppError('userId가 없습니다', 400);
   return await tx.user.findUnique({
     where: { id }
-  })
+  });
 }
 // 이메일로 사용자 조회 (로그인 시 사용)
 export const findUserByEmail = async (email, tx = prisma) => {
   return await tx.user.findUnique({
     where: { email }
   });
-}
+};
 
 // 이름으로 사용자 검색 (중복 가능 → findFirst 사용)
 export const findUserByName = async (name, tx = prisma) => {
   return await tx.user.findFirst({
     where: { name }
   });
-}
+};
 // 백준 아이디로 사용자 검색
 export const findUserByBaekjoonName = async (baekjoonName, tx = prisma) => {
   return await tx.user.findFirst({
     where: { baekjoonName }
   });
-}
+};
 // 학번으로 사용자 검색
 export const findUserByStudentId = async (studentId, tx = prisma) => {
   return await tx.user.findFirst({
     where: { studentId }
   });
-}
+};
 
 /**
  * @param {number} id
@@ -90,7 +90,7 @@ export async function getRankByUserId(id) {
     select: { rank: true }
   });
 
-  if (!me) throw new Error("해당 유저 없음");
+  if (!me) throw new Error('해당 유저 없음');
 
   const count = await prisma.user.count({
     where: {
@@ -107,7 +107,7 @@ export async function getRankInDepartmentByUserId(id) {
     select: { rank: true, department: true }
   });
 
-  if (!me) throw new AppError("해당 유저 없음", 404);
+  if (!me) throw new AppError('해당 유저 없음', 404);
 
   const count = await prisma.user.count({
     where: {
@@ -184,7 +184,7 @@ export async function getGlobalRanking(limit) {
       RANK() OVER (ORDER BY solvedNum DESC) AS rank
     FROM User
     ORDER BY solvedNum DESC
-    ${limit ? Prisma.raw(`LIMIT ${Number(limit)}`) : Prisma.raw(``)}
+    ${limit ? Prisma.raw(`LIMIT ${Number(limit)}`) : Prisma.raw('')}
   `;
 }
 
@@ -204,6 +204,6 @@ export async function getDepartmentRanking(department, limit) {
     FROM User
     WHERE department = ${department}
     ORDER BY solvedNum DESC
-    ${limit ? Prisma.raw(`LIMIT ${Number(limit)}`) : Prisma.raw(``)}
+    ${limit ? Prisma.raw(`LIMIT ${Number(limit)}`) : Prisma.raw('')}
   `;
 }

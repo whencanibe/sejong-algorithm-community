@@ -1,4 +1,4 @@
-import prisma from "../models/prisma.js";
+import prisma from '../models/prisma.js';
 
 /**
  * 사용자가 푼 문제를 데이터베이스에 저장합니다.

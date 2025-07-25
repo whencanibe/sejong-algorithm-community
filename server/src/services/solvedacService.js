@@ -1,11 +1,11 @@
-import axios from 'axios'
+import axios from 'axios';
 
-const SOLVEDAC_URL_BASE = "https://solved.ac/api/v3";
+const SOLVEDAC_URL_BASE = 'https://solved.ac/api/v3';
 
 //사용자가 푼 문제리스트 외부 API인 solved ac api 사용하여 가져오는 함수
 export async function getSolvedProblemIds(baekjoonName) {
     let pageNum = 1;
-    const url = SOLVEDAC_URL_BASE + `/search/problem`;
+    const url = SOLVEDAC_URL_BASE + '/search/problem';
     const solvedProblemIds = [];
 
     try {
@@ -13,7 +13,7 @@ export async function getSolvedProblemIds(baekjoonName) {
         while (true) {
             const response = await axios.get(url, {
                 params: { query: `solved_by:${baekjoonName}`, page: pageNum },
-            })
+            });
 
             const items = response.data.items;
             if (!items || items.length === 0) break;
@@ -39,12 +39,12 @@ export async function getSolvedProblemIds(baekjoonName) {
 
 //사용자의 백준 랭킹과 티어를 외부 API인 solved ac api 사용하여 가져오는 함수
 export async function getRankandTier(baekjoonName) {
-    const url = SOLVEDAC_URL_BASE + '/user/show' //?handle=백준이름
+    const url = SOLVEDAC_URL_BASE + '/user/show'; //?handle=백준이름
 
     try {
         const response = await axios.get(url, {
             params: { handle: baekjoonName },
-        })
+        });
         let rank = response.data.rank;
         let tier = response.data.tier;
         let solvedCount = response.data.solvedCount;
@@ -53,7 +53,7 @@ export async function getRankandTier(baekjoonName) {
             rank: rank,
             tier: tier,
             solvedCount: solvedCount,
-        }
+        };
     } catch (err) {
         console.error('solvedac API 요청 실패:', err.message);
         throw new Error('존재하는 백준 아이디를 입력해 주세요');
@@ -67,7 +67,7 @@ export async function getProblemDetail(problemId) {
     try {
         const response = await axios.get(url, {
             params: { problemId }, timeout: 20000
-        })
+        });
 
         let title = response.data.titleKo;
         let level = response.data.level;

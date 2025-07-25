@@ -1,4 +1,4 @@
-import { getSolvedProblemIds, getRankandTier } from "../services/solvedacService.js";
+import { getSolvedProblemIds, getRankandTier } from '../services/solvedacService.js';
 
 /**
  * 특정 백준 사용자 핸들(handle)을 기반으로 푼 문제 목록을 가져오는 컨트롤러

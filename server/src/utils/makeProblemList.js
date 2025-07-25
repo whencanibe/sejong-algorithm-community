@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const DAILY_PROBLEM_IDS = [
   // 실버 난이도 문제들
@@ -24,7 +24,7 @@ async function fetchTitles() {
   for (let i = 0; i < DAILY_PROBLEM_IDS.length; i++) {
     const id = DAILY_PROBLEM_IDS[i];
     try {
-      const res = await axios.get("https://solved.ac/api/v3/problem/show", {
+      const res = await axios.get('https://solved.ac/api/v3/problem/show', {
         params: { problemId: id },
         timeout: 20000,
       });
@@ -37,12 +37,12 @@ async function fetchTitles() {
   }
 
   // 코드용으로 출력
-  console.log("\n//복사해서 코드에 붙여넣어 쓰세요\n");
-  console.log("export const PROBLEM_TITLE_MAP = {");
+  console.log('\n//복사해서 코드에 붙여넣어 쓰세요\n');
+  console.log('export const PROBLEM_TITLE_MAP = {');
   for (const [id, title] of Object.entries(result)) {
     console.log(`  ${id}: "${title}",`);
   }
-  console.log("};");
+  console.log('};');
 }
 
 fetchTitles();

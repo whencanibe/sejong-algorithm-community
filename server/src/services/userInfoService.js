@@ -1,13 +1,13 @@
 import prisma from '../models/prisma.js';
-import * as userRepo from "../repositories/userRepository.js";
-import * as solvedProblemRepo from "../repositories/solvedProblemRepository.js";
-import { getRankandTier } from "./solvedacService.js";
+import * as userRepo from '../repositories/userRepository.js';
+import * as solvedProblemRepo from '../repositories/solvedProblemRepository.js';
+import { getRankandTier } from './solvedacService.js';
 import { startOfWeek, differenceInCalendarDays } from 'date-fns';
-import { stringifyTier } from "../utils/stringifyTier.js";
-import { getStreak } from "./footprintService.js";
+import { stringifyTier } from '../utils/stringifyTier.js';
+import { getStreak } from './footprintService.js';
 import { findUserById } from '../repositories/userRepository.js';
-import { AppError } from "../errors/AppError.js";
-import { ExternalError } from "../errors/ExternalError.js";
+import { AppError } from '../errors/AppError.js';
+import { ExternalError } from '../errors/ExternalError.js';
 
 /**
  * 주어진 사용자 ID에 대한 상세 정보를 반환하는 함수
@@ -33,7 +33,7 @@ export async function getUserInfo(userId) {
   }
   
   if (!user) {
-    throw new AppError("사용자를 찾을 수 없습니다.", 404);
+    throw new AppError('사용자를 찾을 수 없습니다.', 404);
   }
 
   let rankInfo;
@@ -104,7 +104,7 @@ export async function getPercentilesForUser(userId) {
       percentileInDepartment
     };
   } catch (error) {
-    console.error("getPercentilesForUser 에러:", error.message);
+    console.error('getPercentilesForUser 에러:', error.message);
     throw new AppError('사용자 상위 퍼센트 불러오기 실패하였습니다.', 404);
   }
 }
@@ -138,8 +138,8 @@ export async function updateUserProfileImage(userId, imageUrl) {
  */
 export async function getBasicUserInfo(userId) {
   const user = await userRepo.findUserById(userId);
-  if (!user) throw new AppError("유저를 찾을 수 없습니다.", 404);
-  const defaultProfileImage = "/기본이미지.png"; 
+  if (!user) throw new AppError('유저를 찾을 수 없습니다.', 404);
+  const defaultProfileImage = '/기본이미지.png'; 
 
   return {
     name: user.name,

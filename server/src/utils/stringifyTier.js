@@ -1,5 +1,5 @@
 let allTier = ['브론즈', '실버', '골드', '플래티넘', '다이아몬드', '루비'];
-let allSubtier = ['V', "IV", 'III', 'II', 'I'];
+let allSubtier = ['V', 'IV', 'III', 'II', 'I'];
 
 //정수로 저장된 티어를 텍스트로 바꿔주는 함수
 export function stringifyTier(tierNum) {

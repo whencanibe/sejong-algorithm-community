@@ -1,10 +1,10 @@
-import { getPercentilesForUser, getUserInfo, updateUserProfileImage } from "../services/userInfoService.js";
+import { getPercentilesForUser, getUserInfo, updateUserProfileImage } from '../services/userInfoService.js';
 import * as userRepo from '../repositories/userRepository.js';
-import { AppError } from "../errors/AppError.js";
-import { normalizeBigInt } from "../utils/nomalizeBigint.js";
+import { AppError } from '../errors/AppError.js';
+import { normalizeBigInt } from '../utils/nomalizeBigint.js';
 import * as service from '../services/userInfoService.js';
 import { updateNickname } from '../services/userInfoService.js'; // ✅ 꼭 필요
-import { syncSingleUser } from "../jobs/syncSolvedListJob.js";
+import { syncSingleUser } from '../jobs/syncSolvedListJob.js';
 
 /**
  * [GET] /api/mypage
@@ -50,7 +50,7 @@ export async function uploadProfileImage(req, res) {
 
     return res.status(200).json({ url: imageUrl }); // 새 이미지 경로 반환
   } catch (err) {
-    console.error("uploadProfileImage 에러:", err.message);
+    console.error('uploadProfileImage 에러:', err.message);
     next(err);
   }
 }
@@ -78,7 +78,7 @@ export async function basicProfile(req, res) {
       profileImage: user.profileImage
     });
   } catch (err) {
-    console.error("basicProfile 에러:", err.message);
+    console.error('basicProfile 에러:', err.message);
     next(err);
   }
 }
@@ -128,10 +128,10 @@ export async function changeNickname(req, res, next) {
     const userId = req.session.user?.id;
     const { name: newName } = req.body;
 
-    console.log("📥 클라이언트 닉네임 요청:", { userId, newName }); // 여기 로그도 추가
+    console.log('📥 클라이언트 닉네임 요청:', { userId, newName }); // 여기 로그도 추가
 
     if (!userId || !newName) {
-      throw new AppError("닉네임 변경 요청이 잘못되었습니다.", 400);
+      throw new AppError('닉네임 변경 요청이 잘못되었습니다.', 400);
     }
 
     const updated = await updateNickname(userId, newName);  //db에 업데이트

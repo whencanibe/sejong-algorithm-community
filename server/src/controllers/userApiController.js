@@ -1,5 +1,5 @@
-import { AppError } from "../errors/AppError.js";
-import { signupService } from "../services/userService.js";
+import { AppError } from '../errors/AppError.js';
+import { signupService } from '../services/userService.js';
 import { loginService } from '../services/userService.js';
 
 /**
@@ -13,14 +13,14 @@ export const signup = async (req, res, next) => {
     const newUser = await signupService(req.body);
 
     res.status(201).json({
-      message: "회원가입 성공",
+      message: '회원가입 성공',
       user: {
         id: newUser.id,
         email: newUser.email,
       }
     });
   } catch (err) {
-    console.error("회원가입 오류:", err);
+    console.error('회원가입 오류:', err);
     next(err);
   }
 };
@@ -47,7 +47,7 @@ export const login = async (req, res, next) => {
       user: req.session.user,
     });
   } catch (err) {
-    console.error("로그인 오류:", err);
+    console.error('로그인 오류:', err);
     next(err);
   }
 };
@@ -61,12 +61,12 @@ export const logout = (req, res, next) => {
   // 콜백안에서 에러는 try catch로 잡을 수 없으므로 다음과 같이 에러 처리
   req.session.destroy(err => {
     if (err) {
-      console.error("로그아웃 실패:", err);
+      console.error('로그아웃 실패:', err);
       return next(err);
     }
 
     res.clearCookie('connect.sid');
-    res.status(200).json({ message: "로그아웃 성공" });
+    res.status(200).json({ message: '로그아웃 성공' });
   });
 };
 
@@ -81,7 +81,7 @@ export const logout = (req, res, next) => {
   }
 
   res.status(200).json({
-    message: "로그인된 사용자 정보",
+    message: '로그인된 사용자 정보',
     user: req.session.user,
   });
 };

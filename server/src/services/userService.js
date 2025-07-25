@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import prisma from "../models/prisma.js";
+import prisma from '../models/prisma.js';
 import { createUser, deleteUserById, findUserByBaekjoonName, findUserByEmail, findUserById, findUserByName, findUserByStudentId } from '../repositories/userRepository.js';
 
 import { syncSingleUser } from '../jobs/syncSolvedListJob.js';
@@ -68,12 +68,12 @@ export async function signupService({ email, password, name, baekjoonName, depar
 export const loginService = async (email, plainPassword) => {
   const user = await findUserByEmail(email);
   if (!user) {
-    throw new AppError("존재하지 않는 이메일입니다.", 404);
+    throw new AppError('존재하지 않는 이메일입니다.', 404);
   }
 
   const isMatch = await bcrypt.compare(plainPassword, user.password);
   if (!isMatch) {
-    throw new AppError("비밀번호가 일치하지 않습니다.", 401);
+    throw new AppError('비밀번호가 일치하지 않습니다.', 401);
   }
 
   return user;
