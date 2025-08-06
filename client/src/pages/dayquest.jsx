@@ -143,7 +143,7 @@ function Dayquest({ userId, problemId }) {
           />
           {/*  배경 지구 이미지 */}
            <img
-              src="/public/배경/지구.png" 
+              src="/배경/지구.png" 
               alt="floating-astronaut"
               style={{
                 position: "absolute",

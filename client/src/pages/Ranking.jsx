@@ -76,7 +76,7 @@ function Ranking() {
 
         {/* 배경 이미지: 천왕성 */}
         <img
-          src="/public/배경/천왕성.png" 
+          src="/배경/천왕성.png" 
           alt="floating-astronaut"
           style={{
             position: "absolute",

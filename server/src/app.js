@@ -12,6 +12,7 @@ import dayquestRouter from './routes/dayquestRouter.js';
 import { getProblemDetail } from './services/solvedacService.js';
 import cardRouter from './routes/cardRouter.js';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 
@@ -19,6 +20,13 @@ app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true
 }));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// 정적 파일 서빙
+app.use(express.static(path.join(__dirname, '../../client/dist')));
+
 app.use(express.json());
 
 app.use(session({
@@ -40,6 +48,12 @@ app.use('/user', userRouter);
 app.use('/dayquest', dayquestRouter);
 app.use('/card', cardRouter);
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+// 모든 경로를 index.html로 리다이렉트
+app.get(/(.*)/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
+});
+
 app.use(errorHandler); // 최종 에러 처리기이므로 모든 라우터 뒤에 위치하여야 함.
 
 export default app;

@@ -10,7 +10,7 @@ const StarField = () => {
     return (
       <img
         key={index}
-        src="/public/배경/star1.png"
+        src="/배경/star1.png"
         className="twinkle"
         style={{
           position: "absolute",

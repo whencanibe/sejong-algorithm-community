@@ -281,7 +281,7 @@ function MyPage() {
       </header>
 
        <img
-            src="/public/배경/해왕성.png" 
+            src="/배경/해왕성.png" 
             alt="floating-astronaut"
             style={{
             position: "absolute",

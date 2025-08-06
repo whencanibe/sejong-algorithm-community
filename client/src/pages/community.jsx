@@ -53,7 +53,7 @@ function Community() {
         
       >
       <img
-        src="/public/배경/화성.png" 
+        src="/배경/화성.png" 
         alt="floating-astronaut"
         style={{
           position: "absolute",

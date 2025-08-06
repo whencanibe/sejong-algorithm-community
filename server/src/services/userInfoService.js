@@ -1,4 +1,5 @@
 import prisma from '../models/prisma.js';
+import Prisma from '../models/prisma.js';
 import * as userRepo from '../repositories/userRepository.js';
 import * as solvedProblemRepo from '../repositories/solvedProblemRepository.js';
 import { getRankandTier } from './solvedacService.js';

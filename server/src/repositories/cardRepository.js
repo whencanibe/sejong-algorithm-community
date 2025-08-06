@@ -15,14 +15,14 @@ export async function getUserCardIds(userId) {
 }
 
 
-export async function getRandomUnownedCard(userCardIds) {
-  return await prisma.card.findFirst({
-    where: {
-      id: { notIn: userCardIds }
-    },
-    rderBy: { id: 'asc' }, skip: Math.random() * count
-  });
-}
+// export async function getRandomUnownedCard(userCardIds) {
+//   return await prisma.card.findFirst({
+//     where: {
+//       id: { notIn: userCardIds }
+//     },
+//     orderBy: { id: 'asc' }, skip: Math.random() * count
+//   });
+// }
 
 /**
  * 특정 사용자에게 카드 지급

@@ -185,13 +185,13 @@ export default function Home() {
         {/* 발자국 오른쪽에 우주 외계인 이미지 */}
         <div>
           <img
-            src="/public/배경/달.png"
+            src="/배경/달.png"
             alt="floating-astronaut"
             className="moon"
           />
         </div>
         <img
-          src="/public/배경/우주인.png"
+          src="/배경/우주인.png"
           alt="floating-astronaut"
           className="astronaut"
         />
@@ -231,9 +231,9 @@ export default function Home() {
           {/* 퀘스트 */}
           <div className="quest-container" onClick={() => navigate("/dayquest")}>
             <QuestCapsule problem={todayProblem} />
-            <img src="/public/배경/에일리언.png" className="alien alien1" alt="alien1" />
-            <img src="/public/배경/에일리언.png" className="alien alien2" alt="alien2" />
-            <img src="/public/배경/에일리언.png" className="alien alien3" alt="alien3" />
+            <img src="/배경/에일리언.png" className="alien alien1" alt="alien1" />
+            <img src="/배경/에일리언.png" className="alien alien2" alt="alien2" />
+            <img src="/배경/에일리언.png" className="alien alien3" alt="alien3" />
           </div>
 
           {/* 자유게시판 */}
