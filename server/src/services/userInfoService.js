@@ -1,20 +1,17 @@
 import prisma from '../models/prisma.js';
-import Prisma from '../models/prisma.js';
 import * as userRepo from '../repositories/userRepository.js';
 import * as solvedProblemRepo from '../repositories/solvedProblemRepository.js';
-import { getRankandTier } from './solvedacService.js';
-import { startOfWeek, differenceInCalendarDays } from 'date-fns';
-import { stringifyTier } from '../utils/stringifyTier.js';
 import { getStreak } from './footprintService.js';
-import { findUserById } from '../repositories/userRepository.js';
 import { AppError } from '../errors/AppError.js';
-import { ExternalError } from '../errors/ExternalError.js';
+import { Prisma } from '@prisma/client';
 
 /**
  * 주어진 사용자 ID에 대한 상세 정보를 반환하는 함수
- * - 사용자 정보 조회
- * - solved.ac에서 티어 및 푼 문제 수 조회
+ * - 사용자 정보 조회 (DB에 저장된 최신 정보 사용)
  * - 학교 내 랭킹, 학과 랭킹, 연속 풀이일, 백분위 계산 등 포함
+ *
+ * 참고: 티어, 랭크, 푼 문제 수는 매일 자정 cron job으로 동기화됨
+ *      최신 정보가 필요한 경우 POST /info/api/refresh 엔드포인트 호출
  *
  * @param {number} userId - 사용자 고유 ID
  * @returns {Promise<Object>} 사용자 상세 정보 객체
@@ -24,37 +21,27 @@ export async function getUserInfo(userId) {
   try {
     // 사용자 정보 조회
     user = await userRepo.findUserById(userId);
-  } catch (err) {                        
+  } catch (err) {
     // Prisma 관련 오류를 식별해 세분화 처리
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       throw new AppError('DB 조회 오류', 500, { cause: err });
     }
     // 알 수 없는 오류는 그대로 throw
-    throw err;                            
+    throw err;
   }
-  
+
   if (!user) {
     throw new AppError('사용자를 찾을 수 없습니다.', 404);
   }
 
-  let rankInfo;
-  try {
-    // 외부 API를 통해 랭킹, 티어 정보 조회
-    rankInfo = await getRankandTier(user.baekjoonName);
-  } catch (err) {
-    throw new ExternalError('Solved.ac API 호출 실패', 10);
-  }
-
-  //학번에서 입학년도 추출 (예: "24011776" -> "24")
+  // 학번에서 입학년도 추출 (예: "24011776" -> "24")
   const enrollYear = user.studentId.slice(0, 2);
 
-  // 티어 정보 문자열로 변환
-  const tier = stringifyTier(rankInfo.tier);
+  // DB에 저장된 티어, 푼 문제 수 사용 (외부 API 호출 제거)
+  const tier = user.tier || 'Unrated';
+  const totalSolvedCount = user.solvedNum || 0;
 
-  // 총 푼 문제 수
-  const totalSolvedCount = rankInfo.solvedCount;
-
-  //병렬로 유저 정보 조회 (모두 성공해야 함 => 아니면 에러)
+  // 병렬로 유저 정보 조회 (모두 성공해야 함 => 아니면 에러)
   const [
     rank, // 전체 사용자 중 순위
     rankInDepartment, // 학과 내 순위

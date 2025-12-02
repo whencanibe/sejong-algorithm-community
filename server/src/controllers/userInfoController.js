@@ -40,7 +40,7 @@ export async function getPercentilesForUserSessionCtrl(req, res, next) {
  * - Multer로 받은 파일명을 static 경로로 가공하여 DB에 저장
  * - 내부적으로 `updateUserProfileImage(userId, imageUrl)` 호출
  */
-export async function uploadProfileImage(req, res) {
+export async function uploadProfileImage(req, res, next) {
   try {
     const userId = req.session.user.id;
     const filename = req.file.filename;
@@ -60,14 +60,14 @@ export async function uploadProfileImage(req, res) {
  * - 로그인한 사용자의 기본 정보(name, department, profileImage)만 간략히 반환
  * - DB 접근은 `userRepo.findUserById(userId)`를 통해 수행
  */
-export async function basicProfile(req, res) {
+export async function basicProfile(req, res, next) {
   const userId = req.session.user?.id;
   if (!userId) {
     return next(new AppError('로그인이 필요합니다.', 401));
   }
 
   try {
-    const user = await userRepo.findUserById(userId);   // 사용자의 이름,학과,프로필 조회 
+    const user = await userRepo.findUserById(userId);   // 사용자의 이름,학과,프로필 조회
     if (!user) {
       return next(new AppError('사용자를 찾을 수 없습니다.', 404));
     }

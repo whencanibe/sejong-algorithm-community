@@ -67,3 +67,11 @@ docker-compose.override.yml
 # Ignore all local history of files
 .history
 .ionide
+
+*.md
+!README.md
+.claude/
+benchmark_results/
+
+*.sh
+benchmark.js
